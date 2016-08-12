@@ -141,7 +141,7 @@ def main():
 		print fobj(pob[i])
 #main()
 
-
+"""
 print dCodBin("00011")
 a= PoInAl(5,2,5)
 
@@ -155,5 +155,5 @@ print c
 can1,can2=selec(c)
 print can1,can2
 print mezclar(a[can1],a[can2])
-
+"""
 
