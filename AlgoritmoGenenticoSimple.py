@@ -19,6 +19,7 @@ def dCodBin(Bin):
 	return int(''.join(Bin),2)  
 
 #--------------------- Poblacion inicial ------------------------
+
 def PoInAl(nind, nvar, preci):
 	pob=[]
 	for i in xrange(0,nind):
@@ -29,11 +30,9 @@ def PoInAl(nind, nvar, preci):
 		pob.append(ind)
 	return pob
 #------------------ funcion objetivo ----------------------------
+
 def fobj(x):
 	res=0
-	"""for i in xrange(0,len(x)):
-		res+=dCodBin(x[i])**2
-	"""
 	res= -1*(dCodBin(x[0])-3)**2 + 100
 	return res
 #--------------------- Calificacion ----------------------------- 
@@ -44,7 +43,7 @@ def cal(pob):
 	for i in xrange(0,len(pob)):
 		aco+=fobj(pob[i])
 	for i in xrange(0,len(pob) ):
-		val.append( float(fobj(pob[i]))/float(aco) )
+		val.append( 2.0*3.1416*float(fobj(pob[i]))/float(aco) )
 	return val
 
 def linRank(pob,Mu):
@@ -78,14 +77,13 @@ def selec(cal,pob):
 	calAcom=0
 	res = [0,0]
 	for j in xrange(0,2):
-
 		for k in xrange(0,len(cal)):
-			sumCal += fobj(pob[k])
-		rand = random.random()*sumCal
-		print rand
+			sumCal += cal[k]
+		r =random.random()
+		rand = r*sumCal
 		i=0
 		while(i<len(cal) and calAcom<rand ):
-			calAcom += cal[i]*fobj(pob[i])
+			calAcom += cal[i]
 			i+=1
 		if i!=0 :
 			res[j]=i-1
@@ -115,19 +113,20 @@ def mezclar(Can1, Can2):
 #---------------------------- Mutar ------------------------------
 
 def main():
-	NIND =400
-	MAXGE = 800
+	NIND =40
+	MAXGE = 30
 	NVAR = 1
-	PRECI= 4
+	PRECI= 10
 	
 	# seleccionar poblacion inicial 
 	
 	pob=PoInAl(NIND, NVAR, PRECI)
+
 	gen = 0 
 	while(gen<MAXGE):
 		newPob=[]
 		
-		for i in xrange(0,NVAR):
+		for i in xrange(0,NIND/2):
 			calificacion = cal(pob)
 			can1,can2=selec(calificacion,pob)
 			canM1,canM2=mezclar(pob[can1],pob[can2])
@@ -135,23 +134,14 @@ def main():
 			newPob.append(canM2)
 		pob=newPob
 		gen+=1
-	for i in xrange(0,NVAR):
-		print " f("+ str(dCodBin(pob[i][0]) ) +") = " +str(fobj(pob[i])) 
+	max=0
+	ind=0
+	for i in xrange(0,NIND):
+		if max <fobj(pob[i]) :
+			max = fobj(pob[i])
+			ind=i
+	print " f("+ str(dCodBin(pob[ind][0]) ) +") = " +str(fobj(pob[ind])) 
+	print len(pob)
 main()
 
-"""
-print dCodBin("00011")
-a= PoInAl(5,2,5)
-
-print a
-
-for i in xrange(0,5):
-	print fobj(a[i])
-print "calificaciones "
-c =linRank(a,2)
-print c
-can1,can2=selec(c)
-print can1,can2
-print mezclar(a[can1],a[can2])
-"""
 
