@@ -76,7 +76,7 @@ def fobj(X):
 	return suma
 	#------------------------------------------------
 """
-
+"""
 	#------------ funcion Rosenbrock -----------------
 def fobj(X):
 	suma=0
@@ -88,7 +88,15 @@ def fobj(X):
 		suma += ( 100.0*(var[i+1]-var[i]**2)**2 + (var[i]-1)**2 )
 	return suma
 	#------------------------------------------------
+"""
 
+	#------------ funcion Beale -----------------
+def fobj(X):
+	var=[]
+	for i in xrange(0,len(X)):
+		var.append( float(dCodBin(X[i])) )
+	return (1.5-var[0]+var[0]*var[1])**2 + (2.25-var[0]+var[0]*var[1]**2)**2 + (2.625-var[0]+var[0]*var[1]**3)**2
+	#------------------------------------------------
 
 # funcion de adaptacion 
 def adap(X,fmax,fmin):
