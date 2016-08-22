@@ -54,7 +54,7 @@ def fobj(x):
 	return res
 
 """
-	#------------ funcion Ackley's -----------------
+	#------------ funcion Ackley -----------------
 def fobj(X):
 	var=[]
 	for i in xrange(0,len(X)):
