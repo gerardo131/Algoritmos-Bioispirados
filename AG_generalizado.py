@@ -54,7 +54,7 @@ def fobj(x):
 	return res
 
 """
-	#------------ funcion Ackley -----------------
+"""	#------------ funcion Ackley -----------------
 def fobj(X):
 	var=[]
 	for i in xrange(0,len(X)):
@@ -65,8 +65,14 @@ def fobj(X):
 	res = -20.0*np.exp( -0.2*np.sqrt(0.5*(var[0]**2+var[1]**2) ) ) + preres
 	return res
 	#------------------------------------------------
-
-
+"""
+	#------------ funcion Sphere -----------------
+def fobj(X):
+	suma=0
+	for i in xrange(0,len(X)):
+		suma += float(dCodBin(X[i]))**2
+	return suma
+	#------------------------------------------------
 
 
 # funcion de adaptacion 
