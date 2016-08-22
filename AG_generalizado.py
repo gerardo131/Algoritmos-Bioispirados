@@ -43,6 +43,9 @@ def PoInAl(nind, nvar, preci):
 		pob.append(ind)
 	return pob
 #------------------ funcion objetivo ----------------------------
+
+
+
 """
 	#------------ funcion cuadratica --------------- 
 def fobj(x):
@@ -62,33 +65,71 @@ def fobj(X):
 	return res
 	#------------------------------------------------
 
-# funcion de adaptacion -------------------------------------------
+
+
+
+
+# funcion de adaptacion 
 def adap(X,fmax,fmin):
 	return fmax + fmin - fobj(X)
 
 #busqueda de genotipo con valor de funcion objetivo maximo y minimo
 def adapMaxMin(pob):
 	aux =[]
+	sumAux =0
 	for i in xrange(0,len(pob)):
 		aux.append(fobj(pob[i]))
+		sumAux+=aux[i]
+	return max(aux),min(aux),(sumAux/len(pob))
+
+# buscar maximo y minimo de la funcion escalada
+def MaxMin(pob,a,b):
+	aux =[]
+	for i in xrange(0,len(pob)):
+		aux.append(escalado(fobj(pob[i]),a,b))
 	return max(aux),min(aux)
+
+#Encontrar los coeficientes de de la funcion escalada 
+def preEscalar(umax,umin,uprom):
+	fmultiple = 1.2
+	delta = 0.0
+	a=0.0
+	b=0.0
+	if umin >(fmultiple*uprom - umax)/(fmultiple-1.0): # prueba de no negatividad 
+		# scala normal
+		delta = umax- uprom+0.00001
+
+		a=(fmultiple-1.0)*uprom/delta
+		b=uprom*(umax - fmultiple*uprom)/delta
+	else:
+		delta = uprom- umin +0.00001
+		a=uprom /delta
+		b=-umin* uprom/ delta
+	return a,b
+
+#crear la funcion escalada
+def escalado(f,a,b,):
+	return a*f+b
 
 #-------------------- Calificacion ----------------------------- 
 
 def cal(pob): 
 	val=[]
 	aco=0
-	fmax,fmin = adapMaxMin(pob)
-	print "#-----------"
+	fmax,fmin,pp = adapMaxMin(pob)
+	a,b=preEscalar(fmax,fmin,pp)
+	Emax,Emin = MaxMin(pob,a,b)
+
+
+	
 	for i in xrange(0,len(pob)):
-		aco+=adap(pob[i],fmax,fmin)
-		print str(adap(pob[i],fmax,fmin) ) +"  "+str(fobj(pob[i])) +"  "+ str(dCodBin(pob[i][0])) +"  "+ str(dCodBin(pob[i][1])) 
-	print "----------------"
+		aco+=float( -escalado(fobj(pob[i]),a,b) +Emax+Emin )
+
 	for i in xrange(0,len(pob) ):
-			if aco ==0 :
-				val.append(0.0)
-			else:
-				val.append( float(adap(pob[i],fmax,fmin))/float(aco) )
+		if aco ==0 :
+			val.append(0.0)
+		else:
+			val.append( float( -escalado(fobj(pob[i]),a,b) +Emax+Emin )/float(aco) )
 	return val
 
 def linRank(pob,Mu):
@@ -121,7 +162,7 @@ def ordenar (cal,pob):
 	varC = []
 	aux = []
 	for i in xrange (0,len(pob)):
-		aux.append([fobj(pob[i]),i])
+		aux.append([cal[i],i])
 	aux.sort(reverse=True)
 	for i in xrange (0,len(pob)):
 		var.append(pob[aux[i][1]])
@@ -131,9 +172,10 @@ def ordenar (cal,pob):
 
 def selec(cal,pob):
 	sumCal = 0
-	calAcom=0
+	
 	res = [0,0]
 	for j in xrange(0,2):
+		calAcom=0
 		for k in xrange(0,len(cal)):
 			sumCal += cal[k]
 		r =random.random()
@@ -153,70 +195,85 @@ def selec(cal,pob):
 #-------------------------- Mezclar ------------------------------
 
 def mezclar(Can1, Can2):
-	canMez1 =Can1
-	canMez2 =Can2
-
+	canMez1 =[]
+	canMez2 =[]
+	
 	nvar=len(Can1)
 	preci=len(Can1[0])
-	if random.randint(0,1) == 0 :
-		ind=random.randint(0,(preci)*nvar-1)
-		for i in xrange(0,nvar):
-			for j in xrange(0,preci):
-				if(i*preci+j)<ind :
-					canMez1[i][j] =Can2[i][j]
-				else:
-					canMez2[i][j]=Can1[i][j]
+	
+	ind=random.randint(0,(preci)*nvar-1)
+
+	print "con pivote " + str(ind)
+
+	for i in xrange(0,nvar):
+		ind1=[]
+		ind2=[]
+		for j in xrange(0,preci):
+			if(i*preci+j)<ind :
+				ind1.append( Can1[i][j] )
+  				ind2.append( Can2[i][j] )
+			else:
+				ind1.append( Can2[i][j] )
+				ind2.append( Can1[i][j] )
+		canMez1.append(ind1)
+		canMez2.append(ind2)
+
+	print "Mezclar : " + str(dCodBin(Can1[0]) ) + "  "+ str(dCodBin(Can1[1]) )+"  ,  " + str(dCodBin(Can2[0]) ) + "  " +str(dCodBin(Can2[1]) )	
+	print "Resultado : " + str(dCodBin(canMez1[0]) ) + "  "+ str(dCodBin(canMez1[1]) )+"  ,  " + str(dCodBin(canMez2[0]) ) + "  " +str(dCodBin(canMez2[1]) )
+
+
 	return canMez1,canMez2
 		
 #---------------------------- Mutar ------------------------------
 def mutacion (pob):
 	for i in xrange(0, len(pob)) :
 		if random.randint(0,1) == 0 :
+			print "----mutacion-----"
 			pob[ random.randint(0,len(pob)-1) ][random.randint(0,len(pob[0])-1)]
 	return pob
 
 
 def main():
-	NIND =6
+	NIND =30
 	MAXGE = 3
 	NVAR = 2
-	PRECI= 17
-
+	PRECI= 16
+	indEli=4
+	
 	# seleccionar poblacion inicial 
 	pob=PoInAl(NIND, NVAR, PRECI)
-
+	
 	gen = 0 
 	while(gen<MAXGE):
 		newPob=[]
 		calificacion = cal(pob)
-		pob,calificacion =ordenar(calificacion,pob)
-		for i in xrange(0,NIND/2):
-		
-			can1,can2=selec(calificacion,pob)
+		#pob,calificacion =ordenar(calificacion,pob)
+		for i in xrange(0,len(pob)):
+			print str(dCodBin(pob[i][0]) ) + "  " +str(dCodBin(pob[i][1]) )
+
+
+		for i in xrange(0,(NIND)/2):
+			can1,can2 = selec(calificacion,pob)
+			print str(can1) +"   "+str(can2) 
+			print "Mezclar : " + str(dCodBin(pob[can1][0]) ) + "  "+ str(dCodBin(pob[can1][1]) )+"  ,  " + str(dCodBin(pob[can2][0]) ) + "  " +str(dCodBin(pob[can2][1]) )
+	
 			canM1,canM2=mezclar(pob[can1],pob[can2])
 			newPob.append(canM1)
 			newPob.append(canM2)
-		pob=newPob
-		pob=mutacion(pob)
+		
+		newPob = mutacion(newPob)
+		
+		pob = newPob
 		gen+=1
 	max=0
 	ind=0
-	fmax,fmin = adapMaxMin(pob)
+	fmax,fmin,pp = adapMaxMin(pob)
 	for i in xrange(0,len(pob)):
 		if max <adap(pob[i],fmax,fmin) :
 			max = adap(pob[i],fmax,fmin)
 			ind=i
 	print " f("+ str(dCodBin(pob[ind][0]) ) +","+str(dCodBin(pob[ind][1]) )+") = " +str(fobj(pob[ind])) 
 	print len(pob)
-#main()
-f = -5.0
-while (f<5.0):
-	print "-------------------"
-	a =  codBin(f,17)
-	print a
-	print f
-	print dCodBin(a)
-	print "-------------------"
-	f += 0.1
+main()
 #print fobj(["11","11"])
 #print codBin(8,3)
