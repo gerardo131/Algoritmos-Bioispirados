@@ -46,12 +46,13 @@ def PoInAl(nind, nvar, preci):
 
 
 
-"""
-	#------------ funcion cuadratica --------------- 
+
+"""	#------------ funcion cuadratica --------------- 
 def fobj(x):
 	res=0
 	res= -1*(dCodBin(x[0])-3)**2 + 100
 	return res
+
 """
 	#------------ funcion Ackley's -----------------
 def fobj(X):
@@ -64,7 +65,6 @@ def fobj(X):
 	res = -20.0*np.exp( -0.2*np.sqrt(0.5*(var[0]**2+var[1]**2) ) ) + preres
 	return res
 	#------------------------------------------------
-
 
 
 
@@ -204,19 +204,23 @@ def mezclar(Can1, Can2):
 	ind=random.randint(0,(preci)*nvar-1)
 
 	print "con pivote " + str(ind)
+	if random.randint(0,1) == 0 :
 
-	for i in xrange(0,nvar):
-		ind1=[]
-		ind2=[]
-		for j in xrange(0,preci):
-			if(i*preci+j)<ind :
-				ind1.append( Can1[i][j] )
-  				ind2.append( Can2[i][j] )
-			else:
-				ind1.append( Can2[i][j] )
-				ind2.append( Can1[i][j] )
-		canMez1.append(ind1)
-		canMez2.append(ind2)
+		for i in xrange(0,nvar):
+			ind1=[]
+			ind2=[]
+			for j in xrange(0,preci):
+				if(i*preci+j)<ind :
+					ind1.append( Can1[i][j] )
+	  				ind2.append( Can2[i][j] )
+				else:
+					ind1.append( Can2[i][j] )
+					ind2.append( Can1[i][j] )
+			canMez1.append(ind1)
+			canMez2.append(ind2)
+	else:
+		canMez1 = Can1
+		canMez2 = Can2
 
 	print "Mezclar : " + str(dCodBin(Can1[0]) ) + "  "+ str(dCodBin(Can1[1]) )+"  ,  " + str(dCodBin(Can2[0]) ) + "  " +str(dCodBin(Can2[1]) )	
 	print "Resultado : " + str(dCodBin(canMez1[0]) ) + "  "+ str(dCodBin(canMez1[1]) )+"  ,  " + str(dCodBin(canMez2[0]) ) + "  " +str(dCodBin(canMez2[1]) )
@@ -234,10 +238,10 @@ def mutacion (pob):
 
 
 def main():
-	NIND =30
-	MAXGE = 3
+	NIND =50
+	MAXGE = 100
 	NVAR = 2
-	PRECI= 16
+	PRECI= 17
 	indEli=4
 	
 	# seleccionar poblacion inicial 
@@ -247,12 +251,13 @@ def main():
 	while(gen<MAXGE):
 		newPob=[]
 		calificacion = cal(pob)
-		#pob,calificacion =ordenar(calificacion,pob)
+		pob,calificacion =ordenar(calificacion,pob)
 		for i in xrange(0,len(pob)):
 			print str(dCodBin(pob[i][0]) ) + "  " +str(dCodBin(pob[i][1]) )
 
 
-		for i in xrange(0,(NIND)/2):
+
+		for i in xrange(0,(NIND-indEli)/2):
 			can1,can2 = selec(calificacion,pob)
 			print str(can1) +"   "+str(can2) 
 			print "Mezclar : " + str(dCodBin(pob[can1][0]) ) + "  "+ str(dCodBin(pob[can1][1]) )+"  ,  " + str(dCodBin(pob[can2][0]) ) + "  " +str(dCodBin(pob[can2][1]) )
@@ -262,7 +267,13 @@ def main():
 			newPob.append(canM2)
 		
 		newPob = mutacion(newPob)
-		
+
+		# seleccion elitista
+		for i in xrange(0,indEli):
+			newPob.append(pob[i])
+			print str(dCodBin(pob[i][0])) +"  "+str(dCodBin(pob[i][1]))
+		#-----------------------------
+
 		pob = newPob
 		gen+=1
 	max=0
