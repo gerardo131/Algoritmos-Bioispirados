@@ -66,11 +66,26 @@ def fobj(X):
 	return res
 	#------------------------------------------------
 """
+
+"""
 	#------------ funcion Sphere -----------------
 def fobj(X):
 	suma=0
 	for i in xrange(0,len(X)):
 		suma += float(dCodBin(X[i]))**2
+	return suma
+	#------------------------------------------------
+"""
+
+	#------------ funcion Rosenbrock -----------------
+def fobj(X):
+	suma=0
+	var=[]
+	for i in xrange(0,len(X)):
+		var.append( float(dCodBin(X[i])) )
+
+	for i in xrange(0,len(X)-1):
+		suma += ( 100.0*(var[i+1]-var[i]**2)**2 + (var[i]-1)**2 )
 	return suma
 	#------------------------------------------------
 
