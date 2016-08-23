@@ -67,7 +67,7 @@ def fobj(X):
 	#------------------------------------------------
 """
 
-"""
+
 	#------------ funcion Sphere -----------------
 def fobj(X):
 	suma=0
@@ -75,7 +75,7 @@ def fobj(X):
 		suma += float(dCodBin(X[i]))**2
 	return suma
 	#------------------------------------------------
-"""
+
 """
 	#------------ funcion Rosenbrock -----------------
 def fobj(X):
@@ -98,6 +98,7 @@ def fobj(X):
 	return (1.5-var[0]+var[0]*var[1])**2 + (2.25-var[0]+var[0]*var[1]**2)**2 + (2.625-var[0]+var[0]*var[1]**3)**2
 	#------------------------------------------------
 """
+"""
 	#------------- funcion Cross in trayn --------
 def fobj(X):
 	var=[]
@@ -105,7 +106,7 @@ def fobj(X):
 		var.append( float(dCodBin(X[i])) )
 	return -0.0001*( abs( math.sin(var[0])*math.sin(var[1])*math.exp(abs(100.0-math.sqrt(var[0]**2+var[1]**2)/math.pi ) ) ) +1)**(0.1)
 	#---------------------------------------------
-
+"""
 # funcion de adaptacion 
 def adap(X,fmax,fmin):
 	return fmax + fmin - fobj(X)
@@ -215,7 +216,7 @@ def selec(cal,pob):
 		calAcom=0
 		for k in xrange(0,len(cal)):
 			sumCal += cal[k]
-		r =random.random()
+		r = random.random()
 		rand = r*sumCal
 		i=0
 		while(i<len(cal) and calAcom<rand ):
@@ -259,9 +260,22 @@ def mezclar(Can1, Can2):
 		canMez1 = Can1
 		canMez2 = Can2
 
-	print "Mezclar : " + str(dCodBin(Can1[0]) ) + "  "+ str(dCodBin(Can1[1]) )+"  ,  " + str(dCodBin(Can2[0]) ) + "  " +str(dCodBin(Can2[1]) )	
-	print "Resultado : " + str(dCodBin(canMez1[0]) ) + "  "+ str(dCodBin(canMez1[1]) )+"  ,  " + str(dCodBin(canMez2[0]) ) + "  " +str(dCodBin(canMez2[1]) )
-
+	print "Mezclar : " 
+	print "candidato uno"
+	for i in xrange(0,nvar):
+		print str(dCodBin(Can1[i]) ) 
+	print "candidato dos"
+	for i in xrange(0,nvar):
+		print str(dCodBin(Can2[i]) ) 
+	print "----------------------------------"
+	print "Resultado : " 
+	print "candidato uno"
+	for i in xrange(0,nvar):
+		print str(dCodBin(canMez1[i]) ) 
+	print "candidato dos"
+	for i in xrange(0,nvar):
+		print str(dCodBin(canMez2[i]) ) 
+	print "----------------------------------"	
 
 	return canMez1,canMez2
 		
@@ -275,9 +289,9 @@ def mutacion (pob):
 
 
 def main():
-	NIND =50
+	NIND =80
 	MAXGE = 100
-	NVAR = 2
+	NVAR = 3
 	PRECI= 17
 	indEli=4
 	
@@ -297,7 +311,14 @@ def main():
 		for i in xrange(0,(NIND-indEli)/2):
 			can1,can2 = selec(calificacion,pob)
 			print str(can1) +"   "+str(can2) 
-			print "Mezclar : " + str(dCodBin(pob[can1][0]) ) + "  "+ str(dCodBin(pob[can1][1]) )+"  ,  " + str(dCodBin(pob[can2][0]) ) + "  " +str(dCodBin(pob[can2][1]) )
+			print "Mezclar : " 
+			print "candidato uno"
+			for i in xrange(0,NVAR):
+				print str(dCodBin(pob[can1][i]) ) 
+			print "candidato dos"
+			for i in xrange(0,NVAR):
+				print str(dCodBin(pob[can2][i]) ) 
+			print "----------------------------------"
 	
 			canM1,canM2=mezclar(pob[can1],pob[can2])
 			newPob.append(canM1)
@@ -320,7 +341,10 @@ def main():
 		if max <adap(pob[i],fmax,fmin) :
 			max = adap(pob[i],fmax,fmin)
 			ind=i
-	print " f("+ str(dCodBin(pob[ind][0]) ) +","+str(dCodBin(pob[ind][1]) )+") = " +str(fobj(pob[ind])) 
+	print " f(x) = " +str(fobj(pob[ind]))
+	print "x ="
+	for i in xrange(0,NVAR):
+		print str(dCodBin(pob[can2][i]) )  
 	print len(pob)
 main()
 #print fobj(["11","11"])
