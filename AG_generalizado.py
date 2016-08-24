@@ -242,7 +242,7 @@ def mezclar(Can1, Can2):
 	ind=random.randint(0,(preci)*nvar-1)
 
 	print "con pivote " + str(ind)
-	if random.randint(0,1) == 0 :
+	if random.random()*10 < 6 :
 
 		for i in xrange(0,nvar):
 			ind1=[]
@@ -282,16 +282,21 @@ def mezclar(Can1, Can2):
 #---------------------------- Mutar ------------------------------
 def mutacion (pob):
 	for i in xrange(0, len(pob)) :
-		if random.randint(0,1) == 0 :
+		if random.random()*10 < 6 :
 			print "----mutacion-----"
-			pob[ random.randint(0,len(pob)-1) ][random.randint(0,len(pob[0])-1)]
+			for j in xrange(0,len(pob[i])):
+				for k in xrange(0,len(pob[i][j])):
+					if pob[i][j][k] == "1":
+						pob[i][j][k] == "0"
+					else:
+						pob[i][j][k] == "1"
 	return pob
 
 
 def main():
 	NIND =80
 	MAXGE = 100
-	NVAR = 3
+	NVAR = 4
 	PRECI= 17
 	indEli=4
 	
@@ -344,7 +349,7 @@ def main():
 	print " f(x) = " +str(fobj(pob[ind]))
 	print "x ="
 	for i in xrange(0,NVAR):
-		print str(dCodBin(pob[can2][i]) )  
+		print str(dCodBin(pob[ind][i]) )  
 	print len(pob)
 main()
 #print fobj(["11","11"])
