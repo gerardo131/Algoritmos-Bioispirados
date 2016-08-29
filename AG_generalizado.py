@@ -5,69 +5,70 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #---------------- Codificacion ---------------------------------
+Umax = 30.0
+Umin = -30.0
+preci = 50
 
-
-def codBin(num, preci):
-	Inter=10
+def codBin(num):
+	Inter=Umax-Umin
 	binNum=""
 	Bin=""
 
-	if num <0:
-		Bin+="1"
-		binNum=bin(int( (-1.0*float(num)*(2**(preci+1.0)-1.0 ) )/(Inter) ) )[2:] 
-	else:
-		Bin+="0"
-		binNum=bin(int( ( (num)*(2**(preci+1.0)-1.0 ) )/(Inter) ))[2:]
+	binNum=bin(int( ( float(num-Umin)*(2**(preci)-1.0 ) )/(Inter) ) )[2:]
+
 	for i in xrange(0,preci-len(binNum)):
 		Bin+="0"
 	Bin += binNum
 	return list(Bin)
 	
 def dCodBin(Bin):
-	Inter =10
-	bi=int(''.join(Bin[1:]),2)
-	num =( (float(bi)* float(Inter))/float(2**len(Bin)-1.0)  )
-	if Bin[0]=="1":
-		return -num
-	else:
-		return num 
+	Inter =Umax-Umin
+	bi=int(''.join(Bin),2)
+	num =( (float(bi)* float(Inter))/float(2**(preci)-1.0)+Umin  )
+	return num 
 
 #--------------------- Poblacion inicial ------------------------
-def PoInAl(nind, nvar, preci):
+def PoInAl(nind, nvar):
 	pob=[]
 	for i in xrange(0,nind):
 		ind =[]
 		for j in xrange(0,nvar):
-			fen=codBin(  random.randint (-5,5),preci)
+			fen=codBin(  random.randrange(Umin,Umax))
 			ind.append(fen)
 		pob.append(ind)
 	return pob
 #------------------ funcion objetivo ----------------------------
-
-
-
 
 """	#------------ funcion cuadratica --------------- 
 def fobj(x):
 	res=0
 	res= -1*(dCodBin(x[0])-3)**2 + 100
 	return res
-
 """
-"""	#------------ funcion Ackley -----------------
+
+
+	#------------ funcion Ackley -----------------
 def fobj(X):
 	var=[]
 	for i in xrange(0,len(X)):
 		var.append( float(dCodBin(X[i])) )
-	
+	sum1 = 0.0
+	sum2 = 0.0
+
+	for i  in xrange(0,len(X)):
+		sum1 += var[i]**2
+		sum2 += np.cos(2.0*np.pi*var[i])
+	print (1.0/ float(len(X)) )	
+	print len(X)
 	res=0
-	preres = -np.exp(0.5*(np.cos(2.0*np.pi*var[0])+np.cos(2.0*np.pi*var[1]) ) )+np.exp(1)+20.0
-	res = -20.0*np.exp( -0.2*np.sqrt(0.5*(var[0]**2+var[1]**2) ) ) + preres
+	preres = -np.exp((1.0/ float(len(X)) ) *( sum2 ) )+np.exp(1)
+	res = -20.0*np.exp( -0.2*np.sqrt( (1.0/ float(len(X)) )*sum1 ) ) + preres
 	return res
+
 	#------------------------------------------------
+
+
 """
-
-
 	#------------ funcion Sphere -----------------
 def fobj(X):
 	suma=0
@@ -75,7 +76,7 @@ def fobj(X):
 		suma += float(dCodBin(X[i]))**2
 	return suma
 	#------------------------------------------------
-
+"""
 """
 	#------------ funcion Rosenbrock -----------------
 def fobj(X):
@@ -239,16 +240,17 @@ def mezclar(Can1, Can2):
 	nvar=len(Can1)
 	preci=len(Can1[0])
 	
-	ind=random.randint(0,(preci)*nvar-1)
+	ind1=random.randint(0,(preci)*nvar-1)
 
-	print "con pivote " + str(ind)
+
+	print "con pivote " + str(ind1)
 	if random.random()*10 < 6 :
 
 		for i in xrange(0,nvar):
 			ind1=[]
 			ind2=[]
 			for j in xrange(0,preci):
-				if(i*preci+j)<ind :
+				if(i*preci+j)<ind1 :
 					ind1.append( Can1[i][j] )
 	  				ind2.append( Can2[i][j] )
 				else:
@@ -259,7 +261,7 @@ def mezclar(Can1, Can2):
 	else:
 		canMez1 = Can1
 		canMez2 = Can2
-
+	"""
 	print "Mezclar : " 
 	print "candidato uno"
 	for i in xrange(0,nvar):
@@ -276,13 +278,14 @@ def mezclar(Can1, Can2):
 	for i in xrange(0,nvar):
 		print str(dCodBin(canMez2[i]) ) 
 	print "----------------------------------"	
+	"""
 
 	return canMez1,canMez2
 		
 #---------------------------- Mutar ------------------------------
 def mutacion (pob):
 	for i in xrange(0, len(pob)) :
-		if random.random()*10 < 6 :
+		if random.random()*10 < .2 :
 			print "----mutacion-----"
 			for j in xrange(0,len(pob[i])):
 				for k in xrange(0,len(pob[i][j])):
@@ -294,14 +297,18 @@ def mutacion (pob):
 
 
 def main():
-	NIND =80
-	MAXGE = 100
-	NVAR = 4
-	PRECI= 17
-	indEli=4
+	NIND =50
+	MAXGE = 200
+	NVAR = 2
+	indEli=2
+
+	Umax = 30.0
+	Umin = -30.0
+	preci = 50
+
 	
 	# seleccionar poblacion inicial 
-	pob=PoInAl(NIND, NVAR, PRECI)
+	pob=PoInAl(NIND, NVAR)
 	
 	gen = 0 
 	while(gen<MAXGE):
@@ -309,13 +316,14 @@ def main():
 		calificacion = cal(pob)
 		pob,calificacion =ordenar(calificacion,pob)
 		for i in xrange(0,len(pob)):
-			print str(dCodBin(pob[i][0]) ) + "  " +str(dCodBin(pob[i][1]) )
+			print str(dCodBin(pob[i][0]) ) + "  " +str(dCodBin(pob[i][1]))
 
 
 
 		for i in xrange(0,(NIND-indEli)/2):
 			can1,can2 = selec(calificacion,pob)
 			print str(can1) +"   "+str(can2) 
+			"""
 			print "Mezclar : " 
 			print "candidato uno"
 			for i in xrange(0,NVAR):
@@ -324,7 +332,7 @@ def main():
 			for i in xrange(0,NVAR):
 				print str(dCodBin(pob[can2][i]) ) 
 			print "----------------------------------"
-	
+			"""
 			canM1,canM2=mezclar(pob[can1],pob[can2])
 			newPob.append(canM1)
 			newPob.append(canM2)
@@ -351,6 +359,8 @@ def main():
 	for i in xrange(0,NVAR):
 		print str(dCodBin(pob[ind][i]) )  
 	print len(pob)
+	print dCodBin(codBin(0))
+	print fobj( codBin(0) )
 main()
 #print fobj(["11","11"])
 #print codBin(8,3)

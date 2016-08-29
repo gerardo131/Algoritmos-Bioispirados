@@ -142,6 +142,7 @@ def main():
 			ind=i
 	print " f("+ str(dCodBin(pob[ind][0]) ) +") = " +str(fobj(pob[ind])) 
 	print len(pob)
+	
 main()
 
 
