@@ -5,9 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #---------------- Codificacion ---------------------------------
-UMAX = 5.0
-UMIN = -5.0
-PRECI = 17
+UMAX = 32.0
+UMIN = -32.0
+PRECI = 20
 
 def codBin(num):
 	global UMAX
@@ -73,7 +73,25 @@ def fobj(X):
 	#------------------------------------------------
 """
 
+		#------------ funcion Ackley -----------------
+def fobj(X):
+	var=[]
+	for i in xrange(0,len(X)):
+		var.append( float(dCodBin(X[i])) )
+	sum1 = 0.0
+	sum2 = 0.0
 
+	for i  in xrange(0,len(X)):
+		sum1 += var[i]**2
+		sum2 += np.cos(2.0*np.pi*var[i])
+	res=0
+	preres = -np.exp( float(sum2)/ float(len(X)) )+np.exp(1)+20.0
+	res = -20.0*np.exp( -0.2*np.sqrt( float(sum1)/ float(len(X)) )  ) + preres
+	return res
+
+	#------------------------------------------------
+
+"""
 	#------------ funcion Sphere -----------------
 def fobj(X):
 	suma=0
@@ -81,7 +99,7 @@ def fobj(X):
 		suma += float(dCodBin(X[i]))**2
 	return suma
 	#------------------------------------------------
-
+"""
 """
 	#------------ funcion Rosenbrock -----------------
 def fobj(X):
@@ -174,6 +192,19 @@ def cal(pob):
 			val.append(0.0)
 		else:
 			val.append( float( -escalado(fobj(pob[i]),a,b) +Emax+Emin )/float(aco) )
+	return val
+
+def simpleCal(pob):
+	val=[]
+	aco=0
+	fmax,fmin,pp = adapMaxMin(pob)
+	for i in xrange(0,len(pob)):
+		aco+=adap(pob[i],fmax,fmin)
+	for i in xrange(0,len(pob) ):
+		if aco ==0 :
+			val.append(0.0)
+		else:
+			val.append( float( adap(pob[i],fmax,fmin) )/float(aco) )
 	return val
 
 def linRank(pob,Mu):
@@ -300,7 +331,7 @@ def main():
 	global PRECI
 	
 	NIND =80
-	MAXGE = 100
+	MAXGE = 1000
 	NVAR = 2
 	indEli=4
 	
@@ -353,7 +384,7 @@ def main():
 	print " f(x) = " +str(fobj(pob[ind]))
 	print "x ="
 	for i in xrange(0,NVAR):
-		print str(dCodBin(pob[can2][i]) )  
+		print str(dCodBin(pob[ind][i]) )  
 	print len(pob)
 main()
 #print fobj(["11","11"])
