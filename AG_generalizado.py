@@ -5,40 +5,46 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #---------------- Codificacion ---------------------------------
+UMAX = 5.0
+UMIN = -5.0
+PRECI = 17
 
+def codBin(num):
+	global UMAX
+	global UMIN
+	global PRECI
 
-def codBin(num, preci):
-	Inter=10
+	Inter=UMAX-UMIN
 	binNum=""
 	Bin=""
+	binNum=bin(int( ( float(num-UMIN)*(2**(PRECI)-1.0 ) )/(Inter) ) )[2:]
 
-	if num <0:
-		Bin+="1"
-		binNum=bin(int( (-1.0*float(num)*(2**(preci+1.0)-1.0 ) )/(Inter) ) )[2:] 
-	else:
-		Bin+="0"
-		binNum=bin(int( ( (num)*(2**(preci+1.0)-1.0 ) )/(Inter) ))[2:]
-	for i in xrange(0,preci-len(binNum)):
+	for i in xrange(0,PRECI-len(binNum)):
 		Bin+="0"
 	Bin += binNum
 	return list(Bin)
 	
 def dCodBin(Bin):
-	Inter =10
-	bi=int(''.join(Bin[1:]),2)
-	num =( (float(bi)* float(Inter))/float(2**len(Bin)-1.0)  )
-	if Bin[0]=="1":
-		return -num
-	else:
-		return num 
+	global UMAX
+	global UMIN
+	global PRECI
+
+	Inter =UMAX-UMIN
+	bi=int(''.join(Bin),2)
+	num =( (float(bi)* float(Inter))/float(2**(PRECI)-1.0)+UMIN  )
+	return num 
 
 #--------------------- Poblacion inicial ------------------------
-def PoInAl(nind, nvar, preci):
+def PoInAl(nind, nvar):
+	global UMAX
+	global UMIN
+	global PRECI
+
 	pob=[]
 	for i in xrange(0,nind):
 		ind =[]
 		for j in xrange(0,nvar):
-			fen=codBin(  random.randint (-5,5),preci)
+			fen=codBin(  random.randrange(UMIN,UMAX))
 			ind.append(fen)
 		pob.append(ind)
 	return pob
@@ -289,14 +295,17 @@ def mutacion (pob):
 
 
 def main():
+	global UMAX
+	global UMIN
+	global PRECI
+	
 	NIND =80
 	MAXGE = 100
-	NVAR = 3
-	PRECI= 17
+	NVAR = 2
 	indEli=4
 	
 	# seleccionar poblacion inicial 
-	pob=PoInAl(NIND, NVAR, PRECI)
+	pob=PoInAl(NIND, NVAR)
 	
 	gen = 0 
 	while(gen<MAXGE):
@@ -349,3 +358,14 @@ def main():
 main()
 #print fobj(["11","11"])
 #print codBin(8,3)
+
+
+#-----------------purba de codificacion------------------
+"""
+for i in xrange(-5,5):
+	print "-----------------------"
+ 	print i
+ 	a = codBin(i)
+ 	print dCodBin(a)
+ 	print "-----------------------"
+"""
