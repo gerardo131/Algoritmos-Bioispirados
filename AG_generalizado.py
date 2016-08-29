@@ -7,7 +7,13 @@ import matplotlib.pyplot as plt
 #---------------- Codificacion ---------------------------------
 UMAX = 32.0
 UMIN = -32.0
-PRECI = 20
+PRECI = 19
+x = []
+y = []
+xM = []
+yM = []
+xMR = []
+yMR = []
 
 def codBin(num):
 	global UMAX
@@ -319,9 +325,14 @@ def mezclar(Can1, Can2):
 #---------------------------- Mutar ------------------------------
 def mutacion (pob):
 	for i in xrange(0, len(pob)) :
-		if random.randint(0,1) == 0 :
+		if random.random()*10 < .2 :
 			print "----mutacion-----"
-			pob[ random.randint(0,len(pob)-1) ][random.randint(0,len(pob[0])-1)]
+			for j in xrange(0,len(pob[i])):
+				for k in xrange(0,len(pob[i][j])):
+					if pob[i][j][k] == "1":
+						pob[i][j][k] == "0"
+					else:
+						pob[i][j][k] == "1"
 	return pob
 
 
@@ -329,9 +340,15 @@ def main():
 	global UMAX
 	global UMIN
 	global PRECI
+	global x
+	global y
+	global xM
+	global xMR
+	global yM
+	global yMR
 	
 	NIND =80
-	MAXGE = 1000
+	MAXGE = 40
 	NVAR = 2
 	indEli=4
 	
@@ -343,9 +360,16 @@ def main():
 		newPob=[]
 		calificacion = cal(pob)
 		pob,calificacion =ordenar(calificacion,pob)
+		maxfimp=0
+		maxfimpin=0
 		for i in xrange(0,len(pob)):
-			print str(dCodBin(pob[i][0]) ) + "  " +str(dCodBin(pob[i][1]) )
+			print str(fobj(pob[i]))+"  "+str(dCodBin(pob[i][0]) ) + "  " +str(dCodBin(pob[i][1]) )
+			if maxfimpin < calificacion[i]:
+				maxfimp = calificacion[i]
+				maxfimpin = i
 
+		x.append(gen)
+		y.append(fobj(pob[maxfimpin]))
 
 
 		for i in xrange(0,(NIND-indEli)/2):
@@ -359,13 +383,24 @@ def main():
 			for i in xrange(0,NVAR):
 				print str(dCodBin(pob[can2][i]) ) 
 			print "----------------------------------"
-	
+			
 			canM1,canM2=mezclar(pob[can1],pob[can2])
+
+			xM.append(gen)
+			xMR.append(gen)
+			yM.append(fobj(pob[can1]))
+			yMR.append(fobj(pob[maxfimpin]))
+
+			xM.append(gen)
+			xMR.append(gen)
+			yM.append(fobj(canM1))
+			yMR.append(fobj(canM2))
+
 			newPob.append(canM1)
 			newPob.append(canM2)
 		
 		newPob = mutacion(newPob)
-
+		
 		# seleccion elitista
 		for i in xrange(0,indEli):
 			newPob.append(pob[i])
@@ -386,10 +421,23 @@ def main():
 	for i in xrange(0,NVAR):
 		print str(dCodBin(pob[ind][i]) )  
 	print len(pob)
+
 main()
 #print fobj(["11","11"])
 #print codBin(8,3)
 
+
+
+
+plt.plot(x, y, 'ro')
+plt.plot(xM, yM, 'bo')
+plt.plot(xMR, yMR, 'go')
+# You can specify a rotation for the tick labels in degrees or with keywords.
+# Pad margins so that markers don't get clipped by the axes
+plt.margins(0.2)
+# Tweak spacing to prevent clipping of tick-labels
+plt.subplots_adjust(bottom=0.15)
+plt.show()
 
 #-----------------purba de codificacion------------------
 """
