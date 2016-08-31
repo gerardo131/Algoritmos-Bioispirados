@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #---------------- Codificacion ---------------------------------
 UMAX = 32.0
 UMIN = -32.0
-PRECI = 19
+PRECI = 17
 x = []
 y = []
 xM = []
@@ -78,7 +78,6 @@ def fobj(X):
 	return res
 	#------------------------------------------------
 """
-
 		#------------ funcion Ackley -----------------
 def fobj(X):
 	var=[]
@@ -137,6 +136,7 @@ def fobj(X):
 	return -0.0001*( abs( math.sin(var[0])*math.sin(var[1])*math.exp(abs(100.0-math.sqrt(var[0]**2+var[1]**2)/math.pi ) ) ) +1)**(0.1)
 	#---------------------------------------------
 """
+
 # funcion de adaptacion 
 def adap(X,fmax,fmin):
 	return fmax + fmin - fobj(X)
@@ -249,8 +249,8 @@ def ordenar (cal,pob):
 		var.append(pob[aux[i][1]])
 		varC.append( cal[aux[i][1]] )
 	return var,varC
-#----------------------- seleccion -------------------------------
 
+#----------------------- seleccion -------------------------------
 def selec(cal,pob):
 	sumCal = 0
 	
@@ -272,9 +272,7 @@ def selec(cal,pob):
 	print "----------"
 	return res
 	
-	
 #-------------------------- Mezclar ------------------------------
-
 def mezclar(Can1, Can2):
 	canMez1 =[]
 	canMez2 =[]
@@ -330,9 +328,9 @@ def mutacion (pob):
 			for j in xrange(0,len(pob[i])):
 				for k in xrange(0,len(pob[i][j])):
 					if pob[i][j][k] == "1":
-						pob[i][j][k] == "0"
+						pob[i][j][k] = "0"
 					else:
-						pob[i][j][k] == "1"
+						pob[i][j][k] = "1"
 	return pob
 
 
@@ -348,8 +346,8 @@ def main():
 	global yMR
 	
 	NIND =80
-	MAXGE = 40
-	NVAR = 2
+	MAXGE = 400
+	NVAR = 8
 	indEli=4
 	
 	# seleccionar poblacion inicial 
@@ -359,7 +357,6 @@ def main():
 	while(gen<MAXGE):
 		newPob=[]
 		calificacion = cal(pob)
-		pob,calificacion =ordenar(calificacion,pob)
 		maxfimp=0
 		maxfimpin=0
 		for i in xrange(0,len(pob)):
@@ -374,6 +371,7 @@ def main():
 
 		for i in xrange(0,(NIND-indEli)/2):
 			can1,can2 = selec(calificacion,pob)
+			"""
 			print str(can1) +"   "+str(can2) 
 			print "Mezclar : " 
 			print "candidato uno"
@@ -383,7 +381,7 @@ def main():
 			for i in xrange(0,NVAR):
 				print str(dCodBin(pob[can2][i]) ) 
 			print "----------------------------------"
-			
+			"""
 			canM1,canM2=mezclar(pob[can1],pob[can2])
 
 			xM.append(gen)
@@ -398,9 +396,9 @@ def main():
 
 			newPob.append(canM1)
 			newPob.append(canM2)
-		
+
 		newPob = mutacion(newPob)
-		
+		pob,calificacion =ordenar(calificacion,pob)
 		# seleccion elitista
 		for i in xrange(0,indEli):
 			newPob.append(pob[i])
@@ -421,11 +419,15 @@ def main():
 	for i in xrange(0,NVAR):
 		print str(dCodBin(pob[ind][i]) )  
 	print len(pob)
+	return fobj(pob[ind])
 
-main()
+#main()
 #print fobj(["11","11"])
 #print codBin(8,3)
-
+funT =0
+for i in xrange(0,4):
+	funT += main() 
+print funT/4.0
 
 
 
