@@ -5,9 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #---------------- Codificacion ---------------------------------
-UMAX = 32.0
-UMIN = -32.0
-PRECI = 17
+UMAX = 10.0
+UMIN = -10.0
+PRECI = 20
 x = []
 y = []
 xM = []
@@ -39,6 +39,9 @@ def dCodBin(Bin):
 	bi=int(''.join(Bin),2)
 	num =( (float(bi)* float(Inter))/float(2**(PRECI)-1.0)+UMIN  )
 	return num 
+def codGenotipo():
+	
+	pass
 
 #--------------------- Poblacion inicial ------------------------
 def PoInAl(nind, nvar):
@@ -78,6 +81,15 @@ def fobj(X):
 	return res
 	#------------------------------------------------
 """
+	#------------ funcion Bukin -------------------
+def fobj(X):
+	var=[]
+	for i in xrange(0,len(X)):
+		var.append( float(dCodBin(X[i])) )
+	
+	return 100.0*math.sqrt(abs(var[1]-0.001*var[0]**2))+0.01 *abs(var[0]+10)
+
+"""
 		#------------ funcion Ackley -----------------
 def fobj(X):
 	var=[]
@@ -93,10 +105,10 @@ def fobj(X):
 	preres = -np.exp( float(sum2)/ float(len(X)) )+np.exp(1)+20.0
 	res = -20.0*np.exp( -0.2*np.sqrt( float(sum1)/ float(len(X)) )  ) + preres
 	return res
-
-	#------------------------------------------------
-
 """
+	#------------------------------------------------
+"""
+
 	#------------ funcion Sphere -----------------
 def fobj(X):
 	suma=0
@@ -105,8 +117,8 @@ def fobj(X):
 	return suma
 	#------------------------------------------------
 """
-"""
-	#------------ funcion Rosenbrock -----------------
+
+"""	#------------ funcion Rosenbrock -----------------
 def fobj(X):
 	suma=0
 	var=[]
@@ -118,6 +130,7 @@ def fobj(X):
 	return suma
 	#------------------------------------------------
 """
+
 """
 	#------------ funcion Beale -----------------
 def fobj(X):
@@ -187,9 +200,6 @@ def cal(pob):
 	fmax,fmin,pp = adapMaxMin(pob)
 	a,b=preEscalar(fmax,fmin,pp)
 	Emax,Emin = MaxMin(pob,a,b)
-
-
-	
 	for i in xrange(0,len(pob)):
 		aco+=float( -escalado(fobj(pob[i]),a,b) +Emax+Emin )
 
@@ -267,9 +277,11 @@ def selec(cal,pob):
 			i+=1
 		if i!=0 :
 			res[j]=i-1
+	"""
 	print "generacion"
 	print res
 	print "----------"
+	"""
 	return res
 	
 #-------------------------- Mezclar ------------------------------
@@ -282,7 +294,7 @@ def mezclar(Can1, Can2):
 	
 	ind=random.randint(0,(preci)*nvar-1)
 
-	print "con pivote " + str(ind)
+	# print "con pivote " + str(ind)
 	if random.randint(0,1) == 0 :
 
 		for i in xrange(0,nvar):
@@ -300,6 +312,7 @@ def mezclar(Can1, Can2):
 	else:
 		canMez1 = Can1
 		canMez2 = Can2
+	"""
 
 	print "Mezclar : " 
 	print "candidato uno"
@@ -317,14 +330,14 @@ def mezclar(Can1, Can2):
 	for i in xrange(0,nvar):
 		print str(dCodBin(canMez2[i]) ) 
 	print "----------------------------------"	
-
+	"""
 	return canMez1,canMez2
 		
 #---------------------------- Mutar ------------------------------
 def mutacion (pob):
 	for i in xrange(0, len(pob)) :
 		if random.random()*10 < .2 :
-			print "----mutacion-----"
+			#print "----mutacion-----"
 			for j in xrange(0,len(pob[i])):
 				for k in xrange(0,len(pob[i][j])):
 					if pob[i][j][k] == "1":
@@ -346,8 +359,8 @@ def main():
 	global yMR
 	
 	NIND =80
-	MAXGE = 400
-	NVAR = 8
+	MAXGE = 3000
+	NVAR = 2
 	indEli=4
 	
 	# seleccionar poblacion inicial 
@@ -421,14 +434,15 @@ def main():
 	print len(pob)
 	return fobj(pob[ind])
 
-#main()
+main()
 #print fobj(["11","11"])
 #print codBin(8,3)
+"""
 funT =0
-for i in xrange(0,4):
+for i in xrange(0,10):
 	funT += main() 
-print funT/4.0
-
+print funT/10.0
+"""
 
 
 plt.plot(x, y, 'ro')
