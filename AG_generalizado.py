@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #---------------- Codificacion ---------------------------------
-UMAX = 10.0
-UMIN = -10.0
+UMIN =[-32] #[-15,-3]
+UMAX =[32] #[-5,3]
 PRECI = 20
 x = []
 y = []
@@ -15,33 +15,40 @@ yM = []
 xMR = []
 yMR = []
 
-def codBin(num):
+def codBin(num,k=0):
 	global UMAX
 	global UMIN
 	global PRECI
 
-	Inter=UMAX-UMIN
+	Inter = UMAX[k]-UMIN[k]
 	binNum=""
 	Bin=""
-	binNum=bin(int( ( float(num-UMIN)*(2**(PRECI)-1.0 ) )/(Inter) ) )[2:]
+	binNum=bin(int( ( float(num-UMIN[k])*(2**(PRECI)-1.0 ) )/(Inter) ) )[2:]
 
 	for i in xrange(0,PRECI-len(binNum)):
 		Bin+="0"
 	Bin += binNum
 	return list(Bin)
 	
-def dCodBin(Bin):
+def dCodBin(Bin,k=0):
 	global UMAX
 	global UMIN
 	global PRECI
 
-	Inter =UMAX-UMIN
+	Inter =UMAX[k]-UMIN[k]
 	bi=int(''.join(Bin),2)
-	num =( (float(bi)* float(Inter))/float(2**(PRECI)-1.0)+UMIN  )
+	num =( (float(bi)* float(Inter))/float(2**(PRECI)-1.0)+UMIN[k]  )
 	return num 
-def codGenotipo():
-	
-	pass
+
+def dcodGenotipo(X):
+	var = []
+	if len(UMAX)==1 :
+		for i in xrange(0,len(X)):
+			var.append( float(dCodBin(X[i])) )
+	else :
+		for i in xrange(0,len(X)):
+			var.append( float(dCodBin(X[i],i)) )
+	return var
 
 #--------------------- Poblacion inicial ------------------------
 def PoInAl(nind, nvar):
@@ -53,7 +60,10 @@ def PoInAl(nind, nvar):
 	for i in xrange(0,nind):
 		ind =[]
 		for j in xrange(0,nvar):
-			fen=codBin(  random.randrange(UMIN,UMAX))
+			if len(UMAX)==1:
+				fen=codBin(  random.randrange(UMIN[0],UMAX[0]))
+			else:
+				fen=codBin(  random.randrange(UMIN[j],UMAX[j]))
 			ind.append(fen)
 		pob.append(ind)
 	return pob
@@ -81,15 +91,14 @@ def fobj(X):
 	return res
 	#------------------------------------------------
 """
+"""
 	#------------ funcion Bukin -------------------
 def fobj(X):
-	var=[]
-	for i in xrange(0,len(X)):
-		var.append( float(dCodBin(X[i])) )
-	
-	return 100.0*math.sqrt(abs(var[1]-0.001*var[0]**2))+0.01 *abs(var[0]+10)
-
+	var=dcodGenotipo(X)
+	#print var
+	return 100.0*math.sqrt(abs(var[1]-0.01*var[0]**2))+0.01 *abs(var[0]+10.0)
 """
+
 		#------------ funcion Ackley -----------------
 def fobj(X):
 	var=[]
@@ -105,8 +114,9 @@ def fobj(X):
 	preres = -np.exp( float(sum2)/ float(len(X)) )+np.exp(1)+20.0
 	res = -20.0*np.exp( -0.2*np.sqrt( float(sum1)/ float(len(X)) )  ) + preres
 	return res
-"""
+
 	#------------------------------------------------
+
 """
 
 	#------------ funcion Sphere -----------------
@@ -340,10 +350,10 @@ def mutacion (pob):
 			#print "----mutacion-----"
 			for j in xrange(0,len(pob[i])):
 				for k in xrange(0,len(pob[i][j])):
-					if pob[i][j][k] == "1":
-						pob[i][j][k] = "0"
-					else:
-						pob[i][j][k] = "1"
+						if pob[i][j][k] == "1":
+							pob[i][j][k] = "0"
+						else:
+							pob[i][j][k] = "1"
 	return pob
 
 
@@ -358,10 +368,10 @@ def main():
 	global yM
 	global yMR
 	
-	NIND =80
+	NIND =100
 	MAXGE = 3000
-	NVAR = 2
-	indEli=4
+	NVAR = 50
+	indEli=6
 	
 	# seleccionar poblacion inicial 
 	pob=PoInAl(NIND, NVAR)
@@ -428,32 +438,36 @@ def main():
 			max = adap(pob[i],fmax,fmin)
 			ind=i
 	print " f(x) = " +str(fobj(pob[ind]))
-	print "x ="
-	for i in xrange(0,NVAR):
-		print str(dCodBin(pob[ind][i]) )  
-	print len(pob)
+	print "x = "
+	print dcodGenotipo(pob[ind])
 	return fobj(pob[ind])
 
 main()
-#print fobj(["11","11"])
+#print fobj([-10.999818801707079, 1.2099592303840927])
 #print codBin(8,3)
 """
 funT =0
 for i in xrange(0,10):
 	funT += main() 
 print funT/10.0
+
 """
 
+"""
+#prueba de funcion
+for i in xrange(-15,-6): 
+	for j in xrange(-3,4): 
+		print str (fobj([i,j]) )+"  "+ str(i)+"  "+ str(j)
+"""
 
+#--------------- graficacion ---------
 plt.plot(x, y, 'ro')
 plt.plot(xM, yM, 'bo')
 plt.plot(xMR, yMR, 'go')
-# You can specify a rotation for the tick labels in degrees or with keywords.
-# Pad margins so that markers don't get clipped by the axes
 plt.margins(0.2)
-# Tweak spacing to prevent clipping of tick-labels
 plt.subplots_adjust(bottom=0.15)
 plt.show()
+
 
 #-----------------purba de codificacion------------------
 """
