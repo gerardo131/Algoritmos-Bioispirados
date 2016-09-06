@@ -9,17 +9,17 @@ tipo = "Binaria-PF"
 
 # por defecto la codificacion sera binaria con puntos flotante
 
-def Codificacion(num,k=0,t = ""): 
+def Cod(num,k=0,t = ""): 
 	if t == "Binaria-PF" or t == "":
-		codBinPF (num,k)
+		return codBinPF (num,k)
 
-def Decodificacion(Bin ,k=0 , t = "" )
+def Dcod(Bin ,k=0 , t = "" ):
 	if t == "Binaria-PF" or t == "":
-		dCodBinPF (num,k)
+		return dCodBinPF (Bin,k)
 
-def DecodGenotipo(X, t = ""):
+def DcodGenotipo(X, t = ""):
 	if t == "Binaria-PF" or t == "":
-		dCodBinPFGenotipo(X)
+		return dCodBinPFGenotipo(X)
 	
 
 def codBinPF(num,k=0):
@@ -57,3 +57,14 @@ def dCodBinPFGenotipo(X):
 			var.append( float(dCodBin(X[i],i)) )
 	return var
 
+def pruebas(a,b,t=""):
+	for j in xrange (0,len(UMAX)):
+		for i in xrange(a,b):
+			print "#################################"
+			print i
+			print Cod(i,j,t)
+			print Dcod(Cod(i,j),j,t)
+			print "#################################"
+
+pruebas(-31,31)
+	
