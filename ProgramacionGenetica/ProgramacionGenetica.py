@@ -4,10 +4,8 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-#---------------- Codificacion ---------------------------------
-UMIN =[-32] #[-15,-3]
-UMAX =[32] #[-5,3]
-PRECI = 20
+#---------------- Representación ---------------------------------
+
 x = []
 y = []
 xM = []
@@ -15,40 +13,8 @@ yM = []
 xMR = []
 yMR = []
 
-def codBin(num,k=0):
-	global UMAX
-	global UMIN
-	global PRECI
-
-	Inter = UMAX[k]-UMIN[k]
-	binNum=""
-	Bin=""
-	binNum=bin(int( ( float(num-UMIN[k])*(2**(PRECI)-1.0 ) )/(Inter) ) )[2:]
-
-	for i in xrange(0,PRECI-len(binNum)):
-		Bin+="0"
-	Bin += binNum
-	return list(Bin)
+def posfija(num,k=0):
 	
-def dCodBin(Bin,k=0):
-	global UMAX
-	global UMIN
-	global PRECI
-
-	Inter =UMAX[k]-UMIN[k]
-	bi=int(''.join(Bin),2)
-	num =( (float(bi)* float(Inter))/float(2**(PRECI)-1.0)+UMIN[k]  )
-	return num 
-
-def dcodGenotipo(X):
-	var = []
-	if len(UMAX)==1 :
-		for i in xrange(0,len(X)):
-			var.append( float(dCodBin(X[i])) )
-	else :
-		for i in xrange(0,len(X)):
-			var.append( float(dCodBin(X[i],i)) )
-	return var
 
 #--------------------- Poblacion inicial ------------------------
 def PoInAl(nind, nvar):
@@ -369,8 +335,8 @@ def main():
 	global yMR
 	
 	NIND =100
-	MAXGE = 3000
-	NVAR = 50
+	MAXGE = 1000
+	NVAR = 20
 	indEli=6
 	
 	# seleccionar poblacion inicial 
