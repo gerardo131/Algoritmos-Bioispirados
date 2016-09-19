@@ -2,13 +2,19 @@ import random
 
 ##################### inicializacion del modulo ####################
 
-# METODO ----- Metodo para crear exprecion posfija FULL, GROW o HALF-AND-HALF
+# METODO  ----- Metodo para crear exprecion posfija FULL, GROW o HALF-AND-HALF
 # setFun ----- Conjunto de funciones 
 # numVar ----- Numero de variables 
 # conInter --- Intervalo de constante
 # Pvar  ------ probabilidad de escojer variables    
 # Pconstan --- probabilidad de escojer constantes 
 # PFun ------- probabilidad de escojer funciones    
+
+############ Funciones ##########
+
+# crear ---------Crea la exprecion posfija   
+# operadores ----Especifica el funcionamiento de cada una de las funciones (operador)
+# evaluar -------Evalua la exprecion posfija 
 
 ####################################################################
 
