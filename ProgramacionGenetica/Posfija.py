@@ -23,9 +23,9 @@ METODO = "FULL"
 setFun=['+','-','/','*']
 setVar= [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 posfija =[]
-numVar = 2
+numVar = 1
 valor =[]
-conInter = [-.5,.5]
+conInter = [-5,5]
 
 #------- Probabilidades de cada uno de los signos ------------
 PVar = 8
@@ -50,9 +50,17 @@ def grow (n):
 	else:
 		return [ setFun [0] ] + full (n-1)+ full (n-1)
 
-def crear (n=0):
+def crear (n=0,nInd=-1):
 	if METODO == "FULL" :
-		return full(n)
+		
+		if nInd == -1 :
+			return full(n)
+		else:
+			ind=[]
+			for i in xrange(0,nInd):
+				ind.append(full(n))
+			return ind
+
 	elif METODO == "GROW":
 		pass
 	elif METODO == "HALF-AND-HALF" :
@@ -110,7 +118,7 @@ def evaluar (pos,val):
 	return evaluarRecu()
 
 ##############################################################
-
+"""
 #----------------codigo de inicializacion -------------
 METODO == "FULL"
 setFun=['+','-','/','*']
@@ -121,10 +129,11 @@ numVar = 2
 #--------------- Prueba de evaluacion y creacion full ----- 
 
 print "crear cadena con metodo FULL"
-fr = crear(1)
+fr = crear(1,2)
 print fr
 print "evaluar cadena con metodo FULL"
-fe = evaluar(['+','/',10.0,25.0,'*',4.0,5.0],[8,8,8,8,8] ) 
+fe = evaluar(plt.plot(muestra[0], muestra[1], 'ro'),[8,8,8,8,8] ) 
 print str(fe) + "  " + str(fe == 64) 
 
 #----------------------------------------------------------
+"""
