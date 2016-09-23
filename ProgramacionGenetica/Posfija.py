@@ -17,14 +17,14 @@ import random
 # evaluar -------Evalua la exprecion posfija 
 
 ####################################################################
-
+varEst=0
+valor =[]
+posfija =[]
 
 METODO = "FULL" 
 setFun=['+','-','/','*']
 setVar= [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
-posfija =[]
 numVar = 1
-valor =[]
 conInter = [-5,5]
 
 #------- Probabilidades de cada uno de los signos ------------
@@ -83,16 +83,16 @@ def operadores (op,x,y):
 			return x/y
 	elif setFun[3] == op:
 		return x*y  
-varEst=0
+
 def evaluarRecu():
 	global posfija
 	global valor
 	global setFun
 	global setVar
 	global varEst
+	#print str(varEst) +"   " +str(len(posfija))
 
 	if varEst<len(posfija): 
-
 		if ( posfija[varEst] in setVar ):
 			ind = setVar.index( posfija[varEst] )
 			return valor[ind]
@@ -105,17 +105,22 @@ def evaluarRecu():
 			 	varEst = varEst+1
 			 	b = evaluarRecu()
 			 	return operadores(posfija[indAc], a, b)
+	
 
 def evaluar (pos,val):
 
 	global posfija
 	global valor
 	global varEst
-	vatEst = 0
+	varEst = 0 
 	valor = val
 	posfija = pos
 
-	return evaluarRecu()
+
+
+	res =  evaluarRecu()
+	return res
+
 
 ##############################################################
 """
@@ -132,7 +137,7 @@ print "crear cadena con metodo FULL"
 fr = crear(1,2)
 print fr
 print "evaluar cadena con metodo FULL"
-fe = evaluar(plt.plot(muestra[0], muestra[1], 'ro'),[8,8,8,8,8] ) 
+fe = evaluar(['+','/',4.0,2.0,'*',3.0,5.0],[8,8,8,8,8] ) 
 print str(fe) + "  " + str(fe == 64) 
 
 #----------------------------------------------------------

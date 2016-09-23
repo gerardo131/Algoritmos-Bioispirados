@@ -18,6 +18,7 @@ def error(exp,valE,resE):
 	val = 0 
 	for i in xrange(0,len(valE)): 
 		val += ( Posfija.evaluar(exp,valE[i]) - resE[i] )**2
-		val /= len(valE) 
+	val /= len(valE) 
+	print val
 	return val
 
