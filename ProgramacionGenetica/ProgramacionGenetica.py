@@ -7,6 +7,7 @@ import Individuo
 import Calificacion
 import PoblacionInicial
 import Posfija
+import seleccion 
 
 def genMuestra(n = 2):
 	muestraA =[]
@@ -20,7 +21,7 @@ def genMuestra(n = 2):
 
 def main():
 	muestra = genMuestra(200)
-	Pob = PoblacionInicial.aleatorio(3,2)
+	Pob = PoblacionInicial.aleatorio(4,2)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
 	plot=[]
 	for i in Pob:
@@ -30,6 +31,11 @@ def main():
 		for x in muestra[0]:
 			res.append(Posfija.evaluar(i.gen,x))
 		plot.append(res)
+	sel = seleccion.ruleta(Pob)
+	for i in sel:
+		print i.gen 
+	
+
 	plt.plot(muestra[0], muestra[1], 'ro')
 	plt.plot(muestra[0], plot[0], 'go')
 	plt.plot(muestra[0], plot[1], 'bo')
