@@ -12,7 +12,8 @@ def adaptacion(pob,valE,resE):
 	for i in pob:
 		Aerror.append( error(i.gen,valE,resE) )
 	for i in xrange( 0,len(pob) ):
-		pob[i].calificacion = Aerror[i]
+		pob[i].calificacion =max(Aerror)+min(Aerror)- Aerror[i]
+		pob[i].error = Aerror[i]
 
 def error(exp,valE,resE):
 	val = 0 

@@ -4,7 +4,7 @@ import copy
 import PoblacionInicial
 import random
 
-
+PM = 6
 candidato = []
 N = [0,0]
 varEst =[0,0]
@@ -15,29 +15,30 @@ def recuMez (r):
 	if varEst[r]<len(candidato[r].gen):
 		aux = candidato[r].gen[varEst[r]]
 		indAc = varEst[r]
-		print2 aux
-		print2 varEst[r]
-		print2 N[r]
+		#print aux
+		#print varEst[r]
+		#print N[r]
 		if ( aux in Posfija.setVar or type(aux) == type(1.0) ):
 			if indAc != N[r] :
 				return [aux]
 			else :
-				print2 "----------cruze------------"
+				#print "----------cruze------------"
 				if r == 0 :
 					return recuMez2(1)
 				else: 
 					return recuMez2(0)
+
 		elif aux in Posfija.setFun :
 			varEst[r] += 1
 		 	a = recuMez(r)
 		 	varEst[r] += 1
 		 	b = recuMez(r)
-		 	print2 a
-		 	print2 b
+		 	#print a
+		 	#print b
 		 	if indAc != N[r] :
 				return [aux] + a + b 
 			else :
-				print2 "----------cruze------------"
+				#print "----------cruze------------"
 				if r == 0 :
 					return recuMez2(1)
 				else: 
@@ -76,28 +77,30 @@ def Punto(Can):
 	varEst[0] = 0
 	varEst[1] = N[1]
 	recuMez(0)
-	print2 "segunda mezcla"
+	print "segunda mezcla"
 	varEst[0] = N[0]
 	varEst[1] = 0
 	recuMez(1)
 
 	# print "con pivote " + str(ind)
-	if random.random()*10 < 10:
+	if random.random()*10 < PM:
 
 
 		N[0] = random.randint(0,preci1-1)
 		N[1] = random.randint(0,preci2-1)
 		varEst[0] = 0
 		varEst[1] = N[1]
+		print N[1]
 		rMez1 = recuMez(0)
 		varEst[0] = N[0]
 		varEst[1] = 0
+		print N[0]
 		rMez2 = recuMez(1)
 		candidato[0].gen = rMez1
 		candidato[1].gen = rMez2
-		return copy.copy(candidato[0]), copy.copy(candidato[1]) 
+		return [copy.copy(candidato[0]), copy.copy(candidato[1]) ] 
 	else:
-		return copy.copy(candidato[0]), copy.copy(candidato[1])  
+		return [ copy.copy(candidato[0]), copy.copy(candidato[1])  ]
 	"""
 
 	print "Mezclar : " 
@@ -117,6 +120,7 @@ def Punto(Can):
 		print str(dCodBin(canMez2[i]) ) 
 	print "----------------------------------"	
 	"""
+"""	
 Pob = PoblacionInicial.aleatorio(2,2)
 for i in Pob:
 	print i.gen 
@@ -124,3 +128,5 @@ for i in Pob:
 a = Punto(Pob)
 for i in a:
 	print i.gen 
+	print Posfija.evaluar(i.gen,[1])
+"""
