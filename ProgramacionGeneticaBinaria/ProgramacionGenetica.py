@@ -6,18 +6,21 @@ import matplotlib.pyplot as plt
 import Individuo
 import Calificacion
 import PoblacionInicial
-import Posfija
 import seleccion 
 import Mezcla
 import Mutacion
 
-def genMuestra(n = 2):
+def genMuestra(n = 1):
 	muestraA =[]
 	muestraR = []
 	for i in xrange(0,n):
-		a = random.random()*2.0-1.0
-		r = a**2+a+1.0
-		muestraA.append([a])
+		a = [ str(random.randint(0,1)) for x in xrange(0,3)]
+		print int(''.join(a), 2 )
+		if int(''.join(a), 2 ) % 2 == 0:
+			r = 1
+		else :
+			r = 0
+		muestraA.append([int(x,2) for x in a])
 		muestraR.append(r)
 	return [muestraA,muestraR]
 
@@ -102,9 +105,11 @@ def main():
 
 
 
-main()
+#main()
 #print fobj([-10.999818801707079, 1.2099592303840927])
 #print codBin(8,3)
+print genMuestra(20)
+
 """
 funT =0
 for i in xrange(0,10):
