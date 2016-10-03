@@ -33,7 +33,7 @@ class Individuo:
 	def error(self,valE,resE):
 		val = 0 
 		for i in xrange(0,len(valE)): 
-			val += ( self.evaluar(valE[i]) - resE[i] )**2
+			val += ( float(self.evaluar(valE[i]) ) - float(resE[i]) )**2
 		val /= len(valE) 
 		print val
 		self.error = val
@@ -85,14 +85,9 @@ class Individuo:
 				indfun = setFun[0].index(pos[i])
 				param = []
 				for j in xrange(0,setFun[1][indfun]):
-					print pila
 					param.insert(0, pila.pop() ) 
-				print param
 				res = self.operador(pos[i],param)
 				pila.append(res)
 		return pila.pop()
 
 
-prueba = Individuo(2)
-print prueba.gen
-print prueba.evaluar([1,0,1])

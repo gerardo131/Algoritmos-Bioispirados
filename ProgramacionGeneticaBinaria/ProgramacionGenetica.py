@@ -45,6 +45,10 @@ def main():
 	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
+	for i in Pob:
+		print i.gen
+		print i.error
+		print i.calificacion
 	gen = 0
 	while(gen<MAXGE):
 		NuevaPob = []
@@ -101,11 +105,10 @@ def main():
 	plt.subplots_adjust(bottom=0.15)
 	plt.show()
 
-	
 
 
 
-#main()
+main()
 #print fobj([-10.999818801707079, 1.2099592303840927])
 #print codBin(8,3)
 print genMuestra(20)
