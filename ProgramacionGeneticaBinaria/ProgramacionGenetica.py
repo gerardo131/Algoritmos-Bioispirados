@@ -2,7 +2,7 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-
+from operator import xor
 import Individuo
 import Calificacion
 import PoblacionInicial
@@ -14,13 +14,17 @@ def genMuestra(n = 1):
 	muestraA =[]
 	muestraR = []
 	for i in xrange(0,n):
-		a = [ str(random.randint(0,1)) for x in xrange(0,3)]
+		a = [ random.randint(0,1) for x in xrange(0,3)]
 		#print int(''.join(a), 2 )
-		if int(''.join(a), 2 ) % 2 == 0:
+		r = a[0]
+		for i in xrange(1,len(a)) :
+			r = xor(r, a[i])
+		if  not(r) :
 			r = 1
-		else :
+		else:
 			r = 0
-		muestraA.append([int(x,2) for x in a])
+
+		muestraA.append(a)
 		muestraR.append(r)
 	return [muestraA,muestraR]
 
@@ -35,43 +39,74 @@ def ordenar (pob):
 	return var
 
 
-def main():
+def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60,PM = 5):
+	f=open("salida.txt","w") 
+	"""
 	NIND = 80
 	MAXGE = 200
-	NMUESTRA = 10
-	PROFUNDIDAD = 3
+	NMUESTRA = 80
+	PROFUNDIDAD = 5
 	indEli = 4
-
+	PC = 60
+	PM = 2
+	"""
+	MaxFun =[]
 	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
-	"""
+	
 	gen = 0
 	while(gen<MAXGE):
 		NuevaPob = []
+		Pob = ordenar(Pob)
 		for i in xrange(0,(NIND-indEli)/2):
 			sel = seleccion.ruleta(Pob)
-			ResMez = Mezcla.Punto(sel)
+			ResMez = Mezcla.Punto(sel,PC)
 			NuevaPob.append(ResMez[0])
 			NuevaPob.append(ResMez[1])
-		print "nueva poblacion"
-		for i in NuevaPob:
-			print i.gen
-		Mutacion.punto(NuevaPob,PROFUNDIDAD)
-		Pob = ordenar(Pob)
+
+		for i in xrange(0,NIND):
+			MaxFun.append(Pob[i].error)
+
+			"""
+			print "----------- Seleccion -------------"
+			print sel[0].gen
+			print "             "
+			print sel[1].gen
+			print "------------ RES MEZCLA ---------"
+			print ResMez[0].gen
+			print "             "
+			print ResMez[1].gen
+			print "             "
+			"""
+		Mutacion.punto(NuevaPob,PROFUNDIDAD,PM)
+	
+		"""
+		f.write( "------- POBLACION ---------  \n" )
+		for i in Pob:
+			f.write( str(i.calificacion)+"\n" )
+			f.write( str(i.error)+"\n" )
+		f.write( "------ END POBLACION ---------\n" )
+		"""
+	
 		for i in xrange(0,indEli):
 			NuevaPob.append(Pob[i])
-		print "poblacion"
-		for i in Pob:
-			print i.calificacion
-		print "---------------"
 		Pob = NuevaPob
 		Calificacion.adaptacion(Pob,muestra[0],muestra[1])
-
-
-		print "Terminar generacion"
+		"""
+		f.write( "--------- NUEVA POBLACION ---------\n" )
+		for i in NuevaPob:
+			f.write( str(i.gen)+"\n" )
+			f.write( str(i.error) +"\n")
+		f.write( "--------- END NUEVA POBLACION ---------\n" )
+		"""
+		#print "Terminar generacion"
 		gen+=1
-	"""
+	f.close()
+	
+
+
+	#--------------------------- SALIDA IMPRECION/GRAFICACION ---------------------
 	maximo = 0
 	ind = 0 
 	mini = 0
@@ -83,8 +118,7 @@ def main():
 		if Pob[i].calificacion < mini:
 			indm = i
 			mini = Pob[i].calificacion
-
-
+	"""
 	print Pob[ind].gen
 	print Pob[ind].error
 	print Pob[ind].calificacion
@@ -92,58 +126,44 @@ def main():
 	print Pob[indm].gen
 	print Pob[indm].error
 	print Pob[indm].calificacion
+	"""
 	plot = []
 	for i in muestra[0]:
 		plot.append( Pob[ind].evaluar(i) )
 	plotm = []
 	for i in muestra[0]:
 		plotm.append( Pob[indm].evaluar(i) )
+	ejeX = []
+	for i in xrange (0,MAXGE):
+		for j in xrange (0, NIND):
+			ejeX.append(i)	
 
-	plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
-	plt.plot([i for i in xrange (0,NMUESTRA )], plot, 'bo')
-	plt.plot([i for i in xrange (0,NMUESTRA )], plotm, 'go')
+	#plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
+	#plt.plot([i for i in xrange (0,NMUESTRA )], plot, 'bo')
+	plt.plot(ejeX, MaxFun, 'go')
 	plt.margins(0.2)
 	plt.subplots_adjust(bottom=0.15)
+	plt.xlabel('Error')
+	plt.ylabel('Generaciones')
 	plt.show()
-
-
-
-
-main()
-#print fobj([-10.999818801707079, 1.2099592303840927])
-#print codBin(8,3)
-print genMuestra(20)
-
+	#-------------------------------------------------------------------------------
+	return Pob[ind]
+main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 40)
 """
-funT =0
-for i in xrange(0,10):
-	funT += main() 
-print funT/10.0
+poMax = Individuo.Individuo(5)	
+poMax.error = 80
+PMa = 0
 
-"""
-
-"""
-#prueba de funcion
-for i in xrange(-15,-6): 
-	for j in xrange(-3,4): 
-		print str (fobj([i,j]) )+"  "+ str(i)+"  "+ str(j)
-"""
-"""
-#--------------- graficacion ---------
-plt.plot(x, y, 'ro')
-plt.plot(xM, yM, 'bo')
-plt.plot(xMR, yMR, 'go')
-plt.margins(0.2)
-plt.subplots_adjust(bottom=0.15)
-plt.show()
-"""
-
-#-----------------purba de codificacion------------------
-"""
-for i in xrange(-5,5):
-	print "-----------------------"
- 	print i
- 	a = codBin(i)
- 	print dCodBin(a)
- 	print "-----------------------"
-"""
+for x in xrange(0,100,5):
+	i = main(NIND = 80, MAXGE = 200 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =4,PC = 60,PM = 5)
+	print i.gen
+	print "Error : "+str(i.error) 
+	print "Pro Mutacion : " + str(PMa)
+	if i.error< poMax.error:
+		poMax = i
+		PMa = x
+print "----------- EL GANADOR ES -------------"
+print poMax.gen
+print "Error : "+str(poMax.error)
+print "Pro Mutacion : " + str(PMa)
+print "---------------------------------------"

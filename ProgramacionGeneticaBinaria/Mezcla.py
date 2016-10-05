@@ -3,9 +3,6 @@ import Individuo
 import copy
 import PoblacionInicial
 import random
-
-PM = 6
-candidato = []
  
 def mezclaPunto(Can1,Can2,N):
 
@@ -36,9 +33,7 @@ def mezclaPunto(Can1,Can2,N):
 	return res 
 
 
-
-
-def Punto(Can):
+def Punto(Can,PC = 6):
 
 	Can1 = copy.copy(Can[0])
 	Can2 = copy.copy(Can[1])
@@ -47,12 +42,15 @@ def Punto(Can):
 	N[1] = random.randint(0,len(Can[1].gen)-1)
 
 	# print "con pivote " + str(ind)
-	if random.random()*10 < PM:
+	if random.random()*100 < PC:
 		RCan1 = mezclaPunto(Can1.gen,Can2.gen,N)
 		RCan2 = mezclaPunto(Can2.gen,Can1.gen,[N[1],N[0]])
 		Can1.gen = RCan1
 		Can2.gen = RCan2
 	return [ Can1, Can2 ]
+
+###############    PRUEBA    ####################
+
 """
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
@@ -62,32 +60,5 @@ P= Punto ([pru1,pru2])
 for i in P:
 	print i.gen
 """
-"""
 
-print "Mezclar : " 
-print "candidato uno"
-for i in xrange(0,nvar):
-	print str(dCodBin(Can1[i]) ) 
-print "candidato dos"
-for i in xrange(0,nvar):
-	print str(dCodBin(Can2[i]) ) 
-print "----------------------------------"
-print "Resultado : " 
-print "candidato uno"
-for i in xrange(0,nvar):
-	print str(dCodBin(canMez1[i]) ) 
-print "candidato dos"
-for i in xrange(0,nvar):
-	print str(dCodBin(canMez2[i]) ) 
-print "----------------------------------"	
-"""
-"""	
-Pob = PoblacionInicial.aleatorio(2,2)
-for i in Pob:
-	print i.gen 
-
-a = Punto(Pob)
-for i in a:
-	print i.gen 
-	print Posfija.evaluar(i.gen,[1])
-"""
+#################################################

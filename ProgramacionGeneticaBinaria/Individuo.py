@@ -22,19 +22,18 @@ PConstan = 1
 class Individuo:
 	
 
-	gen=[]
-	calificacion=0
-	error = 0
 	def __init__(self, prof):
 		self.gen=self.crearCadena(prof)
+		self.calificacion=0
+		self.error = 0
 
 
 	################### funcion de adaptacion ############################
-	def error(self,valE,resE):
+	def EMC(self,valE,resE):
 		val = 0 
 		for i in xrange(0,len(valE)): 
 			val += ( float(self.evaluar(valE[i]) ) - float(resE[i]) )**2
-		val /= len(valE) 
+		val /= float(len(valE)) 
 		#print val
 		self.error = val
 		return val
