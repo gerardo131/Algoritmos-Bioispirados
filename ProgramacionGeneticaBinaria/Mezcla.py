@@ -33,10 +33,19 @@ def Punto(Can):
 				indNpara = Individuo.setFun[0].index(Can1[indC])
 				num += Individuo.setFun[1][indNpara]
 			indC-=1
-		if indC > 0:
-			RCan1aux = [0:indC+1]
+		RCan1aux = [0:indC+1]
 
-
+		RCan1aux2 = []
+		sum = 1
+		indC = N[1]
+		while num != 0:
+			num-=1
+			RCan1aux2.insert(0,Can2[indC])
+			if  Can2[indC] in Individuo.setFun :
+				indNpara = Individuo.setFun[0].index(Can1[indC])
+				num += Individuo.setFun[1][indNpara]
+			indC-=1
+		res = RCan1aux2+RCan1aux+RCan1
 
 			
 
