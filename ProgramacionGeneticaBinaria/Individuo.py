@@ -35,7 +35,7 @@ class Individuo:
 		for i in xrange(0,len(valE)): 
 			val += ( float(self.evaluar(valE[i]) ) - float(resE[i]) )**2
 		val /= len(valE) 
-		print val
+		#print val
 		self.error = val
 		return val
 

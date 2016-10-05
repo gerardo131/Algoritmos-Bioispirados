@@ -15,7 +15,7 @@ def genMuestra(n = 1):
 	muestraR = []
 	for i in xrange(0,n):
 		a = [ str(random.randint(0,1)) for x in xrange(0,3)]
-		print int(''.join(a), 2 )
+		#print int(''.join(a), 2 )
 		if int(''.join(a), 2 ) % 2 == 0:
 			r = 1
 		else :
@@ -38,21 +38,17 @@ def ordenar (pob):
 def main():
 	NIND = 80
 	MAXGE = 200
-	NMUESTRA = 200
+	NMUESTRA = 10
 	PROFUNDIDAD = 3
 	indEli = 4
 
 	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
-	for i in Pob:
-		print i.gen
-		print i.error
-		print i.calificacion
+	"""
 	gen = 0
 	while(gen<MAXGE):
 		NuevaPob = []
-
 		for i in xrange(0,(NIND-indEli)/2):
 			sel = seleccion.ruleta(Pob)
 			ResMez = Mezcla.Punto(sel)
@@ -75,7 +71,7 @@ def main():
 
 		print "Terminar generacion"
 		gen+=1
-
+	"""
 	maximo = 0
 	ind = 0 
 	mini = 0
@@ -91,16 +87,21 @@ def main():
 
 	print Pob[ind].gen
 	print Pob[ind].error
+	print Pob[ind].calificacion
+	print "----------------------------"
+	print Pob[indm].gen
+	print Pob[indm].error
+	print Pob[indm].calificacion
 	plot = []
 	for i in muestra[0]:
-		plot.append( Posfija.evaluar(Pob[ind].gen,i) )
+		plot.append( Pob[ind].evaluar(i) )
 	plotm = []
 	for i in muestra[0]:
-		plotm.append( Posfija.evaluar(Pob[indm].gen,i) )
+		plotm.append( Pob[indm].evaluar(i) )
 
-	plt.plot(muestra[0], muestra[1], 'ro')
-	plt.plot(muestra[0], plot, 'bo')
-	plt.plot(muestra[0], plotm, 'go')
+	plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
+	plt.plot([i for i in xrange (0,NMUESTRA )], plot, 'bo')
+	plt.plot([i for i in xrange (0,NMUESTRA )], plotm, 'go')
 	plt.margins(0.2)
 	plt.subplots_adjust(bottom=0.15)
 	plt.show()
