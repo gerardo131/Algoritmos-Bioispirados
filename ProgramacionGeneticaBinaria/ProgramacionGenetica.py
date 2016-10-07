@@ -16,6 +16,10 @@ def genMuestra(n = 1):
 	muestraR = []
 	for i in xrange(0,n):
 		a = [ random.randint(0,1) for x in xrange(0,3)]
+		#aux = [ j-j for j in xrange( 0,Individuo.numVar-len(bin(i)[2:]) ) ] + list( bin(i)[2:] ) 
+		#a = [ int(j) for j in aux ]
+		#print a
+
 		#print int(''.join(a), 2 )
 		r = a[0]
 		for i in xrange(1,len(a)) :
@@ -52,6 +56,7 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	PM = 2
 	"""
 	MaxFun =[]
+	MaxGen = []
 	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
@@ -89,6 +94,7 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 		f.write( "------ END POBLACION ---------\n" )
 		"""
 		Pob = ordenar(Pob)
+		MaxGen.append(Pob[0].error)
 		for i in xrange(0,indEli):
 			NuevaPob.append(Pob[i])
 		Pob = NuevaPob
@@ -140,8 +146,9 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 			ejeX.append(i)	
 
 	#plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
-	#plt.plot([i for i in xrange (0,NMUESTRA )], plot, 'bo')
 	plt.plot(ejeX, MaxFun, 'go')
+	plt.plot([i for i in xrange (0,MAXGE )], MaxGen, 'ro')
+	
 	plt.margins(0.2)
 	plt.subplots_adjust(bottom=0.15)
 	plt.xlabel('Generaciones')
@@ -156,7 +163,7 @@ poMax.error = 80
 PMa = 0
 
 for x in xrange(0,6):
-	i = main(NIND = 80, MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 8 ,indEli =4,PC = 60,PM = 2)
+	i = main(NIND = 80, MAXGE = 100 , NMUESTRA = 100, PROFUNDIDAD = 8 ,indEli =4,PC = 60,PM = 2)
 	print i.gen
 	print "Error : "+str(i.error) 
 	print "Pro Mutacion : " + str(PMa)

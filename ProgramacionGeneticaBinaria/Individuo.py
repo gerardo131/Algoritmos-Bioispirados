@@ -45,6 +45,8 @@ class Individuo:
 				return self.full( prof )
 			elif metCrear == "GROW": 
 				return self.grow( prof )
+			elif metCrear == "halfaAndHalf": 
+				return self.halfaAndHalf( prof )
 
 	def full (self,prof):
 		global numVar
@@ -76,9 +78,15 @@ class Individuo:
 
 	def halfaAndHalf(self, prof):
 		fun = setFun[0][ random.randint( 0, len(setFun[0])-1 ) ]
-		exp = [fun]
-		for i in xrange (0,setFun[1][i]):
-			exp =  self.full(prof-1) + exp
+		inf = setFun[0].index(fun)
+		exp = []
+		for i in xrange (0,setFun[1][inf]):
+			if i%2 == 0 :
+				exp =  self.full(prof-1) + exp
+			else :
+				exp = self.grow(prof-1) + exp
+		exp = exp +[fun]
+		return exp
 
 	###################### operadores #######################################
 
