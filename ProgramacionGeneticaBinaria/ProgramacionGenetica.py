@@ -3,6 +3,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from operator import xor
+
 import Individuo
 import Calificacion
 import PoblacionInicial
@@ -58,7 +59,6 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	gen = 0
 	while(gen<MAXGE):
 		NuevaPob = []
-		Pob = ordenar(Pob)
 		for i in xrange(0,(NIND-indEli)/2):
 			sel = seleccion.ruleta(Pob)
 			ResMez = Mezcla.Punto(sel,PC)
@@ -88,7 +88,7 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 			f.write( str(i.error)+"\n" )
 		f.write( "------ END POBLACION ---------\n" )
 		"""
-	
+		Pob = ordenar(Pob)
 		for i in xrange(0,indEli):
 			NuevaPob.append(Pob[i])
 		Pob = NuevaPob
@@ -107,6 +107,7 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 
 
 	#--------------------------- SALIDA IMPRECION/GRAFICACION ---------------------
+	# Buscando Mejor y peor resultado  
 	maximo = 0
 	ind = 0 
 	mini = 0
@@ -143,19 +144,19 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	plt.plot(ejeX, MaxFun, 'go')
 	plt.margins(0.2)
 	plt.subplots_adjust(bottom=0.15)
-	plt.xlabel('Error')
-	plt.ylabel('Generaciones')
+	plt.xlabel('Generaciones')
+	plt.ylabel('Error')
 	plt.show()
 	#-------------------------------------------------------------------------------
 	return Pob[ind]
-main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 40)
-"""
+#main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
+
 poMax = Individuo.Individuo(5)	
 poMax.error = 80
 PMa = 0
 
-for x in xrange(0,100,5):
-	i = main(NIND = 80, MAXGE = 200 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =4,PC = 60,PM = 5)
+for x in xrange(0,6):
+	i = main(NIND = 80, MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 8 ,indEli =4,PC = 60,PM = 2)
 	print i.gen
 	print "Error : "+str(i.error) 
 	print "Pro Mutacion : " + str(PMa)

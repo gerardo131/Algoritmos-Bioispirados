@@ -40,8 +40,11 @@ class Individuo:
 
 	####################### Crear Arbol ##################################
 	def crearCadena(self,prof):
+
 			if metCrear == "FULL": 
 				return self.full( prof )
+			elif metCrear == "GROW": 
+				return self.grow( prof )
 
 	def full (self,prof):
 		global numVar
@@ -55,6 +58,28 @@ class Individuo:
 			for i in xrange (0,setFun[1][i]):
 				exp =  self.full(prof-1) + exp
 			return exp
+	def grow(self,prof):
+		global numVar
+
+		if (prof == 0):
+			return [ setVar[ random.randint( 0, numVar-1 ) ] ]#Retorna una variable al azar
+		else:
+			if (random.random()<.5):
+				fun = setFun[0][ random.randint( 0, len(setFun[0])-1 ) ]
+				exp = [fun]
+				i = setFun[0].index(fun)
+				for i in xrange (0,setFun[1][i]):
+					exp =  self.full(prof-1) + exp
+				return exp
+			else :
+				return [ setVar[ random.randint( 0, numVar-1 ) ] ]
+
+	def halfaAndHalf(self, prof):
+		fun = setFun[0][ random.randint( 0, len(setFun[0])-1 ) ]
+		exp = [fun]
+		for i in xrange (0,setFun[1][i]):
+			exp =  self.full(prof-1) + exp
+
 	###################### operadores #######################################
 
 	def operador (self, op, X):

@@ -5,6 +5,6 @@ import Individuo
 def adaptacion(pob,valE,resE):
 	Aerror = []
 	for i in pob:
-		Aerror.append( i.EMC(valE,resE) )
+		i.EMC(valE,resE) 
 	for i in xrange( 0,len(pob) ):
-		pob[i].calificacion = max(Aerror)+min(Aerror)- pob[i].error
+		pob[i].calificacion = 10.0- pob[i].error
