@@ -1,0 +1,24 @@
+ \item[2] ['a', 'b', 'c', 'not', 'xor', 'xor']
+ Error :0.0  
+ Len :6  
+ \item[3] ['c', 'b', 'xor', 'a', 'not', 'xor']
+ Error :0.0  
+ Len :6  
+ \item[4] ['c', 'not', 'b', 'xor', 'a', 'xor']
+ Error :0.0  
+ Len :6  
+ \item[5] ['c', 'b', 'xor', 'a', 'not', 'xor']
+ Error :0.0  
+ Len :6  
+ \item[6] ['a', 'c', 'not', 'b', 'or', 'c', 'c', 'and', 'not', 'xor', 'xor', 'c', 'b', 'or', 'xor', 'not']
+ Error :0.0  
+ Len :16  
+ \item[7] ['a', 'a', 'and', 'not', 'c', 'not', 'b', 'not', 'and', 'xor', 'a', 'b', 'b', 'xor', 'not', 'or', 'xor', 'c', 'b', 'and', 'a', 'b', 'or', 'and', 'not', 'b', 'b', 'xor', 'or', 'xor', 'not']
+ Error :0.0  
+ Len :31  
+ \item[8] ['a', 'c', 'b', 'and', 'b', 'c', 'or', 'xor', 'a', 'c', 'and', 'not', 'xor', 'xor', 'c', 'a', 'and', 'not', 'xor', 'not', 'not', 'not', 'a', 'c', 'b', 'and', 'b', 'c', 'or', 'xor', 'a', 'c', 'and', 'not', 'xor', 'xor', 'c', 'a', 'and', 'not', 'xor', 'not', 'b', 'and', 'or']
+ Error :0.0  
+ Len :45  
+ \item[9] ['b', 'b', 'and', 'a', 'c', 'not', 'a', 'not', 'or', 'or', 'c', 'b', 'or', 'a', 'c', 'and', 'xor', 'c', 'or', 'or', 'xor', 'a', 'a', 'or', 'b', 'a', 'xor', 'and', 'c', 'c', 'xor', 'c', 'b', 'xor', 'xor', 'and', 'c', 'c', 'and', 'a', 'a', 'or', 'or', 'not', 'or', 'a', 'a', 'xor', 'a', 'a', 'and', 'xor', 'a', 'c', 'b', 'and', 'and', 'or', 'c', 'c', 'not', 'and', 'or', 'and', 'and', 'c', 'and', 'a', 'c', 'and', 'not', 'c', 'b', 'or', 'b', 'c', 'or', 'or', 'and', 'a', 'not', 'a', 'a', 'or', 'and', 'xor', 'c', 'not', 'c', 'a', 'and', 'not', 'or', 'not', 'not', 'or', 'not', 'c', 'not', 'not', 'not', 'b', 'a', 'or', 'c', 'not', 'xor', 'c', 'c', 'xor', 'c', 'c', 'or', 'xor', 'or', 'xor', 'a', 'not', 'b', 'b', 'and', 'and', 'a', 'a', 'and', 'not', 'xor', 'b', 'a', 'or', 'b', 'not', 'or', 'c', 'and', 'xor', 'xor', 'b', 'b', 'xor', 'a', 'b', 'or', 'or', 'c', 'not', 'or', 'b', 'b', 'xor', 'c', 'not', 'or', 'b', 'a', 'xor', 'not', 'xor', 'xor', 'c', 'not', 'c', 'c', 'xor', 'xor', 'not', 'c', 'a', 'xor', 'c', 'not', 'xor', 'b', 'a', 'and', 'a', 'c', 'or', 'and', 'or', 'and', 'xor', 'xor', 'or', 'xor', 'b', 'a', 'c', 'b', 'and', 'and', 'not', 'not', 'not', 'or', 'a', 'a', 'c', 'xor', 'c', 'c', 'xor', 'and', 'a', 'a', 'or', 'a', 'b', 'or', 'or', 'xor', 'and', 'b', 'a', 'or', 'c', 'a', 'and', 'and', 'a', 'not', 'a', 'a', 'or', 'and', 'or', 'not', 'or', 'not', 'and', 'not', 'xor']
+ Error :0.0  
+ Len :232  

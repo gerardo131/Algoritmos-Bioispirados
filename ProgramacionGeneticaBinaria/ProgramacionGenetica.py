@@ -10,14 +10,14 @@ import PoblacionInicial
 import seleccion 
 import Mezcla
 import Mutacion
-
+f=open("salida.json","w") 
 def genMuestra(n = 1):
 	muestraA =[]
 	muestraR = []
 	for i in xrange(0,n):
-		a = [ random.randint(0,1) for x in xrange(0,3)]
-		#aux = [ j-j for j in xrange( 0,Individuo.numVar-len(bin(i)[2:]) ) ] + list( bin(i)[2:] ) 
-		#a = [ int(j) for j in aux ]
+		#a = [ random.randint(0,1) for x in xrange(0,3)]
+		aux = [ j-j for j in xrange( 0,Individuo.numVar-len(bin(i)[2:]) ) ] + list( bin(i)[2:] ) 
+		a = [ int(j) for j in aux ]
 		#print a
 
 		#print int(''.join(a), 2 )
@@ -43,9 +43,20 @@ def ordenar (pob):
 		var.append(pob[aux[i][1]])
 	return var
 
+def ordenarTam(GenEli):
+	var = []
+	aux = []
+	for i in xrange (0,len(GenEli)):
+		aux.append([len(GenEli[i].gen),i])
+	aux.sort()
+	for i in xrange (0,len(GenEli)):
+		var.append(GenEli[aux[i][1]])
+	return var
 
-def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60,PM = 5):
-	f=open("salida.txt","w") 
+
+
+def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60,PM = 5):
+	
 	"""
 	NIND = 80
 	MAXGE = 200
@@ -62,9 +73,13 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
 	
 	gen = 0
+
+	f.write("{ \"Generacion\" :[" ) # ------------ JSON
 	while(gen<MAXGE):
+
 		NuevaPob = []
-		for i in xrange(0,(NIND-indEli)/2):
+
+		for i in xrange(0,(NIND-(indEli)/2)/2):
 			sel = seleccion.ruleta(Pob)
 			ResMez = Mezcla.Punto(sel,PC)
 			NuevaPob.append(ResMez[0])
@@ -85,20 +100,44 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 			print "             "
 			"""
 		Mutacion.punto(NuevaPob,PROFUNDIDAD,PM)
-	
-		"""
-		f.write( "------- POBLACION ---------  \n" )
-		for i in Pob:
-			f.write( str(i.calificacion)+"\n" )
-			f.write( str(i.error)+"\n" )
-		f.write( "------ END POBLACION ---------\n" )
-		"""
 		Pob = ordenar(Pob)
+		#################### crear JSON  Poblacion ################################
+		f.write("{ \"Poblacion\" :[" )
+		for i in Pob[:len(Pob)-1]:
+			f.write("{" )
+		#	f.write("\"Gen\"  : \"" +  str(i.gen)+"\"  ,\n" )
+			f.write("\"Cal\" : \"" + str(i.calificacion)+"\",\n" )
+			f.write("\"Error\" : \"" + str(i.error)+"\",\n" )
+			f.write("\"Len\" : \"" + str(len(i.gen))+"\"\n" )
+			f.write("}," )
+
+		f.write("{" )
+		#f.write("\"Gen\"  : \"" +  str(Pob[len(Pob)-1].gen)+"\"  ,\n" )
+		f.write("\"Cal\" : \"" + str(Pob[len(Pob)-1].calificacion)+"\",\n" )
+		f.write("\"Error\" : \"" + str(Pob[len(Pob)-1].error)+"\",\n" )
+		f.write("\"Len\" : \"" + str(len(Pob[len(Pob)-1].gen))+"\"\n" )
+		f.write("}" )
+		if gen < MAXGE-1: 
+			f.write( "]}," )
+		else:
+			f.write( "]}" )
+		###########################################################################
+
 		MaxGen.append(Pob[0].error)
+		GenEli = []
+
 		for i in xrange(0,indEli):
-			NuevaPob.append(Pob[i])
+			GenEli.append( Pob[i] )
+		GenEli = ordenarTam( GenEli )
+
+		for i in xrange(0,indEli/2):
+			NuevaPob.append(GenEli[i])
+
 		Pob = NuevaPob
+
+
 		Calificacion.adaptacion(Pob,muestra[0],muestra[1])
+
 		"""
 		f.write( "--------- NUEVA POBLACION ---------\n" )
 		for i in NuevaPob:
@@ -107,8 +146,11 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 		f.write( "--------- END NUEVA POBLACION ---------\n" )
 		"""
 		#print "Terminar generacion"
-		gen+=1
-	f.close()
+
+		gen += 1
+
+	f.write( "] }" ) #------------- JSON
+
 	
 
 
@@ -122,9 +164,21 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 		if Pob[i].calificacion > maximo:
 			ind = i
 			maximo = Pob[i].calificacion
+		elif Pob[i].calificacion == maximo and len(Pob[i].gen) < len(Pob[ind].gen):
+			ind = i
+			maximo = Pob[i].calificacion
 		if Pob[i].calificacion < mini:
 			indm = i
 			mini = Pob[i].calificacion
+
+
+	print "------------ Elitismos ----------------"
+	for i in xrange( len(Pob)-4 ,len(Pob) ):
+		print Pob[i].gen
+		print Pob[i].error
+	print "----------------------------------------"
+
+
 	"""
 	print Pob[ind].gen
 	print Pob[ind].error
@@ -153,7 +207,7 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	plt.subplots_adjust(bottom=0.15)
 	plt.xlabel('Generaciones')
 	plt.ylabel('Error')
-	plt.show()
+	#plt.show()
 	#-------------------------------------------------------------------------------
 	return Pob[ind]
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
@@ -161,17 +215,45 @@ def main(NIND = 8, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 poMax = Individuo.Individuo(5)	
 poMax.error = 80
 PMa = 0
+iteracion = 10
+f_latex=open("salida_latex.txt","w")
 
-for x in xrange(0,6):
-	i = main(NIND = 80, MAXGE = 100 , NMUESTRA = 100, PROFUNDIDAD = 8 ,indEli =4,PC = 60,PM = 2)
+f.write("{ \"Salida\" :[" ) # ------------ JSON
+for x in xrange(2,iteracion):
+	f.write("{ \"Prueba\" :[" ) # ------------ JSON
+	i = main(NIND = 80, MAXGE = 100 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=8 ,PC = 60,PM = 2)
+	
+	if x < iteracion-1: 
+		f.write( "]}," )
+	else:
+		f.write( "]}" )
+
 	print i.gen
 	print "Error : "+str(i.error) 
 	print "Pro Mutacion : " + str(PMa)
-	if i.error< poMax.error:
+
+
+	############ guardar en archivo la salalida en formato latex ############
+	stringGen = str(i.gen)
+	f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
+	f_latex.write( " Error :"+str(i.error)+"  \n" )
+	f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
+	#######################################################################
+
+	if i.error< poMax.error :
 		poMax = i
 		PMa = x
+	elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
+		poMax = i
+		PMa = x
+
+f.write( "]}" )# ------------ JSON
+
 print "----------- EL GANADOR ES -------------"
 print poMax.gen
 print "Error : "+str(poMax.error)
 print "Pro Mutacion : " + str(PMa)
 print "---------------------------------------"
+
+f_latex.close()
+f.close()

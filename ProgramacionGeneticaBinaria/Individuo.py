@@ -1,4 +1,5 @@
 import random
+from operator import xor
 
 ##################### inicializacion del modulo ####################
 
@@ -10,8 +11,8 @@ import random
 # Pconstan --- probabilidad de escojer constantes 
 # PFun ------- probabilidad de escojer funciones    
 
-metCrear = "FULL"
-setFun = [ ['and','or','not'], [2,2,1] ]
+metCrear = "GROW"
+setFun = [ ['and','or','not','xor'], [2,2,1,2] ]
 setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
 #------- Probabilidades de cada uno de los signos ------------
@@ -60,6 +61,7 @@ class Individuo:
 			for i in xrange (0,setFun[1][i]):
 				exp =  self.full(prof-1) + exp
 			return exp
+
 	def grow(self,prof):
 		global numVar
 
@@ -99,6 +101,9 @@ class Individuo:
 
 		elif setFun[0][1] == op:
 			return (X[0] or X[1])
+
+		elif setFun[0][3] == op:
+			return (xor( X[0],X[1]) )
 
 		elif 'not' == op:
 			if not X[0] :
