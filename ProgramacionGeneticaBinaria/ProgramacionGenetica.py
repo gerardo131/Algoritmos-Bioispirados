@@ -57,7 +57,7 @@ def ordenarTam(GenEli):
 
 
 
-def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60,PM = 5):
+def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 60,PM = 2):
 	
 	"""
 	NIND = 80
@@ -68,7 +68,6 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	PC = 60
 	PM = 2
 	"""
-	MaxFun =[]
 	MaxGen = []
 	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
@@ -87,8 +86,6 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 			NuevaPob.append(ResMez[0])
 			NuevaPob.append(ResMez[1])
 
-		for i in xrange(0,NIND):
-			MaxFun.append(Pob[i].error)
 
 			"""
 			print "----------- Seleccion -------------"
@@ -180,51 +177,21 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 		print Pob[i].error
 	print "----------------------------------------"
 
-
-	"""
-	print Pob[ind].gen
-	print Pob[ind].error
-	print Pob[ind].calificacion
-	print "----------------------------"
-	print Pob[indm].gen
-	print Pob[indm].error
-	print Pob[indm].calificacion
-	"""
-	plot = []
-	for i in muestra[0]:
-		plot.append( Pob[ind].evaluar(i) )
-	plotm = []
-	for i in muestra[0]:
-		plotm.append( Pob[indm].evaluar(i) )
-	ejeX = []
-	for i in xrange (0,MAXGE):
-		for j in xrange (0, NIND):
-			ejeX.append(i)	
-
-	#plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
-	plt.plot(ejeX, MaxFun, 'go')
-	plt.plot([i for i in xrange (0,MAXGE )], MaxGen, 'ro')
-	
-	plt.margins(0.2)
-	plt.subplots_adjust(bottom=0.15)
-	plt.xlabel('Generaciones')
-	plt.ylabel('Error')
-	#plt.show()
 	#-------------------------------------------------------------------------------
 	return Pob[ind]
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
 
 poMax = Individuo.Individuo(5)	
-poMax.error = 80
-PMa = 0
+poMax.error = 80 ## El mejor resultado de todos lo resultados
+PMa = 0 
 iteracion = 10
-for nArchivo in xrange(1,10):
+for nArchivo in xrange(0,1):
 	#f_latex=open("salida_latex.txt","w")
-	f=open("Salida/Salida"+str(nArchivo)+"H2_9.json","w")
+	f=open("Prueba1/Salida"+str(nArchivo)+"G4.json","w")
 	f.write("{ \"Salida\" :[" ) # ------------ JSON
 	for x in xrange(2,iteracion):
 		f.write("{ \"Prueba\" :[" ) # ------------ JSON
-		i = main(NIND = 80, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=8 ,PC = 60,PM = 2)
+		i = main(NIND = 80, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = 8  ,indEli=10 ,PC = 60,PM = 2)
 		
 		if x < iteracion-1: 
 			f.write( "]}," )

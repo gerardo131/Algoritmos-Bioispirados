@@ -11,7 +11,7 @@ from operator import xor
 # Pconstan --- probabilidad de escojer constantes 
 # PFun ------- probabilidad de escojer funciones    
 
-metCrear = "halfaAndHalf"
+metCrear = "GROW"
 setFun = [ ['and','or','not','xor'], [2,2,1,2] ]
 setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
@@ -19,6 +19,8 @@ numVar = 3
 PVar = 8
 PConstan = 1
 #-------------------------------------------------------------
+print "metodo :"+ metCrear
+print "sefFun :" + str(setFun)
 
 class Individuo:
 	
