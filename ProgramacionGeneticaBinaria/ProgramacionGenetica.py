@@ -184,14 +184,14 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 poMax = Individuo.Individuo(5)	
 poMax.error = 80 ## El mejor resultado de todos lo resultados
 PMa = 0 
-iteracion = 10
-for nArchivo in xrange(0,1):
+iteracion = 11
+for nArchivo in xrange(0,30):
 	#f_latex=open("salida_latex.txt","w")
-	f=open("Prueba1/Salida"+str(nArchivo)+"G4.json","w")
+	f=open("Prueba1/Salida"+str(nArchivo)+"H2_10.json","w")
 	f.write("{ \"Salida\" :[" ) # ------------ JSON
 	for x in xrange(2,iteracion):
 		f.write("{ \"Prueba\" :[" ) # ------------ JSON
-		i = main(NIND = 80, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = 8  ,indEli=10 ,PC = 60,PM = 2)
+		i = main(NIND = 100, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=10 ,PC = 60,PM = 2)
 		
 		if x < iteracion-1: 
 			f.write( "]}," )
