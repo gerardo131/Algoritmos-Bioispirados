@@ -11,8 +11,8 @@ from operator import xor
 # Pconstan --- probabilidad de escojer constantes 
 # PFun ------- probabilidad de escojer funciones    
 
-metCrear = "halfaAndHalf"
-setFun = [ ['and','or','not','xor'], [2,2,1,2] ]
+metCrear = "FULL"
+setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3] ]
 setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
 #------- Probabilidades de cada uno de los signos ------------
@@ -95,21 +95,45 @@ class Individuo:
 	def operador (self, op, X):
 		global setFun
 		global setVar
-
+		########### logicos ############
 		if setFun[0][0] == op:
-			return (X[0] and X[1])
+			return ( X[0]  and  X[1]) 
 
 		elif setFun[0][1] == op:
-			return (X[0] or X[1])
+			return ( X[0] or X[1] ) 
 
-		elif setFun[0][3] == op:
-			return (xor( X[0],X[1]) )
+		#elif setFun[0][3] == op:
+		#	return (xor( X[0],X[1]) )
 
 		elif 'not' == op:
-			if not X[0] :
-				return 1
+			not X[0] 
+	   	######### Aritmeticos ###########
+		elif setFun[0][3] == op:
+			return X[0]+X[1]
+		elif setFun[0][4] == op:
+			return X[0]-X[1]
+		elif setFun[0][5] == op:
+			if X[1] == 0.0 and X[1] == False :
+				return 0.0
 			else :
-				return 0
+				return X[0]/X[1]
+		elif setFun[0][6] == op:
+			return X[0]*X[1]  
+		############ condicionales ############
+		elif setFun[0][7] == op:
+			return X[0]<X[1]  
+		elif setFun[0][8] == op:
+			return X[0]>X[1]  
+		elif setFun[0][9] == op:
+			return X[0]==X[1]  
+		elif setFun[0][10] == op:
+			return X[0]!= X[1]  
+		########## control ############
+		#elif setFun[0][11] == op:
+
+
+
+
 	###################### Evaluacion #######################################
 
 	def evaluar (self, val):

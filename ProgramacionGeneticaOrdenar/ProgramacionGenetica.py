@@ -220,7 +220,7 @@ PMa = 0
 iteracion = 10
 for nArchivo in xrange(1,10):
 	#f_latex=open("salida_latex.txt","w")
-	f=open("Salida/Salida"+str(nArchivo)+"H2_9.json","w")
+	f=open("Salida.json","w")
 	f.write("{ \"Salida\" :[" ) # ------------ JSON
 	for x in xrange(2,iteracion):
 		f.write("{ \"Prueba\" :[" ) # ------------ JSON

@@ -11,7 +11,7 @@ from operator import xor
 # Pconstan --- probabilidad de escojer constantes 
 # PFun ------- probabilidad de escojer funciones    
 
-metCrear = "halfaAndHalf"
+metCrear = "HalfaAndHalf"
 setFun = [ ['and','or','not','xor'], [2,2,1,2] ]
 setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
@@ -48,7 +48,7 @@ class Individuo:
 				return self.full( prof )
 			elif metCrear == "GROW": 
 				return self.grow( prof )
-			elif metCrear == "halfaAndHalf": 
+			elif metCrear == "HalfaAndHalf": 
 				return self.halfaAndHalf( prof )
 
 	def full (self,prof):

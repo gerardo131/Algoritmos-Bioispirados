@@ -3,6 +3,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from operator import xor
+from time import time
 
 import Individuo
 import Calificacion
@@ -68,6 +69,9 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 	PC = 60
 	PM = 2
 	"""
+	TiempoTotal = 0
+	tiempo_inicial = time()
+
 	MaxGen = []
 	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
@@ -147,8 +151,10 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 		#print "Terminar generacion"
 
 		gen += 1
+	tiempo_final = time()
+	TiempoTotal +=  tiempo_final - tiempo_inicial
 
-	f.write( "] }" ) #------------- JSON
+	f.write( "], \"TiempoTotal\":\" "+str(TiempoTotal)+" \" }" ) #------------- JSON
 
 	
 
@@ -184,14 +190,19 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 poMax = Individuo.Individuo(5)	
 poMax.error = 80 ## El mejor resultado de todos lo resultados
 PMa = 0 
+TiempoTotal = 0
+
 iteracion = 11
 for nArchivo in xrange(0,30):
 	#f_latex=open("salida_latex.txt","w")
-	f=open("Prueba1/Salida"+str(nArchivo)+"H2_10.json","w")
+	f=open("Prueba2/Salida"+str(nArchivo)+Individuo.metCrear[0]+"2_10.json","w")
 	f.write("{ \"Salida\" :[" ) # ------------ JSON
 	for x in xrange(2,iteracion):
 		f.write("{ \"Prueba\" :[" ) # ------------ JSON
+
+		
 		i = main(NIND = 100, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=10 ,PC = 60,PM = 2)
+
 		
 		if x < iteracion-1: 
 			f.write( "]}," )
