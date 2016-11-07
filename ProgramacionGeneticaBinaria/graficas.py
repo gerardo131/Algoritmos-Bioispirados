@@ -1,53 +1,83 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import json
 from pprint import pprint
 import numpy as np
 import matplotlib.pyplot as plt
 
+def NumeroAciertos ():
 
-y=[]
-x=[]
+	y=[]
+	x=[]
 
-yMF = []
-xMF = []
-yPF=[]
-xPF=[]
-for  metodo in ['F','G','H'] :
+	yMF = []
+	xMF = []
+	yPF=[]
+	xPF=[]
+	for  metodo in ['F','G','H'] :
 
-	NumeroAciertos = [l-l for l in xrange(2,11)]
+		NumeroAciertos = [l-l for l in xrange(2,11)]
+		NumeroProfundidad = [l for l in xrange(2,11)]
+
+		for k in xrange(0,30):
+
+			with open('Prueba1/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+			    data = json.load(data_file)
+
+			#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
+
+			############################ FULL ######################
+
+
+
+			#for i in data["Salida"][profundidad]["Prueba"][0]["Generacion"] :
+			for profundidad in xrange(0,len(data["Salida"])):
+				i= data["Salida"][profundidad]["Prueba"][0]["Generacion"] [len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])-1] # ultima generacion
+				mejor = 80000
+				peor  = 0
+				for  j  in i["Poblacion"]:
+				 	#y.append(j["Len"])
+				 	#x.append(indx)
+				 	#if j["Error"] == '0.0' :
+			 		if j["Len"]=='6' and j["Error"] == '0.0':
+			 			NumeroAciertos[profundidad] += 1
+			 			break
+			 			
+			#plt.plot(xPF, yPF, 'r')
+		if metodo == 'F':  
+			plt.plot(NumeroProfundidad, NumeroAciertos, '-b',linewidth = 3, label = 'FULL')
+			print "FULL"
+			print NumeroAciertos
+		elif metodo == 'G':
+			plt.plot(NumeroProfundidad, NumeroAciertos, '-g',linewidth = 3, label = 'GROW')
+			print "GROW"
+			print NumeroAciertos
+		elif metodo == 'H':
+			plt.plot(NumeroProfundidad, NumeroAciertos, '-r',linewidth = 3, label = 'HALF AND HALF')
+			print "HALF AND HALF"
+			print NumeroAciertos
+
+def NumeroAciertosP(O):
 	NumeroProfundidad = [l for l in xrange(2,11)]
+	if O == 'LE' :
+		plt.plot(NumeroProfundidad, [24.0/30.0, 29.0/30.0, 28.0/30.0, 29.0/30.0, 28.0/30.0, 26.0/30.0, 14.0/30.0, 7.0/30.0, 7.0/30.0], '-hb',linewidth = 3, label = 'FULL')
+		plt.plot(NumeroProfundidad, [14.0/30.0, 23.0/30.0, 30.0/30.0, 28.0/30.0, 28.0/30.0, 24.0/30.0, 19.0/30.0, 14.0/30.0, 9.0/30.0], '-hg',linewidth = 3, label = 'GROW')
+		plt.plot(NumeroProfundidad, [7.0/30.0, 27.0/30.0, 29.0/30.0, 29.0/30.0, 25.0/30.0, 28.0/30.0, 22.0/30.0, 14.0/30.0, 8.0/30.0], '-hr',linewidth = 3, label = 'HALF AND HALF')
+		
+		plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
+		
 
-	for k in xrange(0,30):
+	elif O == 'E':
+		plt.plot(NumeroProfundidad, [24.0/30.0, 29.0/30.0, 28.0/30.0, 30.0/30.0, 30.0/30.0, 29.0/30.0, 30.0/30.0, 29.0/30.0, 30.0/30.0], '-hb',linewidth = 3, label = 'FULL')
+		plt.plot(NumeroProfundidad, [14.0/30.0, 23.0/30.0, 30.0/30.0, 30.0/30.0, 30.0/30.0, 30.0/30.0, 29.0/30.0, 30.0/30.0, 30.0/30.0], '-hg',linewidth = 3, label = 'GROW')
+		plt.plot(NumeroProfundidad, [7.0/30.0, 27.0/30.0, 29.0/30.0, 30.0/30.0, 29.0/30.0, 30.0/30.0, 30.0/30.0, 29.0/30.0, 30.0/30.0], '--hr',linewidth = 3, label = 'HALF AND HALF')
+		plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
+		
 
-		with open('Prueba1/Salida'+str(k)+metodo+'2_10.json') as data_file:    
-		    data = json.load(data_file)
+#NumeroAciertos()
+NumeroAciertosP('E')
 
-		print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
-
-		############################ FULL ######################
-
-
-
-		#for i in data["Salida"][profundidad]["Prueba"][0]["Generacion"] :
-		for profundidad in xrange(0,len(data["Salida"])):
-			i= data["Salida"][profundidad]["Prueba"][0]["Generacion"] [len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])-1] # ultima generacion
-			mejor = 80000
-			peor  = 0
-			for  j  in i["Poblacion"]:
-			 	#y.append(j["Len"])
-			 	#x.append(indx)
-			 	#if j["Error"] == '0.0' :
-		 		if j["Len"] == '6' and j["Error"] == '0.0':
-		 			NumeroAciertos[profundidad] += 1
-		 			break
-		 			
-		#plt.plot(xPF, yPF, 'r')
-	if metodo == 'F':  
-		plt.plot(NumeroProfundidad, NumeroAciertos, '-b',linewidth = 3, label = 'FULL')
-	elif metodo == 'G':
-		plt.plot(NumeroProfundidad, NumeroAciertos, '-g',linewidth = 3, label = 'GROW')
-	elif metodo == 'H':
-		plt.plot(NumeroProfundidad, NumeroAciertos, '-r',linewidth = 3, label = 'HALF AND HALF')
-######################## GROW #################################
 """
 y=[]
 x=[]
@@ -144,11 +174,11 @@ plt.plot([i for i in xrange(0,8)], FD[2], 'r')
 
 plt.margins(0.2)
 plt.subplots_adjust(bottom=0.15)
-plt.xlabel('Generacion')
-plt.ylabel('Tamano de Exprecion')
+plt.xlabel(u'profundidad')
+plt.ylabel(u'Número de aciertos')
 plt.legend()  # Creamos la caja con la leyenda
 plt.minorticks_on()
-plt.ylim(0,40.0)
+plt.ylim(0,1.3)
 
 
 plt.grid(True)
