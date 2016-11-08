@@ -187,55 +187,58 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 	return Pob[ind]
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
 
-poMax = Individuo.Individuo(5)	
-poMax.error = 80 ## El mejor resultado de todos lo resultados
-PMa = 0 
-TiempoTotal = 0
+for inArchivo in xrange(1,21):
 
-iteracion = 11
-for nArchivo in xrange(0,30):
-	#f_latex=open("salida_latex.txt","w")
-	f=open("Prueba2/Salida"+str(nArchivo)+Individuo.metCrear[0]+"2_10.json","w")
-	f.write("{ \"Salida\" :[" ) # ------------ JSON
-	for x in xrange(2,iteracion):
-		f.write("{ \"Prueba\" :[" ) # ------------ JSON
+	print "Prueba"+str(inArchivo)
+	poMax = Individuo.Individuo(5)	
+	poMax.error = 80 ## El mejor resultado de todos lo resultados
+	PMa = 0 
+	TiempoTotal = 0
 
-		
-		i = main(NIND = 100, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=10 ,PC = 60,PM = 2)
+	iteracion = 11
+	for nArchivo in xrange(0,30):
+		#f_latex=open("salida_latex.txt","w")
+		f=open("Prueba"+str(inArchivo)+"/Salida"+str(nArchivo)+Individuo.metCrear[0]+"2_10.json","w")
+		f.write("{ \"Salida\" :[" ) # ------------ JSON
+		for x in xrange(2,iteracion):
+			f.write("{ \"Prueba\" :[" ) # ------------ JSON
 
-		
-		if x < iteracion-1: 
-			f.write( "]}," )
-		else:
-			f.write( "]}" )
+			
+			i = main(NIND = 100, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=10 ,PC = 60,PM = 2)
 
-		print i.gen
-		print "Error : "+str(i.error) 
+			
+			if x < iteracion-1: 
+				f.write( "]}," )
+			else:
+				f.write( "]}" )
+
+			print i.gen
+			print "Error : "+str(i.error) 
+			print "Pro Mutacion : " + str(PMa)
+
+			############ guardar en archivo la salalida en formato latex ############
+			stringGen = str(i.gen)
+			#f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
+			#f_latex.write( " Error :"+str(i.error)+"  \n" )
+			#f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
+			#######################################################################
+
+			if i.error< poMax.error :
+				poMax = i
+				PMa = x
+			elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
+				poMax = i
+				PMa = x
+
+		f.write( "]}" )# ------------ JSON
+
+
+
+		print "----------- EL GANADOR ES -------------"
+		print poMax.gen
+		print "Error : "+str(poMax.error)
 		print "Pro Mutacion : " + str(PMa)
+		print "---------------------------------------"
 
-		############ guardar en archivo la salalida en formato latex ############
-		stringGen = str(i.gen)
-		#f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
-		#f_latex.write( " Error :"+str(i.error)+"  \n" )
-		#f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
-		#######################################################################
-
-		if i.error< poMax.error :
-			poMax = i
-			PMa = x
-		elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
-			poMax = i
-			PMa = x
-
-	f.write( "]}" )# ------------ JSON
-
-
-
-	print "----------- EL GANADOR ES -------------"
-	print poMax.gen
-	print "Error : "+str(poMax.error)
-	print "Pro Mutacion : " + str(PMa)
-	print "---------------------------------------"
-
-	#f_latex.close()
-	f.close()
+		#f_latex.close()
+		f.close()
