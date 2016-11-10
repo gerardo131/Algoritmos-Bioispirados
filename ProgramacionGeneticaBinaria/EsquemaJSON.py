@@ -27,3 +27,5 @@ EsquemaJSON
 
 	]
 }
+
+{Salidas:[ {Prueba:[ {Generasion:[ {Poblacion:[ {Gen:[], Cal:float, Error:float, Len:int} ]} ]} ]}] }

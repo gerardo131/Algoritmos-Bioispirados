@@ -6,7 +6,7 @@ from pprint import pprint
 import numpy as np
 import matplotlib.pyplot as plt
 
-def NumeroAciertos ():
+def NumeroAciertos (O,Narchivo):
 
 	y=[]
 	x=[]
@@ -15,14 +15,15 @@ def NumeroAciertos ():
 	xMF = []
 	yPF=[]
 	xPF=[]
-	for  metodo in ['F','G','H'] :
+	Salida = []
+	for  metodo in ['F'] :
 
 		NumeroAciertos = [l-l for l in xrange(2,11)]
 		NumeroProfundidad = [l for l in xrange(2,11)]
 
 		for k in xrange(0,30):
 
-			with open('Prueba2/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+			with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
 			    data = json.load(data_file)
 
 			#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
@@ -40,60 +41,39 @@ def NumeroAciertos ():
 				 	#y.append(j["Len"])
 				 	#x.append(indx)
 				 	#if j["Error"] == '0.0' :
-			 		if j["Len"]=='6' and j["Error"] == '0.0':
-			 			NumeroAciertos[profundidad] += 1
-			 			break
+				 	if O == 'LE' :
+			 			if j["Len"]=='6' and j["Error"] == '0.0':
+				 			NumeroAciertos[profundidad] += 1
+				 			break
+				 	elif O == 'E' :
+			 			if j["Error"] == '0.0':
+				 			NumeroAciertos[profundidad] += 1
+				 			break
 			 			
 			#plt.plot(xPF, yPF, 'r')
 		if metodo == 'F':  
-			plt.plot(NumeroProfundidad, NumeroAciertos, '-b',linewidth = 3, label = 'FULL')
+			#plt.plot(NumeroProfundidad, NumeroAciertos, '-b',linewidth = 3, label = 'FULL')
 			print "FULL"
 			print NumeroAciertos
+			Salida.append(NumeroAciertos)
 		elif metodo == 'G':
-			plt.plot(NumeroProfundidad, NumeroAciertos, '-g',linewidth = 3, label = 'GROW')
+			#plt.plot(NumeroProfundidad, NumeroAciertos, '-g',linewidth = 3, label = 'GROW')
 			print "GROW"
 			print NumeroAciertos
+			Salida.append(NumeroAciertos)
 		elif metodo == 'H':
-			plt.plot(NumeroProfundidad, NumeroAciertos, '-r',linewidth = 3, label = 'HALF AND HALF')
+			#plt.plot(NumeroProfundidad, NumeroAciertos, '-r',linewidth = 3, label = 'HALF AND HALF')
 			print "HALF AND HALF"
 			print NumeroAciertos
-
-def NumeroAciertosP(O):
-	NumeroProfundidad = [l for l in xrange(2,11)]
-
-
-	if O == 'LE' :
-		a = [30, 30, 28, 29, 25, 23, 12, 8, 3]
-		b = [12, 25, 30, 29, 25, 25, 16, 13, 7]
-		c = [6, 27, 30, 28, 29, 26, 21, 16, 8]
-
-		a= [float(i)/30.0 for i in a ]
-		b= [float(i)/30.0 for i in b ]
-		c= [float(i)/30.0 for i in c ]
-		plt.plot(NumeroProfundidad,a , '-hb',linewidth = 3, label = 'FULL')
-		plt.plot(NumeroProfundidad,b , '-hg',linewidth = 3, label = 'GROW')
-		plt.plot(NumeroProfundidad,c , '-hr',linewidth = 3, label = 'HALF AND HALF')
-		
-		plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
-		
-
-	elif O == 'E':
-		a = [24.0, 29.0, 28.0, 30.0, 30.0, 29.0, 30.0, 29.0, 30.0]
-		b = [14.0, 23.0, 30.0, 30.0, 30.0, 30.0, 29.0, 30.0, 30.0]
-		C = [7.0, 27.0, 29.0, 30.0, 29.0, 30.0, 30.0, 29.0, 30.0]
-
-		a= [float(i)/30.0 for i in a ]
-		b= [float(i)/30.0 for i in b ]
-		c= [float(i)/30.0 for i in c ]
-		plt.plot(NumeroProfundidad, a, '-hb',linewidth = 3, label = 'FULL')
-		plt.plot(NumeroProfundidad, b, '-hg',linewidth = 3, label = 'GROW')
-		plt.plot(NumeroProfundidad, c, '--hr',linewidth = 3, label = 'HALF AND HALF')
-		plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
+			Salida.append(NumeroAciertos)
+	return Salida
 
 
 
-#NumeroAciertos()
-NumeroAciertosP('LE')
+prueba = 'E' #LE = comparar longitud y Error E = Error  
+for Narchivo in xrange(1,9):
+	NumeroAciertos(prueba,Narchivo)
+
 
 """
 y=[]
