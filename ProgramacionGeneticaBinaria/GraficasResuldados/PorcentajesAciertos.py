@@ -28,37 +28,47 @@ def NumeroAciertosP(NumeroAciertos):
 	plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
 		
 #numero de aciertos por Metodo 
-def NumeroAciertosP(NumeroAciertos,color='-hb'):
+def NumeroAciertosP(NumeroAciertos,color='-hb',level = ""):
 
 	NumeroProfundidad = [l for l in xrange(2,len(NumeroAciertos)+2)]
 	a=NumeroAciertos
 	a= [float(i)/30.0 for i in a ]
 	print a
-	plt.plot(NumeroProfundidad,a , color,linewidth = 3)#, label = 'FULL')
-	plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
-	
+	plt.plot(NumeroProfundidad,a , color,linewidth = 3, label = level )
+	#plt.plot([1]+NumeroProfundidad, [.9,.9, .9, .9, .9, .9, .9, .9, .9, .9], '--k',linewidth = 1 )
+def NumeroAciertosMMP(metodo,color='-hb',level = "") :	
 
-MAX = data["Comparacion"]["LE"]["G"][0][:]
-MIN = data["Comparacion"]["LE"]["G"][0][:]
-for x in data["Comparacion"]["LE"]["G"] :
-	for y in xrange(0,len(x)):
-		if MAX[y] < x[y]:
-			MAX[y] = x[y]
-		if MIN[y] > x[y]:
-			MIN[y] = x[y]
+	MAX = data["Comparacion"]["LE"][metodo][0][:]
+	MIN = data["Comparacion"]["LE"][metodo][0][:]
+	PRO = [ k-k for k in MIN ]
+
+	for x in data["Comparacion"]["LE"][metodo] :
+		for y in xrange(0,len(x)):
+			PRO[y]+=x[y]
+			if MAX[y] < x[y]:
+				MAX[y] = x[y]
+			if MIN[y] > x[y]:
+				MIN[y] = x[y]
+	PRO = [float(i)/8 for i in PRO ]
+
+	#for Narchivo in data["Comparacion"]["LE"][metodo]:
+	#	NumeroAciertosP(Narchivo,'-hb')
+
+	NumeroAciertosP(PRO,color,level)
+	#NumeroAciertosP(MAX,color,level)
+	#NumeroAciertosP(MIN,color,level)
 
 
-for Narchivo in data["Comparacion"]["LE"]["G"]:
-	NumeroAciertosP(Narchivo,'-hb')
+NumeroAciertosMMP("F",'-hb','Promedio FULL')
+NumeroAciertosMMP("G",'-hg','Promedio GROW')
+NumeroAciertosMMP("H",'-hr','Promedio Half and half')
 
 
-NumeroAciertosP(MAX,'-hr')
-NumeroAciertosP(MIN,'-hr')	
 
 plt.margins(0.2)
 plt.subplots_adjust(bottom=0.15)
 plt.xlabel(u'profundidad')
-plt.ylabel(u'Número de aciertos')
+plt.ylabel(u'Porcentaje de aciertos')
 plt.legend()  # Creamos la caja con la leyenda
 plt.minorticks_on()
 plt.ylim(0,1.3)
