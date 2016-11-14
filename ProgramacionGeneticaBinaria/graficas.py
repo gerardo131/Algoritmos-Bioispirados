@@ -68,11 +68,115 @@ def NumeroAciertos (O,Narchivo):
 			Salida.append(NumeroAciertos)
 	return Salida
 
+def Tiempo (Narchivo,metodo,color):
+
+	yt = [ l-l for l in xrange(2,11) ]
+	xt = [ l for l in xrange(2,11) ]
+	
+	for k in xrange(0,30):
+
+		with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+		    data = json.load(data_file)
+
+		#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
 
 
-prueba = 'E' #LE = comparar longitud y Error E = Error  
-for Narchivo in xrange(1,9):
-	NumeroAciertos(prueba,Narchivo)
+		for i in xrange(0,len(data["Salida"])):
+			#print i["Prueba"][0]["TiempoTotal"]
+			yt[i]+=float (data["Salida"][i]["Prueba"][0]["TiempoTotal"])/30
+
+	if metodo == 'F':  
+		plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+	elif metodo == 'G':
+		plt.plot(xt, yt, color,linewidth = 3, label =  'GROW')
+	elif metodo == 'H':
+		plt.plot(xt, yt, color,linewidth = 3, label =  'HALF AND HALF')
+
+def  Distribucion (Narchivo,metodo,color):
+
+	y=[]
+	x=[]
+	yC=[]
+	xC=[]
+	yB=[]
+	xB=[]
+
+	yM = []
+	xM = []
+	yP=[]
+	xP=[]
+	Salida = []
+
+		
+	yt = [ l-l for l in xrange(2,11) ]
+	xt = [ l for l in xrange(2,11) ]
+	
+	for k in xrange(5,6):
+
+		with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+		    data = json.load(data_file)
+
+		#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
+
+		profundidad = 0
+		indx=0
+		for i in data["Salida"][profundidad]["Prueba"][0]["Generacion"] :
+			mejor = 80000
+			peor  = 0
+			#print i["Prueba"][0]["TiempoTotal"]
+			for  j  in i["Poblacion"]:
+			 	y.append(j["Len"])
+			 	x.append(indx)
+			 	if j["Error"] == '0.0' :
+						yC.append(j["Len"])
+			 			xC.append(indx)	
+			 	if j["Error"] == '0.0' and j["Len"]=='6' :
+						yB.append(j["Len"])
+			 			xB.append(indx)	
+		 		if int(j["Len"]) < mejor:
+		 			mejor = int(j["Len"])
+		 		if int(j["Len"]) > peor :
+		 			peor = int(j["Len"])
+			if mejor != 80000 and peor != 0 :
+				yM.append(mejor)
+				yP.append(peor)
+				xM.append(indx)
+				xP.append(indx)
+			
+			indx+=1
+
+
+		if metodo == 'F':  
+			plt.plot(x, y, 'og',linewidth = 3, label = 'FULL')
+			plt.plot(xP, yP, 'oy',linewidth = 3, label = 'FULL')
+			plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
+			plt.plot(xB, yB, 'oc',linewidth = 3, label = 'FULL')
+		elif metodo == 'G':
+			plt.plot(x, y, color,linewidth = 3, label =  'GROW')
+		elif metodo == 'H':
+			plt.plot(x, y, color,linewidth = 3, label =  'HALF AND HALF')
+
+
+#--------------------TIEMPOS DE EJECUCION---------------------------------------
+#Tiempo(5,"F",'-hb')
+#Tiempo(5,"H",'-hr')
+#Tiempo(5,"G",'-hg')
+
+#Tiempo(4,"H",'-c')
+#Tiempo(5,"H",'-m')
+#Tiempo(6,"H",'-k')
+#Tiempo(7,"H",'-y')
+#Tiempo(8,"H",'-b')
+#--------------------------------------------------------------------------------
+
+#-----------------------Distribucion--------------------------------------
+Distribucion(1,"F",'ob')
+
+#-------------------------------------------------------------------------
+
+#prueba = 'E' #LE = comparar longitud y Error E = Error  
+#for Narchivo in xrange(1,9):
+#	NumeroAciertos(prueba,Narchivo)
 
 
 """
@@ -166,10 +270,10 @@ plt.plot([i for i in xrange(0,8)], FD[2], 'r')
 plt.margins(0.2)
 plt.subplots_adjust(bottom=0.15)
 plt.xlabel(u'profundidad')
-plt.ylabel(u'Número de aciertos')
+plt.ylabel(u'tiempo de ejecución (segundos)')
 plt.legend()  # Creamos la caja con la leyenda
 plt.minorticks_on()
-plt.ylim(0,1.3)
+
 
 
 plt.grid(True)
