@@ -147,14 +147,16 @@ def  Distribucion (Narchivo,metodo,color):
 
 
 		if metodo == 'F':  
-			plt.plot(x, y, 'og',linewidth = 3, label = 'FULL')
-			plt.plot(xP, yP, 'oy',linewidth = 3, label = 'FULL')
-			plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
-			plt.plot(xB, yB, 'oc',linewidth = 3, label = 'FULL')
+			#plt.plot(x, y, 'og',linewidth = 3, label = 'FULL')
+			plt.plot(xP, yP, color,linewidth = 3, label = 'FULL')
+			#plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
+			#plt.plot(xB, yB, 'oc',linewidth = 3, label = 'FULL')
 		elif metodo == 'G':
-			plt.plot(x, y, color,linewidth = 3, label =  'GROW')
+			#plt.plot(x, y, color,linewidth = 3, label =  'GROW')
+			plt.plot(xP, yP, color,linewidth = 3, label = 'GROW')
 		elif metodo == 'H':
-			plt.plot(x, y, color,linewidth = 3, label =  'HALF AND HALF')
+			#plt.plot(x, y, color,linewidth = 3, label =  'HALF AND HALF')
+			plt.plot(xP, yP, color,linewidth = 3, label = 'HALF AND HALF')
 
 
 #--------------------TIEMPOS DE EJECUCION---------------------------------------
@@ -170,7 +172,9 @@ def  Distribucion (Narchivo,metodo,color):
 #--------------------------------------------------------------------------------
 
 #-----------------------Distribucion--------------------------------------
-Distribucion(1,"F",'ob')
+Distribucion(1,"F",'-hb')
+#Distribucion(1,"G",'-hg')
+Distribucion(1,"H",'-hr')
 
 #-------------------------------------------------------------------------
 
