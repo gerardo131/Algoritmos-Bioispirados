@@ -158,7 +158,53 @@ def  Distribucion (Narchivo,metodo,color):
 			#plt.plot(x, y, color,linewidth = 3, label =  'HALF AND HALF')
 			plt.plot(xP, yP, color,linewidth = 3, label = 'HALF AND HALF')
 
+def  convergencia(Narchivo,metodo,color):
 
+	yC = [ ]
+	xC = [ ]
+	
+	yt = [ l-l for l in xrange(2,11) ]
+	xt = [ l for l in xrange(2,11) ]
+	Nt = [ l-l for l in xrange(2,11) ]
+
+	for k in xrange(0,30):
+
+		with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+		    data = json.load(data_file)
+
+		#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
+
+		for profundidad in xrange(0,len(data["Salida"])):
+
+			for i in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) :
+				gen = data["Salida"][profundidad]["Prueba"][0]["Generacion"][i]
+				bandera = 0
+				for  j  in gen["Poblacion"]:
+					if j["Error"] == '0.0' and i<100:
+						Nt[profundidad]+=1.0
+						yt[profundidad]+=i
+				 	if j["Error"] == '0.0' :
+				 		bandera = 1
+				 		yC.append(i)
+				 		xC.append(profundidad+2)  
+				 		break
+				if bandera:
+					break
+	for l in xrange(0,9):
+		yt[l]=float(yt[l])/float(Nt[l]) 							
+
+
+	if metodo == 'F':  
+		plt.plot(xC, yC, color,linewidth = 3, label = 'FULL')
+		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
+	elif metodo == 'G':
+		plt.plot(xC, yC, color,linewidth = 3, label =  'GROW')
+		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
+	elif metodo == 'H':
+		plt.plot(xC, yC, color,linewidth = 3, label =  'HALF AND HALF')
+		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
+
+print "iniciando"
 #--------------------TIEMPOS DE EJECUCION---------------------------------------
 #Tiempo(5,"F",'-hb')
 #Tiempo(5,"H",'-hr')
@@ -172,12 +218,17 @@ def  Distribucion (Narchivo,metodo,color):
 #--------------------------------------------------------------------------------
 
 #-----------------------Distribucion--------------------------------------
-Distribucion(1,"F",'-hb')
+#Distribucion(1,"F",'-hb')
 #Distribucion(1,"G",'-hg')
-Distribucion(1,"H",'-hr')
-
+#Distribucion(1,"H",'-hr')
 #-------------------------------------------------------------------------
 
+#------------------- MINIMA GENERACION DE CONVERGENCIA --------------------
+for Narchivo in xrange(1,9):
+	convergencia(Narchivo,"F",'ob')
+#--------------------------------------------------------------------------
+
+#------------------ Aciertos-----------------------------------------------------
 #prueba = 'E' #LE = comparar longitud y Error E = Error  
 #for Narchivo in xrange(1,9):
 #	NumeroAciertos(prueba,Narchivo)
@@ -273,8 +324,8 @@ plt.plot([i for i in xrange(0,8)], FD[2], 'r')
 
 plt.margins(0.2)
 plt.subplots_adjust(bottom=0.15)
-plt.xlabel(u'profundidad')
-plt.ylabel(u'tiempo de ejecución (segundos)')
+plt.xlabel(u'Profundidad')
+plt.ylabel(u'Generación Convergente')
 plt.legend()  # Creamos la caja con la leyenda
 plt.minorticks_on()
 
