@@ -162,7 +162,14 @@ def  convergencia(Narchivo,metodo,color):
 
 	yC = [ ]
 	xC = [ ]
-	
+	yCB = []
+	xCB = []
+
+	yAP = [ l-l for l in xrange(2,11)]
+	yIP = [ l-l for l in xrange(2,11)]
+	xP = [ l for l in xrange(2,11) ]
+	NP = [ [] for l in xrange(2,11)]
+
 	yt = [ l-l for l in xrange(2,11) ]
 	xt = [ l for l in xrange(2,11) ]
 	Nt = [ l-l for l in xrange(2,11) ]
@@ -175,34 +182,51 @@ def  convergencia(Narchivo,metodo,color):
 		#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
 
 		for profundidad in xrange(0,len(data["Salida"])):
-
 			for i in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) :
 				gen = data["Salida"][profundidad]["Prueba"][0]["Generacion"][i]
 				bandera = 0
 				for  j  in gen["Poblacion"]:
-					if j["Error"] == '0.0' and i<100:
+					if j["Error"] == '0.0' and j['Len']=='6' and i<50:
 						Nt[profundidad]+=1.0
 						yt[profundidad]+=i
-				 	if j["Error"] == '0.0' :
+				 	if j["Error"] == '0.0' and j['Len']=='6' :
 				 		bandera = 1
 				 		yC.append(i)
-				 		xC.append(profundidad+2)  
+				 		xC.append(profundidad+2)
+				 		NP[profundidad].append(i)
+
 				 		break
 				if bandera:
 					break
-	for l in xrange(0,9):
-		yt[l]=float(yt[l])/float(Nt[l]) 							
-
+	for NPi in xrange(0,len(NP)):
+		NP[NPi].sort()
+		aux = NP[NPi][0: int(float(len(NP[NPi]))*.9 )]
+		yAP[NPi] = max(aux)
+		yIP[NPi] = min(aux)
+						
 
 	if metodo == 'F':  
-		plt.plot(xC, yC, color,linewidth = 3, label = 'FULL')
-		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
+		#plt.plot(xC, yC, 'ob',linewidth = 3, label = 'FULL')
+		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+		plt.boxplot(NP, sym = 'ko', whis = 1.5, labels=[2,3,4,5,6,7,8,9,10],flierprops = dict(marker='o', markerfacecolor='blue'),boxprops = dict( color='blue') )
+		#plt.xticks([ (l*3)+1 for l in xrange(0,9) ], xP, size = 'small', color = 'b')
+		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
+		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
 	elif metodo == 'G':
-		plt.plot(xC, yC, color,linewidth = 3, label =  'GROW')
-		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
+		#plt.plot(xC, yC, 'ob',linewidth = 3, label =  'GROW')
+		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+		plt.boxplot(NP, sym = 'ko', whis = 1.5, labels=[2,3,4,5,6,7,8,9,10], flierprops = dict(marker='o', markerfacecolor='green'),boxprops = dict( color='green'))
+		#plt.xticks([ (l*3)+2 for l in xrange(0,9) ], xP, size = 'small', color = 'g')
+		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
+		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
 	elif metodo == 'H':
-		plt.plot(xC, yC, color,linewidth = 3, label =  'HALF AND HALF')
-		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
+
+		#plt.plot(xC, yC, 'ob',linewidth = 3, label =  'HALF AND HALF')
+		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+		plt.boxplot(NP, sym = 'ko', whis = 1.5, labels=[2,3,4,5,6,7,8,9,10], flierprops = dict(marker='o', markerfacecolor='red'),boxprops = dict( color='red') )
+		#plt.xticks(xP, xP, size = 'small', color = 'r')
+		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
+		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
 
 print "iniciando"
 #--------------------TIEMPOS DE EJECUCION---------------------------------------
@@ -224,8 +248,16 @@ print "iniciando"
 #-------------------------------------------------------------------------
 
 #------------------- MINIMA GENERACION DE CONVERGENCIA --------------------
-for Narchivo in xrange(1,9):
-	convergencia(Narchivo,"F",'ob')
+convergencia(2,"H",'-hy')
+convergencia(2,"H",'-hc')
+convergencia(3,"H",'-hm')
+convergencia(4,"H",'-hk')
+convergencia(5,"H",'-hr')
+convergencia(6,"H",'-hg')
+convergencia(7,"H",'--y')
+convergencia(8,"H",'--c')
+
+
 #--------------------------------------------------------------------------
 
 #------------------ Aciertos-----------------------------------------------------
