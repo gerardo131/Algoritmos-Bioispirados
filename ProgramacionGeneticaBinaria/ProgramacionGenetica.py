@@ -187,7 +187,7 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 	return Pob[ind]
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
 
-for inArchivo in xrange(1,21):
+for inArchivo in xrange(1,2):
 
 	print "Prueba"+str(inArchivo)
 	poMax = Individuo.Individuo(5)	
