@@ -57,8 +57,8 @@ def NumeroAciertos (O,Narchivo):
 			#plt.plot(xPF, yPF, 'r')
 		if metodo == 'F':  
 			#plt.plot(NumeroProfundidad, NumeroAciertos, '-b',linewidth = 3, label = 'FULL')
-			print "FULL"
-			print NumeroAciertos
+			#print "FULL"
+			#print NumeroAciertos
 			Salida.append(NumeroAciertos)
 		elif metodo == 'G':
 			#plt.plot(NumeroProfundidad, NumeroAciertos, '-g',linewidth = 3, label = 'GROW')
@@ -90,100 +90,154 @@ def Tiempo (Narchivo,metodo,color):
 			yt[i]+=float (data["Salida"][i]["Prueba"][0]["TiempoTotal"])/30
 
 	if metodo == 'F':  
-		plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+		return yt
+		#plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
 	elif metodo == 'G':
-		plt.plot(xt, yt, color,linewidth = 3, label =  'GROW')
+		return yt
+		#plt.plot(xt, yt, color,linewidth = 3, label =  'GROW')
 	elif metodo == 'H':
-		plt.plot(xt, yt, color,linewidth = 3, label =  'HALF AND HALF')
+		return yt
+		#plt.plot(xt, yt, color,linewidth = 3, label =  'HALF AND HALF')
 
 def  Distribucion (Narchivo,profundidad,k ,metodo,color):
+	xMP = [] # profundidad
+	yMP = [] # longitud de convergencia
+	zMP = [] # gra
+	maximo =[]
+	arcmaximo = []
+	colorPro =['-hk','-hm','-hr','-hg','-hb','-hy','-hc','-hc','-hm']
 
-	y=[]
-	x=[]
-	yC=[]
-	xC=[]
-	yB=[]
-	xB=[]
+	for metodo in ['G']:
+		for profundidad in xrange(0,9):
+			k = 0
+			Narchivo = 2
+			muetras = 1
+			contador = 0 
+			while contador<muetras and Narchivo<= 8 :
+				while contador <muetras  and k<30 :
+					convegencia = False
+					y=[]
+					x=[]
+					yC=[]
+					xC=[]
+					yB=[]
+					xB=[]
 
-	yM = []
-	xM = []
-	yP=[]
-	xP=[]
-	Salida = []
+					yM = []
+					xM = []
+					yP=[]
+					xP=[]
+					Salida = []
+					
+					
+					with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+					    data = json.load(data_file)
+					##print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
+					yt = [ l-l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
+					xt = [ l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
 
+					#---------------------------verificar convergencia---------------------------------------------
+					
+					bandera = 1
+					indxPo = 0
+					#print  "analizando carpeta" + str(Narchivo)+" Archivo " +str(k)
+					ultimoGenenracion = data["Salida"][profundidad]["Prueba"][0]["Generacion"] [len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])-1]
+					while (bandera and indxPo<len(ultimoGenenracion["Poblacion"]) ):
+								j=ultimoGenenracion["Poblacion"][indxPo]
+						 		if  j["Len"]=='6' and j["Error"] == '0.0':
+						 			##print "converge"
+							 		convegencia = True
+							 		bandera = 0
+							 	indxPo += 1
+
+					if (convegencia):
+						contador += 1
+						#print "converge"
+					##print convegencia
+					#-----------------------------------------------------------------------------------------------
+
+
+					if (convegencia) and contador == muetras :
+						indx=0
+						for ngen in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) :
+							i =data["Salida"][profundidad]["Prueba"][0]["Generacion"][ngen]
+							mejor = 80000
+							peor  = 0
+							##print i["Prueba"][0]["TiempoTotal"]
+							for  j  in i["Poblacion"]:
+							 	y.append(j["Len"])
+							 	x.append(indx)
+							 	yt[indx] += float(j["Len"])/float(len(i["Poblacion"])) 
+
+							 	if j["Error"] == '0.0' :
+										yC.append(j["Len"])
+							 			xC.append(indx)	
+							 	if j["Error"] == '0.0' and j["Len"]=='6' :
+										yB.append(j["Len"])
+							 			xB.append(indx)	
+						 		if int(j["Len"]) < mejor:
+						 			mejor = int(j["Len"])
+						 		if int(j["Len"]) > peor :
+						 			peor = int(j["Len"])
+							if mejor != 80000 and peor != 0 :
+								yM.append(mejor)
+								yP.append(peor)
+								xM.append(indx)
+								xP.append(indx)
+
+								yMP.append(peor)
+								xMP.append(indx)
+							indx+=1
+
+							xMP.append( profundidad )
+							yMP.append( max(yP)   )
+
+						if metodo == 'F': 
+							#print max(yP)
+							#print yP.index(max(yP))
+							plt.plot(x, y, 'ob',linewidth = 3, label = 'individuo ')
+							plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
+							#plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
+							plt.plot(xt, yt, '-hc',linewidth = 3, label = 'Promedio')
+							##print yP
+						elif metodo == 'G':
+							if len(yP) and len(xMP): 
+								#print max(yP)
+								#print yP.index(max(yP))
+								plt.plot(x, y, 'og',linewidth = 3, label =  'individuo ')
+								plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
+								plt.plot(xt, yt, '-hy',linewidth = 3, label = 'Promedio')
+						elif metodo == 'H':
+							if len(yP) and len(xMP): 
+								#print max(yP)
+								#print yP.index(max(yP))
+								plt.plot(x, y, 'or',linewidth = 3, label =  'individuo ')
+								plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
+								plt.plot(xt, yt, '-hm',linewidth = 3, label = 'Promedio')
+					k+=1
+				Narchivo += 1						
+			#plt.plot(xMP, yMP, color,linewidth = 3, label =  'HALF AND HALF')
+			#print "Máximo global : " + str(max(yMP))
+			#print "Generación del máximo global : " +str(xMP[yMP.index(max(yMP))])
+			plt.margins(0.5)
+			plt.subplots_adjust(bottom=0.15)
+			plt.xlabel(u'Generación')
+			plt.ylabel(u'Longitud')
+			plt.title(u'Profundidad '+str(profundidad+2))
+			plt.legend()  # Creamos la caja con la leyenda
+			plt.minorticks_on()
+			plt.xlim(-.5,201)
+			plt.ylim(-1)
+			plt.savefig(metodo+"-Prof"+str(profundidad+2)+"-Max"+str(max(yP))+"-MaMedia"+str(max(yt))+"-Gene"+str(yP.index(max(yP)))+".png" )
+			#print metodo+"-Prof "+str(profundidad+2)
+			#print "    -Max     "+str(max(yP))
+			#print "    -MaxMedi "+str(max(yt))
+			#print "    -Gene    "+str(yP.index(max(yP))) 
+			#print "    -GeneM   "+str(yt.index(max(yt))) 
+			plt.grid(True)
+			plt.show()
+			
 		
-
-	
-	
-	with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
-	    data = json.load(data_file)
-
-	#print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
-	yt = [ l-l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
-	xt = [ l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
-
-	indx=0
-	for i in data["Salida"][profundidad]["Prueba"][0]["Generacion"] :
-		mejor = 80000
-		peor  = 0
-		#print i["Prueba"][0]["TiempoTotal"]
-		for  j  in i["Poblacion"]:
-		 	y.append(j["Len"])
-		 	x.append(indx)
-		 	yt[indx] += float(j["Len"])/float(len(i["Poblacion"])) 
-
-		 	if j["Error"] == '0.0' :
-					yC.append(j["Len"])
-		 			xC.append(indx)	
-		 	if j["Error"] == '0.0' and j["Len"]=='6' :
-					yB.append(j["Len"])
-		 			xB.append(indx)	
-	 		if int(j["Len"]) < mejor:
-	 			mejor = int(j["Len"])
-	 		if int(j["Len"]) > peor :
-	 			peor = int(j["Len"])
-		if mejor != 80000 and peor != 0 :
-			yM.append(mejor)
-			yP.append(peor)
-			xM.append(indx)
-			xP.append(indx)
-		
-		indx+=1
-
-
-
-	if metodo == 'F':  
-		print max(yP)
-		plt.plot(x, y, 'ob',linewidth = 3, label = 'FULL')
-		plt.plot(xP, yP, color,linewidth = 3, label = 'FULL')
-		#plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
-		#plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
-		#print yP
-	elif metodo == 'G':
-		print max(yP)
-		plt.plot(x, y, 'og',linewidth = 3, label =  'GROW')
-		plt.plot(xP, yP, color,linewidth = 3, label = 'GROW')
-		#plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
-	elif metodo == 'H':
-		print max(yP)
-		print yP.index(max(yP))
-		plt.plot(x, y, 'or',linewidth = 3, label =  'HALF AND HALF')
-		plt.plot(xP, yP, color,linewidth = 3, label = 'HALF AND HALF')
-		#plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
-
-	"""
-	plt.margins(0.2)
-	plt.subplots_adjust(bottom=0.15)
-	plt.xlabel(u'Generación')
-	plt.ylabel(u'Tamaño de expreción')
-	plt.legend()  # Creamos la caja con la leyenda
-	plt.minorticks_on()
-	plt.xlim(-2,202)
-	plt.savefig(metodo+"-Po"+str(profundidad)+"-Ma"+str(max(yP))+"-Ge"+str(yP.index(max(yP)))+".png" )
-	plt.grid(True)
-	plt.show()
-	"""
-	
 def  DistribucionMax (Narchivo,profundidad,k ,metodo,color):
 	y=[]
 	x=[]
@@ -238,21 +292,21 @@ def  DistribucionMax (Narchivo,profundidad,k ,metodo,color):
 	if metodo == 'F':  
 		print max(yP)
 		plt.plot(x, y, 'ob',linewidth = 3, label = 'FULL')
-		plt.plot(xP, yP, color,linewidth = 3, label = 'FULL')
+		plt.plot(xP, yP, 'ok',linewidth = 3, label = 'FULL')
 		#plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
-		#plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
+		plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
 		#print yP
 	elif metodo == 'G':
 		print max(yP)
 		plt.plot(x, y, 'og',linewidth = 3, label =  'GROW')
-		plt.plot(xP, yP, color,linewidth = 3, label = 'GROW')
-		#plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
+		plt.plot(xP, yP, 'ok',linewidth = 3, label = 'GROW')
+		plt.plot(xt, yt, '-hy',linewidth = 3, label = 'FULL')
 	elif metodo == 'H':
 		print max(yP)
 		print yP.index(max(yP))
 		plt.plot(x, y, 'or',linewidth = 3, label =  'HALF AND HALF')
-		plt.plot(xP, yP, color,linewidth = 3, label = 'HALF AND HALF')
-		#plt.plot(xt, yt, '-hc',linewidth = 3, label = 'FULL')
+		plt.plot(xP, yP, 'ok',linewidth = 3, label = 'HALF AND HALF')
+		plt.plot(xt, yt, '-hm',linewidth = 3, label = 'FULL')
 
 
 
@@ -308,63 +362,63 @@ def  convergencia(Narchivo,metodo,color):
 		yIP[NPi] = min(aux)			
 
 	if metodo == 'F':  
-		#xPM =[ l-l for l in xrange(2,11) ]
-		#yPM = [ l for l in xrange(2,11) ]
+		xPM =[ l-l for l in xrange(2,11) ]
+		yPM = [ l for l in xrange(2,11) ]
 
-		#for arrpuni in xrange(0,len(NP)):
-		#	arrpun = NP[arrpuni]
-		#	for punto in xrange(0,len(arrpun)):
-		#		xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
-		#	print xPM[arrpuni]
+		for arrpuni in xrange(0,len(NP)):
+			arrpun = NP[arrpuni]
+			for punto in xrange(0,len(arrpun)):
+				xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
+			print xPM[arrpuni]
 
-		#plt.plot(xC, yC, 'ob',linewidth = 3, label = 'FULL')
-		#plt.plot(yPM, xPM, '-hb',linewidth = 3, label =  'FULL')
+		plt.plot(xC, yC, 'ob',linewidth = 3, label = 'FULL')
+		plt.plot(yPM, xPM, '-hc',linewidth = 3, label =  'FULL')
 		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
 		#aux1 =[]
 		#for x in NP:
 		#	aux1 = aux1+[x]+[[]]+[[]]
 
-		plt.boxplot(NP, sym = 'ko', whis = 1.5,flierprops = dict(marker='o', markerfacecolor='blue'),boxprops = dict( color='blue') )
+		#plt.boxplot(NP, sym = 'ko', whis = 1.5,flierprops = dict(marker='o', markerfacecolor='blue'),boxprops = dict( color='blue') )
 		#plt.xticks([ (l*3)+1 for l in xrange(0,9) ], xP, size = 'small', color = 'b')
 		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
 		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
 	elif metodo == 'G':
-		#xPM =[ l-l for l in xrange(2,11) ]
-		#yPM = [ l for l in xrange(2,11) ]
+		xPM =[ l-l for l in xrange(2,11) ]
+		yPM = [ l for l in xrange(2,11) ]
 
-		#for arrpuni in xrange(0,len(NP)):
-		#	arrpun = NP[arrpuni]
-		#	for punto in xrange(0,len(arrpun)):
-		#		xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
-		#	print xPM[arrpuni]
+		for arrpuni in xrange(0,len(NP)):
+			arrpun = NP[arrpuni]
+			for punto in xrange(0,len(arrpun)):
+				xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
+			print xPM[arrpuni]
 
-		#plt.plot(xC, yC, 'ob',linewidth = 3, label =  'GROW')
-		#plt.plot(yPM, xPM, '-hg',linewidth = 3, label =  'GROW')
+		plt.plot(xC, yC, 'og',linewidth = 3, label =  'GROW')
+		plt.plot(yPM, xPM, '-hy',linewidth = 3, label =  'GROW')
 		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
 		#aux1 =[]
 		#for x in NP:
 		#	aux1 = aux1+[[]]+[x]+[[]]
-		plt.boxplot(NP, sym = 'ko', whis = 1.5, flierprops = dict(marker='o', markerfacecolor='green'),boxprops = dict( color='green'))
+		#plt.boxplot(NP, sym = 'ko', whis = 1.5, flierprops = dict(marker='o', markerfacecolor='green'),boxprops = dict( color='green'))
 		#plt.xticks([ (l*3)+2 for l in xrange(0,9) ], xP, size = 'small', color = 'g')
 		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
 		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
 	elif metodo == 'H':
-		#xPM =[ l-l for l in xrange(2,11) ]
-		#yPM = [ l for l in xrange(2,11) ]
+		xPM =[ l-l for l in xrange(2,11) ]
+		yPM = [ l for l in xrange(2,11) ]
 
-		#for arrpuni in xrange(0,len(NP)):
-		#	arrpun = NP[arrpuni]
-		#	for punto in xrange(0,len(arrpun)):
-		#		xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
-		#	print xPM[arrpuni]
+		for arrpuni in xrange(0,len(NP)):
+			arrpun = NP[arrpuni]
+			for punto in xrange(0,len(arrpun)):
+				xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
+			print xPM[arrpuni]
 	
-		#plt.plot(xC, yC, 'or',linewidth = 3, label =  'HALF AND HALF')
-		#plt.plot(yPM, xPM, '-hr',linewidth = 3, label =  'HALF AND HALF')
+		plt.plot(xC, yC, 'or',linewidth = 3, label =  'HALF AND HALF')
+		plt.plot(yPM, xPM, '-hm',linewidth = 3, label =  'HALF AND HALF')
 		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
 		#aux1 =[]
 		#for x in NP:
 		#	aux1 = aux1+[[]]+[[]]+[x]
-		plt.boxplot(NP, sym = 'ko', whis = 1.5, flierprops = dict(marker='o', markerfacecolor='red'),boxprops = dict( color='red') )
+		#plt.boxplot(NP, sym = 'ko', whis = 1.5, flierprops = dict(marker='o', markerfacecolor='red'),boxprops = dict( color='red') )
 		#plt.xticks(xP, xP, size = 'small', color = 'r')
 		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
 		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
@@ -378,7 +432,45 @@ print "iniciando"
 #Tiempo(5,"F",'-hb')
 #Tiempo(5,"H",'-hr')
 #Tiempo(5,"G",'-hg')
+"""
+N = 9
+ind = ind = np.arange(N) 
+width = 0.3      # the width of the bars
+fig, ax = plt.subplots()
 
+FULL = tuple(Tiempo(5,"F",'-hb'))
+rects1 = ax.bar(ind, FULL, width, color='b')
+
+GROW = tuple(Tiempo(5,"H",'-hr'))
+rects2 = ax.bar(ind + width, GROW, width, color='g')
+
+HALF = tuple(Tiempo(5,"G",'-hg'))
+rects3 = ax.bar(ind + width+width, GROW, width, color='r')
+
+
+
+# add some text for labels, title and axes ticks
+ax.set_ylabel('Tiempo')
+ax.set_xlabel('profundidad')
+ax.set_xticks(ind + width+width)
+ax.set_xticklabels(( '2', '3', '4', '5','6','7','8','9','10'))
+plt.ylim(0,48)
+
+ax.legend((rects1[0], rects2[0],rects3[0]), ('FULL', 'GROW', 'HALF AND HALF'))
+
+
+def autolabel(rects):
+    # attach some text labels
+    for rect in rects:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1*height,'%.3f ' % round(height,3),
+                ha='center', va='bottom')
+
+autolabel(rects1)
+autolabel(rects2)
+autolabel(rects3)
+plt.show()
+"""
 #Tiempo(4,"H",'-c')
 #Tiempo(5,"H",'-m')
 #Tiempo(6,"H",'-k')
@@ -390,10 +482,9 @@ print "iniciando"
 #for  arp in xrange(3,4):
 #	for arcin in xrange(0,30):
 #		Distribucion(arp,1,arcin,"F",'ob')
-for rap in xrange(0,9):
-	print rap
-	Distribucion(2,rap,20,"G",'oy')
-	print "   "
+
+Distribucion(2,0,20,"H",'oy')
+
 #Distribucion(5,1,20,"F",'or')
 #Distribucion(5,1,20,"G",'or')
 #Distribucion(2,1,20,"H",'og')
@@ -417,6 +508,20 @@ for rap in xrange(0,9):
 #prueba = 'E' #LE = comparar longitud y Error E = Error  
 #for Narchivo in xrange(1,9):
 #	NumeroAciertos(prueba,Narchivo)
+
+"""
+plt.margins(0.2)
+plt.subplots_adjust(bottom=0.15)
+plt.xlabel(u'longitud')
+plt.ylabel(u'generación')
+plt.legend()  # Creamos la caja con la leyenda
+plt.minorticks_on()
+#plt.xlim(-2,202)
+#plt.savefig(metodo+"-Po"+str(profundidad)+"-Ma"+str(max(yP))+"-Ge"+str(yP.index(max(yP)))+".png" )
+plt.grid(True)
+plt.show()
+"""
+
 
 
 """

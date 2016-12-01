@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import numpy as np
 import matplotlib.pyplot as plt
 
 """
@@ -40,19 +41,45 @@ H-Po8-Ma1146-Ge0,
 [40,78,425,33,142,636,56,212,1146]
 
 """
-plt.plot([2,3,4,5,6,7,8,9,10], [27,45,83,126,204,373,406,601,1143], '-hb',linewidth = 3, label = 'FULL')
-plt.plot([2,3,4,5,6,7,8,9,10], [29,29,54,84,113,327,361,693,1227], '-hg',linewidth = 3, label = 'GROW')
-plt.plot([2,3,4,5,6,7,8,9,10], [40,33,56,78,142,212,425,636,1146], '-hr',linewidth = 3, label = 'HALF AND HALF')
+#rects1 = ax.bar([2,3,4,5,6,7,8,9,10], [27,45,83,126,204,373,406,601,1143], width, color='r', yerr=menStd)
+#plt.bar(, [27,45,83,126,204,373,406,601,1143])
+#plt.hist([2,3,4,5,6,7,8,9,10], [29,29,54,84,113,327,361,693,1227], '-hg',linewidth = 3, label = 'GROW')
+#plt.hist([2,3,4,5,6,7,8,9,10], [40,33,56,78,142,212,425,636,1146], '-hr',linewidth = 3, label = 'HALF AND HALF')
+N = 9
+ind = ind = np.arange(N) 
+width = 0.3      # the width of the bars
+fig, ax = plt.subplots()
+
+FULL = (27,45,83,126,204,373,406,601,1143)
+rects1 = ax.bar(ind, FULL, width, color='b')
+
+GROW = (29,29,54,84,113,327,361,693,1227)
+rects2 = ax.bar(ind + width, GROW, width, color='g')
+
+HALF = (40,33,56,78,142,212,425,636,1146)
+rects3 = ax.bar(ind + width+width, GROW, width, color='r')
 
 
-plt.margins(0.2)
-plt.subplots_adjust(bottom=0.15)
-plt.xlabel(u'Profundidad')
-plt.ylabel(u'Tamaño de expreción')
-plt.legend()  # Creamos la caja con la leyenda
-plt.minorticks_on()
-#plt.xlim(-2,202)
-#plt.savefig(metodo+"-Po"+str(profundidad)+"-Ma"+str(max(yP))+"-Ge"+str(yP.index(max(yP)))+".png" )
 
-plt.grid(True)
+# add some text for labels, title and axes ticks
+ax.set_ylabel(u'Máxima longitud')
+ax.set_title('Profundidad')
+ax.set_xticks(ind + width+width)
+ax.set_xticklabels(('2', '3', '4', '5','6','7','8','9','10'))
+
+ax.legend((rects1[0], rects2[0],rects3[0]), ('FULL', 'GROW', 'HALF AND HALF'))
+
+
+def autolabel(rects):
+    # attach some text labels
+    for rect in rects:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1*height,
+                '%d' % int(height),
+                ha='center', va='bottom')
+
+autolabel(rects1)
+autolabel(rects2)
+autolabel(rects3)
+
 plt.show()
