@@ -103,119 +103,134 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 	xMP = [] # profundidad
 	yMP = [] # longitud de convergencia
 	zMP = [] # gra
+	mediayG = [ l-l for l in xrange(2,11) ]
+	mediayNG = [ l-l for l in xrange(2,11) ]
+	mediaxG = [ l for l in xrange(2,11) ]
+
 	maximo =[]
 	arcmaximo = []
 	colorPro =['-hk','-hm','-hr','-hg','-hb','-hy','-hc','-hc','-hm']
 
-	for metodo in ['G']:
-		for profundidad in xrange(0,9):
-			k = 0
-			Narchivo = 2
-			muetras = 1
-			contador = 0 
-			while contador<muetras and Narchivo<= 8 :
-				while contador <muetras  and k<30 :
-					convegencia = False
-					y=[]
-					x=[]
-					yC=[]
-					xC=[]
-					yB=[]
-					xB=[]
+	for profundidad in xrange(0,9):
+		k = 0
+		Narchivo = 2
+		muetras = 1
+		contador = 0 
+		while contador<muetras and Narchivo<= 8 :
+			while contador <muetras  and k<30 :
+				convegencia = False
+				y=[]
+				x=[]
+				yC=[]
+				xC=[]
+				yB=[]
+				xB=[]
 
-					yM = []
-					xM = []
-					yP=[]
-					xP=[]
-					Salida = []
-					
-					
-					with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
-					    data = json.load(data_file)
-					##print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
-					yt = [ l-l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
-					xt = [ l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
+				yM = []
+				xM = []
+				yP=[]
+				xP=[]
+				Salida = []
+				
+				
+				with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+				    data = json.load(data_file)
+				##print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
+				yt = [ l-l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
+				xt = [ l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
 
-					#---------------------------verificar convergencia---------------------------------------------
-					
-					bandera = 1
-					indxPo = 0
-					#print  "analizando carpeta" + str(Narchivo)+" Archivo " +str(k)
-					ultimoGenenracion = data["Salida"][profundidad]["Prueba"][0]["Generacion"] [len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])-1]
-					while (bandera and indxPo<len(ultimoGenenracion["Poblacion"]) ):
-								j=ultimoGenenracion["Poblacion"][indxPo]
-						 		if  j["Len"]=='6' and j["Error"] == '0.0':
-						 			##print "converge"
-							 		convegencia = True
-							 		bandera = 0
-							 	indxPo += 1
+				#---------------------------verificar convergencia---------------------------------------------
+				
+				bandera = 1
+				indxPo = 0
+				#print  "analizando carpeta" + str(Narchivo)+" Archivo " +str(k)
+				ultimoGenenracion = data["Salida"][profundidad]["Prueba"][0]["Generacion"] [len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])-1]
+				while (bandera and indxPo<len(ultimoGenenracion["Poblacion"]) ):
+							j=ultimoGenenracion["Poblacion"][indxPo]
+					 		if  j["Len"]=='6' and j["Error"] == '0.0':
+					 			##print "converge"
+						 		convegencia = True
+						 		bandera = 0
+						 	indxPo += 1
 
-					if (convegencia):
-						contador += 1
-						#print "converge"
-					##print convegencia
-					#-----------------------------------------------------------------------------------------------
+				if (convegencia):
+					contador += 1
+					#print "converge"
+				##print convegencia
+				#-----------------------------------------------------------------------------------------------
 
 
-					if (convegencia) and contador == muetras :
-						indx=0
-						for ngen in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) :
-							i =data["Salida"][profundidad]["Prueba"][0]["Generacion"][ngen]
-							mejor = 80000
-							peor  = 0
-							##print i["Prueba"][0]["TiempoTotal"]
-							for  j  in i["Poblacion"]:
-							 	y.append(j["Len"])
-							 	x.append(indx)
-							 	yt[indx] += float(j["Len"])/float(len(i["Poblacion"])) 
+				if (convegencia) and contador == muetras :
+					indx=0
+					for ngen in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) :
+						i =data["Salida"][profundidad]["Prueba"][0]["Generacion"][ngen]
+						mejor = 80000
+						peor  = 0
+						##print i["Prueba"][0]["TiempoTotal"]
+						for  j  in i["Poblacion"]:
+						 	y.append(j["Len"])
+						 	x.append(indx)
+						 	mediayG[profundidad] += float(j["Len"])
+						 	mediayNG[profundidad] += 1 
 
-							 	if j["Error"] == '0.0' :
-										yC.append(j["Len"])
-							 			xC.append(indx)	
-							 	if j["Error"] == '0.0' and j["Len"]=='6' :
-										yB.append(j["Len"])
-							 			xB.append(indx)	
-						 		if int(j["Len"]) < mejor:
-						 			mejor = int(j["Len"])
-						 		if int(j["Len"]) > peor :
-						 			peor = int(j["Len"])
-							if mejor != 80000 and peor != 0 :
-								yM.append(mejor)
-								yP.append(peor)
-								xM.append(indx)
-								xP.append(indx)
+						 	yt[indx] += float(j["Len"])/float(len(i["Poblacion"])) 
 
-								yMP.append(peor)
-								xMP.append(indx)
-							indx+=1
+						 	if j["Error"] == '0.0' :
+									yC.append(j["Len"])
+						 			xC.append(indx)	
+						 	if j["Error"] == '0.0' and j["Len"]=='6' :
+									yB.append(j["Len"])
+						 			xB.append(indx)	
+					 		if int(j["Len"]) < mejor:
+					 			mejor = int(j["Len"])
+					 		if int(j["Len"]) > peor :
+					 			peor = int(j["Len"])
+						if mejor != 80000 and peor != 0 :
+							yM.append(mejor)
+							yP.append(peor)
+							xM.append(indx)
+							xP.append(indx)
 
-							xMP.append( profundidad )
-							yMP.append( max(yP)   )
+							yMP.append(peor)
+							xMP.append(indx)
+						indx+=1
 
-						if metodo == 'F': 
+						xMP.append( profundidad )
+						yMP.append( max(yP)   )
+					"""
+					if metodo == 'F': 
+						#print max(yP)
+						#print yP.index(max(yP))
+						plt.plot(x, y, 'ob',linewidth = 3, label = 'individuo ')
+						plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
+						#plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
+						plt.plot(xt, yt, '-hc',linewidth = 3, label = 'Promedio')
+						##print yP
+					elif metodo == 'G':
+						if len(yP) and len(xMP): 
 							#print max(yP)
 							#print yP.index(max(yP))
-							plt.plot(x, y, 'ob',linewidth = 3, label = 'individuo ')
+							plt.plot(x, y, 'og',linewidth = 3, label =  'individuo ')
 							plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
-							#plt.plot(xC, yC, 'or',linewidth = 3, label = 'FULL')
-							plt.plot(xt, yt, '-hc',linewidth = 3, label = 'Promedio')
-							##print yP
-						elif metodo == 'G':
-							if len(yP) and len(xMP): 
-								#print max(yP)
-								#print yP.index(max(yP))
-								plt.plot(x, y, 'og',linewidth = 3, label =  'individuo ')
-								plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
-								plt.plot(xt, yt, '-hy',linewidth = 3, label = 'Promedio')
-						elif metodo == 'H':
-							if len(yP) and len(xMP): 
-								#print max(yP)
-								#print yP.index(max(yP))
-								plt.plot(x, y, 'or',linewidth = 3, label =  'individuo ')
-								plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
-								plt.plot(xt, yt, '-hm',linewidth = 3, label = 'Promedio')
-					k+=1
-				Narchivo += 1						
+							plt.plot(xt, yt, '-hy',linewidth = 3, label = 'Promedio')
+					elif metodo == 'H':
+						if len(yP) and len(xMP): 
+							#print max(yP)
+							#print yP.index(max(yP))
+							plt.plot(x, y, 'or',linewidth = 3, label =  'individuo ')
+							plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
+							plt.plot(xt, yt, '-hm',linewidth = 3, label = 'Promedio')
+					"""
+				k+=1
+			Narchivo += 1
+	for mdiaG in xrange(0,9):
+		print "profundidad " + str(mdiaG)
+		print "		profundidad " +str(mediayG[mdiaG])
+		print "     Nindi       " +str(mediayNG[mdiaG])
+		print "     Media       " +str (mediayG[mdiaG]/float(mediayNG[mdiaG])) 
+		mediayG[mdiaG] = mediayG[mdiaG]/float(mediayNG[mdiaG])
+	return mediayG
+	"""					
 			#plt.plot(xMP, yMP, color,linewidth = 3, label =  'HALF AND HALF')
 			#print "Máximo global : " + str(max(yMP))
 			#print "Generación del máximo global : " +str(xMP[yMP.index(max(yMP))])
@@ -236,7 +251,7 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 			#print "    -GeneM   "+str(yt.index(max(yt))) 
 			plt.grid(True)
 			plt.show()
-			
+	"""		
 		
 def  DistribucionMax (Narchivo,profundidad,k ,metodo,color):
 	y=[]
@@ -483,7 +498,44 @@ plt.show()
 #	for arcin in xrange(0,30):
 #		Distribucion(arp,1,arcin,"F",'ob')
 
-Distribucion(2,0,20,"H",'oy')
+
+N = 9
+ind = ind = np.arange(N) 
+width = 0.3      # the width of the bars
+fig, ax = plt.subplots()
+
+FULL = tuple(Distribucion(2,0,20,"F",'oy'))
+rects1 = ax.bar(ind, FULL, width, color='b')
+
+GROW = tuple(Distribucion(2,0,20,"G",'oy'))
+rects2 = ax.bar(ind + width, GROW, width, color='g')
+
+HALF = tuple(Distribucion(2,0,20,"H",'oy'))
+rects3 = ax.bar(ind + width+width, GROW, width, color='r')
+
+
+
+# add some text for labels, title and axes ticks
+ax.set_ylabel('longitud media')
+ax.set_xlabel('profundidad')
+ax.set_xticks(ind + width+width)
+ax.set_xticklabels(( '2', '3', '4', '5','6','7','8','9','10'))
+plt.ylim(0,150)
+
+ax.legend((rects1[0], rects2[0],rects3[0]), ('FULL', 'GROW', 'HALF AND HALF'))
+
+
+def autolabel(rects):
+    # attach some text labels
+    for rect in rects:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1*height,'%.2f ' % round(height,3),
+                ha='center', va='bottom')
+
+autolabel(rects1)
+autolabel(rects2)
+autolabel(rects3)
+plt.show()
 
 #Distribucion(5,1,20,"F",'or')
 #Distribucion(5,1,20,"G",'or')
