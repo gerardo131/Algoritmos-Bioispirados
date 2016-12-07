@@ -11,10 +11,27 @@ from operator import xor
 # Pconstan --- probabilidad de escojer constantes 
 # PFun ------- probabilidad de escojer funciones    
 
-metCrear = "FULL"
-setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3] ]
+metCrear = "GROW"
+
+setFun = {
+			"Aritmetic"   : [ ['+','-','/','*'], [2,2,2,2] ],
+			"Comp"        : [ ['==','!=','<=','>=','<','>'],[2,2,2,2,2,2] ]
+			"Logico"      : [ ['and','or','not'], [2,2,1] ]
+			"Iterativo"   : [ ['for','while'],[3,2] ]
+			"Condicional" : [ ['if'] ,[3] ]
+			"MulBlock"    : [ ['block2','block3','block4','block5'],[2,3,4,5] ]
+			"List"        : [ ['append','sort','[]'],[2,1,2] ]
+			"Control"     : [ ['return'],[1] ]
+			"Asignacion"  : [ ['=' ],[2] ] 
+}
+			
+
+
+
+setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3], ]
 setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
+numGvar = 5
 #------- Probabilidades de cada uno de los signos ------------
 PVar = 8
 PConstan = 1
@@ -152,3 +169,4 @@ class Individuo:
 		return pila.pop()
 
 
+print Individuo(2).gen
