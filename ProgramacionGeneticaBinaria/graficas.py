@@ -113,7 +113,7 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 
 	for profundidad in xrange(0,9):
 		k = 0
-		Narchivo = 2
+		Narchivo = 1
 		muetras = 1
 		contador = 0 
 		while contador<muetras and Narchivo<= 8 :
@@ -133,7 +133,7 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 				Salida = []
 				
 				
-				with open('Prueba'+str(Narchivo)+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
+				with open('PruebaSinElitismoDoble1'+'/Salida'+str(k)+metodo+'2_10.json') as data_file:    
 				    data = json.load(data_file)
 				##print data["Salida"][0]["Prueba"][0]["Generacion"][0]["Poblacion"][0]["Len"]
 				yt = [ l-l for l in xrange(0,len(data["Salida"][profundidad]["Prueba"][0]["Generacion"])) ]
@@ -197,7 +197,7 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 
 						xMP.append( profundidad )
 						yMP.append( max(yP)   )
-					"""
+					
 					if metodo == 'F': 
 						#print max(yP)
 						#print yP.index(max(yP))
@@ -220,17 +220,9 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 							plt.plot(x, y, 'or',linewidth = 3, label =  'individuo ')
 							plt.plot(xP, yP, 'ok',linewidth = 3, label = u'Máximo')
 							plt.plot(xt, yt, '-hm',linewidth = 3, label = 'Promedio')
-					"""
+					
 				k+=1
 			Narchivo += 1
-	for mdiaG in xrange(0,9):
-		print "profundidad " + str(mdiaG)
-		print "		profundidad " +str(mediayG[mdiaG])
-		print "     Nindi       " +str(mediayNG[mdiaG])
-		print "     Media       " +str (mediayG[mdiaG]/float(mediayNG[mdiaG])) 
-		mediayG[mdiaG] = mediayG[mdiaG]/float(mediayNG[mdiaG])
-	return mediayG
-	"""					
 			#plt.plot(xMP, yMP, color,linewidth = 3, label =  'HALF AND HALF')
 			#print "Máximo global : " + str(max(yMP))
 			#print "Generación del máximo global : " +str(xMP[yMP.index(max(yMP))])
@@ -251,7 +243,18 @@ def  Distribucion (Narchivo,profundidad,k ,metodo,color):
 			#print "    -GeneM   "+str(yt.index(max(yt))) 
 			plt.grid(True)
 			plt.show()
-	"""		
+
+	"""
+	for mdiaG in xrange(0,9):
+		print "profundidad " + str(mdiaG)
+		print "		profundidad " +str(mediayG[mdiaG])
+		print "     Nindi       " +str(mediayNG[mdiaG])
+		print "     Media       " +str (mediayG[mdiaG]/float(mediayNG[mdiaG])) 
+		mediayG[mdiaG] = mediayG[mdiaG]/float(mediayNG[mdiaG])
+	return mediayG
+	"""					
+
+			
 		
 def  DistribucionMax (Narchivo,profundidad,k ,metodo,color):
 	y=[]
@@ -386,8 +389,8 @@ def  convergencia(Narchivo,metodo,color):
 				xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
 			print xPM[arrpuni]
 
-		plt.plot(xC, yC, 'ob',linewidth = 3, label = 'FULL')
-		plt.plot(yPM, xPM, '-hc',linewidth = 3, label =  'FULL')
+		plt.plot(xC, yC, 'ob',linewidth = 3, label = u'Generación convergente')
+		plt.plot(yPM, xPM, '-hc',linewidth = 3, label = u'Promedio')
 		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
 		#aux1 =[]
 		#for x in NP:
@@ -407,16 +410,16 @@ def  convergencia(Narchivo,metodo,color):
 				xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
 			print xPM[arrpuni]
 
-		plt.plot(xC, yC, 'og',linewidth = 3, label =  'GROW')
-		plt.plot(yPM, xPM, '-hy',linewidth = 3, label =  'GROW')
-		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+		plt.plot(xC, yC, 'og',linewidth = 3, label = u'Generación convergente')
+		plt.plot(yPM, xPM, '-hy',linewidth = 3, label = u'Promedio')
+		##plt.plot(xt, yt, color,linewidth = 3, label = u'FULL')
 		#aux1 =[]
 		#for x in NP:
 		#	aux1 = aux1+[[]]+[x]+[[]]
 		#plt.boxplot(NP, sym = 'ko', whis = 1.5, flierprops = dict(marker='o', markerfacecolor='green'),boxprops = dict( color='green'))
 		#plt.xticks([ (l*3)+2 for l in xrange(0,9) ], xP, size = 'small', color = 'g')
-		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
-		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
+		#plt.plot(xP, yAP, color,linewidth = 3, label = u'FULL')
+		#plt.plot(xP, yIP, color,linewidth = 3, label = u'FULL')
 	elif metodo == 'H':
 		xPM =[ l-l for l in xrange(2,11) ]
 		yPM = [ l for l in xrange(2,11) ]
@@ -427,16 +430,16 @@ def  convergencia(Narchivo,metodo,color):
 				xPM[arrpuni]+=float(arrpun[punto])/float(len(arrpun) )
 			print xPM[arrpuni]
 	
-		plt.plot(xC, yC, 'or',linewidth = 3, label =  'HALF AND HALF')
-		plt.plot(yPM, xPM, '-hm',linewidth = 3, label =  'HALF AND HALF')
-		##plt.plot(xt, yt, color,linewidth = 3, label = 'FULL')
+		plt.plot(xC, yC, 'or',linewidth = 3, label = u'Generación convergente')
+		plt.plot(yPM, xPM, '-hm',linewidth = 3, label = u'Promedio')
+		##plt.plot(xt, yt, color,linewidth = 3, label = u'FULL')
 		#aux1 =[]
 		#for x in NP:
 		#	aux1 = aux1+[[]]+[[]]+[x]
 		#plt.boxplot(NP, sym = 'ko', whis = 1.5, flierprops = dict(marker='o', markerfacecolor='red'),boxprops = dict( color='red') )
 		#plt.xticks(xP, xP, size = 'small', color = 'r')
-		#plt.plot(xP, yAP, color,linewidth = 3, label = 'FULL')
-		#plt.plot(xP, yIP, color,linewidth = 3, label = 'FULL')
+		#plt.plot(xP, yAP, color,linewidth = 3, label = u'FULL')
+		#plt.plot(xP, yIP, color,linewidth = 3, label = u'FULL')
 
 
 
@@ -496,9 +499,10 @@ plt.show()
 #-----------------------Distribucion--------------------------------------
 #for  arp in xrange(3,4):
 #	for arcin in xrange(0,30):
-#		Distribucion(arp,1,arcin,"F",'ob')
 
+Distribucion(0,1,0,"H",'ob')
 
+"""
 N = 9
 ind = ind = np.arange(N) 
 width = 0.3      # the width of the bars
@@ -536,7 +540,7 @@ autolabel(rects1)
 autolabel(rects2)
 autolabel(rects3)
 plt.show()
-
+"""
 #Distribucion(5,1,20,"F",'or')
 #Distribucion(5,1,20,"G",'or')
 #Distribucion(2,1,20,"H",'og')
@@ -544,7 +548,8 @@ plt.show()
 #-------------------------------------------------------------------------
 
 #------------------- MINIMA GENERACION DE CONVERGENCIA --------------------
-#convergencia(2,"H",'-hy')
+"""
+convergencia(2,"H",'-hy')
 #convergencia(2,"F",'-hc')
 #convergencia(3,"G",'-hm')
 #convergencia(4,"H",'-hk')
@@ -552,8 +557,17 @@ plt.show()
 #convergencia(6,"H",'-hg')
 #convergencia(7,"H",'--y')
 #convergencia(8,"H",'--c')
-
-
+plt.margins(0.2)
+plt.subplots_adjust(bottom=0.15)
+plt.xlabel(u'Generación')
+plt.ylabel(u'Profuntidad')
+plt.legend()  # Creamos la caja con la leyenda
+plt.minorticks_on()
+#plt.xlim(-2,202)
+#plt.savefig(metodo+"-Po"+str(profundidad)+"-Ma"+str(max(yP))+"-Ge"+str(yP.index(max(yP)))+".png" )
+plt.grid(True)
+plt.show()
+"""
 #--------------------------------------------------------------------------
 
 #------------------ Aciertos-----------------------------------------------------

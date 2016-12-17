@@ -131,10 +131,10 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 
 		for i in xrange(0,indEli):
 			GenEli.append( Pob[i] )
-		GenEli = ordenarTam( GenEli )
+		#GenEli = ordenarTam( GenEli )
 
-		for i in xrange(0,indEli/2):
-			NuevaPob.append(GenEli[i])
+		#for i in xrange(0,indEli/2):
+		NuevaPob.append(GenEli[i])
 
 		Pob = NuevaPob
 
@@ -184,7 +184,10 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 6
 	print "----------------------------------------"
 
 	#-------------------------------------------------------------------------------
+
 	return Pob[ind]
+
+
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
 
 for inArchivo in xrange(1,2):
@@ -198,7 +201,7 @@ for inArchivo in xrange(1,2):
 	iteracion = 11
 	for nArchivo in xrange(0,30):
 		#f_latex=open("salida_latex.txt","w")
-		f=open("Prueba"+str(inArchivo)+"/Salida"+str(nArchivo)+Individuo.metCrear[0]+"2_10.json","w")
+		f=open("PruebaSinElitismoDoble"+str(inArchivo)+"/Salida"+str(nArchivo)+Individuo.metCrear[0]+"2_10.json","w")
 		f.write("{ \"Salida\" :[" ) # ------------ JSON
 		for x in xrange(2,iteracion):
 			f.write("{ \"Prueba\" :[" ) # ------------ JSON
