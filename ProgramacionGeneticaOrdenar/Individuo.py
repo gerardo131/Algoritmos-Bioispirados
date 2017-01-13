@@ -25,7 +25,7 @@ setFun = {
 			#"Asignacion"  : [ ['=' ],[2] ], 
 }
 
-setFunBlock = ['for','while','if',"MulBlock"]  
+setFunBlock = ['for','while','if','block2','block3','block4','block5']  
 
 setFunNom = [ 
 					"Aritmetic", 
@@ -42,7 +42,7 @@ setFunNom = [
 #setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3], ]
 setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
-setVarCon = ['Cons'+chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
+setVarCon = ['Cons'+chr(i) for i in xrange(97,97+25)] 
 numVarCon = 3
 #------- Probabilidades de cada uno de los signos ------------
 PVar = 8
@@ -54,8 +54,11 @@ class Individuo:
 
 	def __init__(self, prof):
 		self.gen=self.crearCadena(prof)
+		self.genRES = self.gen[:]
 		self.calificacion=0
 		self.error = 0
+		self.valCon=[random.randint( 0, 800000 ) for i in xrange(0,numVarCon)]
+		self.resultado = []
 
 
 	################### funcion de adaptacion ############################
@@ -109,7 +112,7 @@ class Individuo:
 				if fun in setFunBlock:
 					for i in xrange (0,setFun[funCla][1][r]):
 						exp =  [self.grow(prof-1)] + exp
-					exp = [exp]
+					exp = exp
 				else :
 					for i in xrange (0,setFun[funCla][1][r]):
 						exp =  self.grow(prof-1) + exp
@@ -134,7 +137,7 @@ class Individuo:
 	"""	
 	###################### operadores #######################################
 
-	def operador (self, op, X):
+	def operador (self,val, op, X):
 		global setFun
 		global setVar
 		########### logicos ############
@@ -170,44 +173,91 @@ class Individuo:
 		elif '<=' == op:
 			return X[0]<=X[1]  
 		########## Iterativo ############
-		#elif 'for' == ap:
+
+		elif 'for' == op:
+			print "Entro al for"
+			if self.evaluar(val, X[0])<self.evaluar(val, X[1]):
+				for i in xrange(self.evaluar(val, X[0]),self.evaluar(val, X[1]) ):
+					self.evaluar(val, X[2])
+			else :
+				for i in xrange(self.evaluar(val, X[0]),self.evaluar(val, X[1]),-1 ):
+					self.evaluar(val, X[2])
+
+		elif 'while' == op:
+			conStop = 10
+			print "Entro al while"
+			while self.evaluar(val, X[0] ) and conStop:
+				self.evaluar(val, X[1])
+				conStop-=1
+		elif 'if ' == op:
+			print "Entro al if"
+			if self.evaluar(val, X[0]):
+				self.evaluar(val,  X[1])
+			else:
+				self.evaluar(val, X[2])
+		elif 'print' ==  op:
+			self.resultado.append(X[0])
+
+		######### Multiblock ######
+		elif 'block2' == op :
+			self.evaluar(val,  X[0])
+			self.evaluar(val,  X[1])
+		elif 'block3' == op :
+			self.evaluar(val,  X[0])
+			self.evaluar(val,  X[1])
+			self.evaluar(val,  X[2])
+		elif 'block4' == op :
+			self.evaluar(val,  X[0])
+			self.evaluar(val,  X[1])
+			self.evaluar(val,  X[2])
+			self.evaluar(val,  X[3])
+		elif 'block5' == op :
+			self.evaluar(val,  X[0])
+			self.evaluar(val,  X[1])
+			self.evaluar(val,  X[2])
+			self.evaluar(val,  X[3])
+			self.evaluar(val,  X[4])
+
 
 
 
 
 	###################### Evaluacion #######################################
 
-	def evaluar (self, val):
+	def evaluar (self, val,pos):
 		pila = []
-		pos = self.gen
+		
 		for i in xrange(0, len(pos)):
 			print "fdgfd"
 			print pos[i]
-			if str(type(pos[i])) == "<type 'list'>":
-				print pos[i].pop()
-				if ( pos[i] in setVar ):
-					pila.append(val[ setVar.index(pos[i]) ])
-				else :
-					indfun = setFun[0].index(pos[i])
-					param = []
-					for j in xrange(0,setFun[1][indfun]):
-						param.insert(0, pila.pop() ) 
-					res = self.operador(pos[i],param)
-					pila.append(res)
+
+			if ( pos[i] in setVar   ):
+				pila.append(val[ setVar.index(pos[i]) ])
+
+			elif str(type(pos[i])) == "<type 'list'>": 
+				pila.append(pos[i])
+			elif pos[i] in setVarCon:
+				pila.append( self.valCon[setVarCon.index(pos[i])] )
+
 			else :
-				if ( pos[i] in setVar ):
-					pila.append(val[ setVar.index(pos[i]) ])
-				else :
-					indfun = setFun[0].index(pos[i])
-					param = []
-					for j in xrange(0,setFun[1][indfun]):
-						param.insert(0, pila.pop() ) 
-					res = self.operador(pos[i],param)
-					pila.append(res)
+				indfun = setFunSimple[0].index(pos[i])
+				param = []
+				for j in xrange(0,setFunSimple[1][indfun]):
+					param.insert(0, pila.pop() ) 
+				res = self.operador(val,pos[i],param)
+				pila.append(res)
 		return pila.pop()
 
+	def evaluarGen(self, val):
+		try:
+			self.evaluar(val,self.gen)
+			return self.resultado
+		except Exception as inst:
+			self.resultado=[]
+			#print  inst
 
-prueba = Individuo(5)
-print prueba.gen
+#prueba = Individuo(2)
+#print str(prueba.gen).replace('[','').replace(']','').replace('\'','').split(', ')
 
-prueba.evaluar([5,4,4])
+#prueba.evaluarGen([5,4,4])
+
