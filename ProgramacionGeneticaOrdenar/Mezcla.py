@@ -1,13 +1,9 @@
 import Individuo
-
 import copy
 import PoblacionInicial
 import random
  
 def mezclaPunto(Can1,Can2,N):
-
-	Can1 = str(Can1).replace('[','').replace(']','').replace('\'','').split(', ')
-	Can2 = str(Can2).replace('[','').replace(']','').replace('\'','').split(', ')
 	RCan1 = []
 	RCan1 = Can1[N[0]+1:len(Can1)]
 	num = 1
@@ -42,19 +38,59 @@ def Punto(Can,PC = 100):
 	N=[0,0]
 	lenCan1 = str(Can[0].gen).replace('[','').replace(']','').replace('\'','').split(', ')
 	lenCan2 = str(Can[1].gen).replace('[','').replace(']','').replace('\'','').split(', ')
+	#print len(lenCan1)
+	#print len(lenCan2)
 	N[0] = random.randint(0,len(lenCan1)-1)
 	N[1] = random.randint(0,len(lenCan2)-1)
 
 	# print "con pivote " + str(ind)
 	if random.random()*100 < PC:
-		RCan1 = mezclaPunto(Can1.gen,Can2.gen,N)
-		RCan2 = mezclaPunto(Can2.gen,Can1.gen,[N[1],N[0]])
-		Can1.gen = RCan1
-		Can2.gen = RCan2
+		r,m,ite1 = contar(Can1.gen,N[0])
+		p,q,ite2 = contar(Can2.gen,N[1])
+		RCan1 = mezclaPunto(r,p,[m,q])
+		RCan2 = mezclaPunto(p,r,[q,m])
+	#	print RCan1
+	#	print RCan2
+		Can1.gen = recu (Can1.gen,ite1,0,RCan1)
+		Can2.gen = recu (Can2.gen,ite2,0,RCan2)
+	#	print Can1.gen
+	#	print Can2.gen
 	return [ Can1, Can2 ]
+def recu (gen,iter,n,RCan):
+	if n >= len(iter)-1 :
+		return RCan
+	else :
+		gen[iter[n]]=recu(gen[iter[n]],iter,n+1,RCan)
+		return gen
 
-#def recorido(gen):
-	#while :
+def contar(gen,N):
+	#print " 00000 + " + str(N)
+	a= str(gen).replace(' ','').replace('\'','').replace('[','[,').replace(']',',]').split(',')
+	#print a
+	iter = [-1]
+	i=1
+
+	while  N != 0:
+		if  a[i] == '[':
+		 	iter[len(iter)-1] += 1	
+	 		iter.append(-1)
+		elif a[i] == ']':
+			iter.pop()
+		else:
+	 		N-=1
+	 		iter[len(iter)-1] += 1
+		i+=1
+	#print len(iter)
+	#return  iter
+	res = gen[:]
+	for id in xrange(0,len(iter)-1):
+		res = res[iter[id]][:]
+	#print "Lo bueno"
+	#print res
+	return res, iter[len(iter)-1],iter 
+     	
+   
+     
 	#	pass
 
 ###############    PRUEBA    ####################
@@ -63,7 +99,9 @@ def Punto(Can,PC = 100):
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
 print pru1.gen 
+#contar ( pru1.gen, 5)
 print pru2.gen
+
 
 P= Punto ([pru1,pru2])
 for i in P:
