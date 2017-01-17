@@ -60,13 +60,20 @@ def recu (gen,iter,n,RCan):
 	if n >= len(iter)-1 :
 		return RCan
 	else :
-		gen[iter[n]]=recu(gen[iter[n]],iter,n+1,RCan)
+		try:
+			gen[iter[n]]=recu(gen[iter[n]],iter,n+1,RCan)
+		except Exception, e:
+			print e
+			print "iter :" +str(iter[n])
+			print "gen : " + str(gen)
+			exit()
+		
 		return gen
 
 def contar(gen,N):
 	#print " 00000 + " + str(N)
 	a= str(gen).replace(' ','').replace('\'','').replace('[','[,').replace(']',',]').split(',')
-	#print a
+	print a
 	iter = [-1]
 	i=1
 
@@ -80,7 +87,9 @@ def contar(gen,N):
 	 		N-=1
 	 		iter[len(iter)-1] += 1
 		i+=1
-	#print len(iter)
+	print len(iter)
+	print str(iter)
+	
 	#return  iter
 	res = gen[:]
 	for id in xrange(0,len(iter)-1):
@@ -95,17 +104,19 @@ def contar(gen,N):
 
 ###############    PRUEBA    ####################
 
-
+"""
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
 print pru1.gen 
 #contar ( pru1.gen, 5)
 print pru2.gen
 
+#print len(lenCan1)
+#print len(lenCan2)
 
 P= Punto ([pru1,pru2])
 for i in P:
 	print i.gen
 
-
+"""
 #################################################

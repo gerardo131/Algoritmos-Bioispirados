@@ -57,7 +57,7 @@ def ordenarTam(GenEli):
 
 
 
-def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60,PM = 5):
+def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 3 ,indEli =0,PC = 60,PM = 5):
 	
 	"""
 	NIND = 80
@@ -70,15 +70,15 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	"""
 	MaxFun =[]
 	MaxGen = []
-	muestra = genMuestra(NMUESTRA)
+	muestra = [[[2,4,8],[10,7,9],[10,2,5]],[[2,4,8],[7,9,10],[2,5,10]]]
+	print muestra
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
 	
 	gen = 0
 
-	f.write("{ \"Generacion\" :[" ) # ------------ JSON
 	while(gen<MAXGE):
-
+		print gen
 		NuevaPob = []
 
 		for i in xrange(0,(NIND-(indEli)/2)/2):
@@ -103,27 +103,6 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 			"""
 		Mutacion.punto(NuevaPob,PROFUNDIDAD,PM)
 		Pob = ordenar(Pob)
-		#################### crear JSON  Poblacion ################################
-		f.write("{ \"Poblacion\" :[" )
-		for i in Pob[:len(Pob)-1]:
-			f.write("{" )
-		#	f.write("\"Gen\"  : \"" +  str(i.gen)+"\"  ,\n" )
-			f.write("\"Cal\" : \"" + str(i.calificacion)+"\",\n" )
-			f.write("\"Error\" : \"" + str(i.error)+"\",\n" )
-			f.write("\"Len\" : \"" + str(len(i.gen))+"\"\n" )
-			f.write("}," )
-
-		f.write("{" )
-		#f.write("\"Gen\"  : \"" +  str(Pob[len(Pob)-1].gen)+"\"  ,\n" )
-		f.write("\"Cal\" : \"" + str(Pob[len(Pob)-1].calificacion)+"\",\n" )
-		f.write("\"Error\" : \"" + str(Pob[len(Pob)-1].error)+"\",\n" )
-		f.write("\"Len\" : \"" + str(len(Pob[len(Pob)-1].gen))+"\"\n" )
-		f.write("}" )
-		if gen < MAXGE-1: 
-			f.write( "]}," )
-		else:
-			f.write( "]}" )
-		###########################################################################
 
 		MaxGen.append(Pob[0].error)
 		GenEli = []
@@ -141,17 +120,12 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 		Calificacion.adaptacion(Pob,muestra[0],muestra[1])
 
 		"""
-		f.write( "--------- NUEVA POBLACION ---------\n" )
 		for i in NuevaPob:
-			f.write( str(i.gen)+"\n" )
-			f.write( str(i.error) +"\n")
-		f.write( "--------- END NUEVA POBLACION ---------\n" )
 		"""
 		#print "Terminar generacion"
 
 		gen += 1
 
-	f.write( "] }" ) #------------- JSON
 
 	
 
@@ -190,6 +164,7 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	print Pob[indm].error
 	print Pob[indm].calificacion
 	"""
+	"""
 	plot = []
 	for i in muestra[0]:
 		plot.append( Pob[ind].evaluar(i) )
@@ -200,20 +175,23 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 5 ,indEli =0,PC = 60
 	for i in xrange (0,MAXGE):
 		for j in xrange (0, NIND):
 			ejeX.append(i)	
-
+	"""		
 	#plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
-	plt.plot(ejeX, MaxFun, 'go')
-	plt.plot([i for i in xrange (0,MAXGE )], MaxGen, 'ro')
+	#plt.plot(ejeX, MaxFun, 'go')
+	#plt.plot([i for i in xrange (0,MAXGE )], MaxGen, 'ro')
 	
-	plt.margins(0.2)
-	plt.subplots_adjust(bottom=0.15)
-	plt.xlabel('Generaciones')
-	plt.ylabel('Error')
+	#plt.margins(0.2)
+	#plt.subplots_adjust(bottom=0.15)
+	#plt.xlabel('Generaciones')
+	#plt.ylabel('Error')
 	#plt.show()
 	#-------------------------------------------------------------------------------
 	return Pob[ind]
-#main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
-
+i= main(NIND = 60 , MAXGE = 100 , NMUESTRA = 3, PROFUNDIDAD = 10 ,indEli =4,PC = 100,PM = 2)
+print i.gen
+print "Error : "+str(i.error) 
+print i.calificacion
+"""
 poMax = Individuo.Individuo(5)	
 poMax.error = 80
 PMa = 0
@@ -221,15 +199,11 @@ iteracion = 10
 for nArchivo in xrange(1,10):
 	#f_latex=open("salida_latex.txt","w")
 	f=open("Salida.json","w")
-	f.write("{ \"Salida\" :[" ) # ------------ JSON
 	for x in xrange(2,iteracion):
-		f.write("{ \"Prueba\" :[" ) # ------------ JSON
 		i = main(NIND = 80, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=8 ,PC = 60,PM = 2)
 		
 		if x < iteracion-1: 
-			f.write( "]}," )
 		else:
-			f.write( "]}" )
 
 		print i.gen
 		print "Error : "+str(i.error) 
@@ -249,7 +223,6 @@ for nArchivo in xrange(1,10):
 			poMax = i
 			PMa = x
 
-	f.write( "]}" )# ------------ JSON
 
 
 
@@ -261,3 +234,4 @@ for nArchivo in xrange(1,10):
 
 	#f_latex.close()
 	f.close()
+"""

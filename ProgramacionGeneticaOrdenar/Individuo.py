@@ -65,7 +65,18 @@ class Individuo:
 	def EMC(self,valE,resE):
 		val = 0 
 		for i in xrange(0,len(valE)): 
-			val += ( float(self.evaluar(valE[i]) ) - float(resE[i]) )**2
+			res = self.evaluarGen(valE[i])
+			if res == None:
+				res = []
+			#print res
+			if len(res) < len(resE[i]):
+				for j in xrange(0,len(res)) :
+					if res[j] == resE[i][j]:
+						val += 1.0
+			else :
+				for j in xrange(0,len(resE[i])) :
+					if res[j] == resE[i][j]:
+						val += 1.0
 		val /= float(len(valE)) 
 		#print val
 		self.error = val
@@ -175,7 +186,7 @@ class Individuo:
 		########## Iterativo ############
 
 		elif 'for' == op:
-			print "Entro al for"
+			#print "Entro al for"
 			if self.evaluar(val, X[0])<self.evaluar(val, X[1]):
 				for i in xrange(self.evaluar(val, X[0]),self.evaluar(val, X[1]) ):
 					self.evaluar(val, X[2])
@@ -185,12 +196,12 @@ class Individuo:
 
 		elif 'while' == op:
 			conStop = 10
-			print "Entro al while"
+			#print "Entro al while"
 			while self.evaluar(val, X[0] ) and conStop:
 				self.evaluar(val, X[1])
 				conStop-=1
 		elif 'if ' == op:
-			print "Entro al if"
+			#print "Entro al if"
 			if self.evaluar(val, X[0]):
 				self.evaluar(val,  X[1])
 			else:
@@ -228,8 +239,8 @@ class Individuo:
 		pila = []
 		
 		for i in xrange(0, len(pos)):
-			print "fdgfd"
-			print pos[i]
+			#print "fdgfd"
+			#print pos[i]
 
 			if ( pos[i] in setVar   ):
 				pila.append(val[ setVar.index(pos[i]) ])
@@ -251,13 +262,16 @@ class Individuo:
 	def evaluarGen(self, val):
 		try:
 			self.evaluar(val,self.gen)
-			return self.resultado
+			if  self.resultado == None:
+				return []
+			else:
+				return self.resultado
 		except Exception as inst:
 			self.resultado=[]
 			#print  inst
-
-#prueba = Individuo(2)
-#print str(prueba.gen).replace('[','').replace(']','').replace('\'','').split(', ')
-
-#prueba.evaluarGen([5,4,4])
-
+"""
+prueba = Individuo(5)
+res = prueba.evaluarGen([5,4,4])
+print "el resultado es "
+print res
+"""
