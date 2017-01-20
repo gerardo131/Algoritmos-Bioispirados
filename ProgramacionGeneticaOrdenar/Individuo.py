@@ -12,30 +12,33 @@ from operator import xor
 # PFun ------- probabilidad de escojer funciones    
 
 metCrear = "GROW"
-setFunSimple = [['+','-','/','*','==','!=','<=','>=','<','>','and','or','not','for','while','if','block2','block3','block4','block5','print'],[2,2,2,2,2,2,2,2,2,2,2,2,1,3,2,3,2,3,4,5,1]]
+setFunSimple = [['+','-','/','*','==','!=','<=','>=','<','>','and','or','not','for','while','if','block2','block3','block4','block5','print','None'],[2,2,2,2,2,2,2,2,2,2,2,2,1,3,2,3,2,3,4,5,1,0]]
 setFun = {
-			"Aritmetic"   : [ ['+','-','/','*'], [2,2,2,2] ],
-			"Comp"        : [ ['==','!=','<=','>=','<','>'],[2,2,2,2,2,2] ],
-			"Logico"      : [ ['and','or','not'], [2,2,1]],
-			"Iterativo"   : [ ['for','while'],[3,2] ],
-			"Condicional" : [ ['if'] ,[3] ],
-			"MulBlock"    : [ ['block2','block3','block4','block5'],[2,3,4,5] ],
+			"Ari"   : [ ['+','-','/','*'], [2,2,2,2],[[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ] ]],
+			"Com"   : [ ['==','!=','<=','>=','<','>'],[2,2,2,2,2,2],[[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ],[['R','Ari'],['R','Ari'] ] ]],
+			"Log"   : [ ['and','or','not'], [2,2,1],[ [['B','Log','Com'],['B','Log','Com']], [['B','Log','Com'],['B','Log','Com']], [['B','Log','Com']] ]],
+			"Ite"   : [ ['for','while'],[3,2],[ [['R','Ari'],['R','Ari'],['Ite','Con','MuB','Sal']], [['Log'],['Ite','Con','MuB','Sal']] ]],
+			"Con"   : [ ['if'] ,[3],[[ ['Log'], ['Ite','Con','MuB','Sal'], ['Ite','Con','MuB','Sal'] ]] ],
+			"MuB"   : [ ['block2','block3','block4','block5'],[2,3,4,5],[ [['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal']], [['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal']], [['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal']],[['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal'],['Ite','Con','MuB','Sal']] ] ],
 			#"List"        : [ ['append','sort','[]'],[2,1,2] ],
-			"Salida"     : [ ['print'],[1] ],
+			"Sal"   : [ ['print'],[1],[[['R']]] ],
+			"Bak"   : [ ['None'],[0],[]] 
 			#"Asignacion"  : [ ['=' ],[2] ], 
 }
+
 
 setFunBlock = ['for','while','if','block2','block3','block4','block5']  
 
 setFunNom = [ 
-					"Aritmetic", 
-					"Comp", 
-					"Logico", 
-					"Iterativo", 
-					"Condicional", 
-					"MulBlock",
+					"Ari", 
+					"Com", 
+					"Log", 
+					"Ite", 
+					"Con", 
+					"MuB",
 					#"List",
-					"Salida",
+					"Sal",
+					"Bak"
 					#"Asignacion"
 				]
 
@@ -104,35 +107,65 @@ class Individuo:
 			for i in xrange (0,setFun[1][i]):
 				exp =  self.full(prof-1) + exp
 			return exp
-	"""		
-	def grow(self,prof):
+	"""
+
+	def grow(self,prof,Tipo=['Ite','Con','MuB','Sal']):
 		global numVar
 
 		if (prof == 0):
-			if (random.random()<.8):
-				return [ setVar[ random.randint( 0, numVar-1 ) ] ]#Retorna una variable al azar
-			else :
-				return [ setVarCon[ random.randint( 0, numVarCon-1 ) ] ]
-		else:
-			if (random.random()<.8):
-				funCla = setFunNom[ random.randint( 0, len(setFunNom)-1 ) ]
-				fun = setFun[funCla][0][ random.randint( 0, len(setFun[funCla][0])-1 ) ]
-				exp = [fun]
-				r = setFun[funCla][0].index(fun)
-
-				if fun in setFunBlock:
-					for i in xrange (0,setFun[funCla][1][r]):
-						exp =  [self.grow(prof-1)] + exp
-					exp = exp
-				else :
-					for i in xrange (0,setFun[funCla][1][r]):
-						exp =  self.grow(prof-1) + exp
-				return exp
-			else :
+			##### Real ######
+			if 'R' in Tipo:
 				if (random.random()<.8):
 					return [ setVar[ random.randint( 0, numVar-1 ) ] ]#Retorna una variable al azar
 				else :
 					return [ setVarCon[ random.randint( 0, numVarCon-1 ) ] ]
+			##### Binaria ####
+			elif 'Log' in Tipo:
+				return [ 'Bool']
+			##### Bloque  ####
+			elif 'MuB' in Tipo:
+				return ['None']
+		else:
+			if (random.random()<.9 and not('R'in Tipo and len(Tipo)==1) and not('R'in Tipo and len(Tipo)==1) ):
+				TipoC = Tipo[:]
+				if 'R' in TipoC  :
+					TipoC.remove('R')
+				elif 'B' in TipoC:
+					TipoC.remove('B')
+
+				funCla = TipoC[ random.randint( 0, len(TipoC)-1 ) ]
+				Nfun = random.randint( 0, len(setFun[funCla][0])-1 )
+				fun = setFun[funCla][0][Nfun]
+				exp = [fun]
+				r = setFun[funCla][0].index(fun)
+				#print fun
+				#print setFun[funCla][2][Nfun][0]
+				if fun in setFunBlock:
+					for i in xrange (0,setFun[funCla][1][r]):
+						exp =  [self.grow(prof-1,setFun[funCla][2][Nfun][i])] + exp
+					exp = exp
+				else :
+					for i in xrange (0,setFun[funCla][1][r]):
+						a = self.grow(prof-1,setFun[funCla][2][Nfun][i])
+						#print  a
+						exp =  a + exp
+				#print exp
+				return exp
+			else :
+				##### Real ######
+				if 'R' in Tipo:
+					if (random.random()<.8):
+						return [ setVar[ random.randint( 0, numVar-1 ) ] ]#Retorna una variable al azar
+					else :
+						return [ setVarCon[ random.randint( 0, numVarCon-1 ) ] ]
+				
+				##### Binaria ####
+				elif 'Log' in Tipo:
+					return [ 'Bool']#Retorna una variable al azar
+				##### Bloque  ####
+				elif 'MuB' in Tipo:
+					return ['None']
+					
 	"""			
 	def halfaAndHalf(self, prof):
 		fun = setFun[0][ random.randint( 0, len(setFun[0])-1 ) ]
@@ -187,25 +220,36 @@ class Individuo:
 
 		elif 'for' == op:
 			#print "Entro al for"
-			if self.evaluar(val, X[0])<self.evaluar(val, X[1]):
-				for i in xrange(self.evaluar(val, X[0]),self.evaluar(val, X[1]) ):
-					self.evaluar(val, X[2])
+			I = int(self.evaluar(val, X[2]) )
+			J = int (self.evaluar(val, X[1]) )
+			print I
+			print J
+			conStopFor = 0 
+			if I<J:
+				for i in xrange(I,J ):
+					self.evaluar(val, X[0])
+					if conStopFor >= 10:
+						return
+					conStopFor+=1
 			else :
-				for i in xrange(self.evaluar(val, X[0]),self.evaluar(val, X[1]),-1 ):
-					self.evaluar(val, X[2])
+				for i in xrange(I,J,-1 ):
+					self.evaluar(val, X[0])
+					if conStopFor >= 10:
+						return
+					conStopFor+=1
 
 		elif 'while' == op:
 			conStop = 10
 			#print "Entro al while"
-			while self.evaluar(val, X[0] ) and conStop:
-				self.evaluar(val, X[1])
+			while self.evaluar(val, X[1] ) and conStop:
+				self.evaluar(val, X[0])
 				conStop-=1
-		elif 'if ' == op:
+		elif 'if' == op:
 			#print "Entro al if"
-			if self.evaluar(val, X[0]):
+			if self.evaluar(val, X[2]):
 				self.evaluar(val,  X[1])
 			else:
-				self.evaluar(val, X[2])
+				self.evaluar(val, X[0])
 		elif 'print' ==  op:
 			self.resultado.append(X[0])
 
@@ -249,29 +293,30 @@ class Individuo:
 				pila.append(pos[i])
 			elif pos[i] in setVarCon:
 				pila.append( self.valCon[setVarCon.index(pos[i])] )
-
+			elif pos[i] == 'Bool':
+				if (random.random()<.5):
+					return [ True ]#Retorna una variable al azar
+				else :
+					return [ False ]
 			else :
 				indfun = setFunSimple[0].index(pos[i])
 				param = []
 				for j in xrange(0,setFunSimple[1][indfun]):
 					param.insert(0, pila.pop() ) 
+				#print param
 				res = self.operador(val,pos[i],param)
 				pila.append(res)
 		return pila.pop()
 
 	def evaluarGen(self, val):
-		try:
-			self.evaluar(val,self.gen)
-			if  self.resultado == None:
-				return []
-			else:
-				return self.resultado
-		except Exception as inst:
-			self.resultado=[]
-			#print  inst
-"""
-prueba = Individuo(5)
+		
+		self.resultado = []
+		self.evaluar(val,self.gen)
+		return self.resultado
+		#print  inst
+
+prueba = Individuo(20)
+print prueba.gen
 res = prueba.evaluarGen([5,4,4])
 print "el resultado es "
 print res
-"""

@@ -57,7 +57,7 @@ def Punto(Can,PC = 100):
 	#	print Can2.gen
 	return [ Can1, Can2 ]
 def recu (gen,iter,n,RCan):
-	if n >= len(iter)-1 :
+	if n >= len(iter)-1  :
 		return RCan
 	else :
 		try:
@@ -76,20 +76,20 @@ def contar(gen,N):
 	print a
 	iter = [-1]
 	i=1
-
-	while  N != 0:
+	j=0
+	while  j < N:
 		if  a[i] == '[':
 		 	iter[len(iter)-1] += 1	
 	 		iter.append(-1)
 		elif a[i] == ']':
 			iter.pop()
 		else:
-	 		N-=1
+	 		j+=1
 	 		iter[len(iter)-1] += 1
 		i+=1
 	print len(iter)
 	print str(iter)
-	
+
 	#return  iter
 	res = gen[:]
 	for id in xrange(0,len(iter)-1):
