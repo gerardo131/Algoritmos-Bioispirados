@@ -46,7 +46,13 @@ def Punto(Can,PC = 100):
 	# print "con pivote " + str(ind)
 	if random.random()*100 < PC:
 		r,m,ite1 = contar(Can1.gen,N[0])
+		print "###############"
+		print r[m]
+		print "###############"
 		p,q,ite2 = contar(Can2.gen,N[1])
+		print "###############"
+		print p[q]
+		print "###############"
 		RCan1 = mezclaPunto(r,p,[m,q])
 		RCan2 = mezclaPunto(p,r,[q,m])
 	#	print RCan1
@@ -56,13 +62,15 @@ def Punto(Can,PC = 100):
 	#	print Can1.gen
 	#	print Can2.gen
 	return [ Can1, Can2 ]
-def recu (gen,iter,n,RCan):
+def recu (genM,iter,n,RCan):
+	gen=genM[:]
 	if n >= len(iter)-1  :
 		return RCan
 	else :
 		try:
 			gen[iter[n]]=recu(gen[iter[n]],iter,n+1,RCan)
 		except Exception, e:
+			
 			print e
 			print "iter :" +str(iter[n])
 			print "gen : " + str(gen)
@@ -70,14 +78,15 @@ def recu (gen,iter,n,RCan):
 		
 		return gen
 
-def contar(gen,N):
+def contar(genM,N):
 	#print " 00000 + " + str(N)
+	gen=genM[:]
 	a= str(gen).replace(' ','').replace('\'','').replace('[','[,').replace(']',',]').split(',')
 	print a
 	iter = [-1]
 	i=1
 	j=0
-	while  j < N:
+	while  j <= N:
 		if  a[i] == '[':
 		 	iter[len(iter)-1] += 1	
 	 		iter.append(-1)
@@ -87,6 +96,7 @@ def contar(gen,N):
 	 		j+=1
 	 		iter[len(iter)-1] += 1
 		i+=1
+	print N
 	print len(iter)
 	print str(iter)
 
@@ -95,7 +105,7 @@ def contar(gen,N):
 	for id in xrange(0,len(iter)-1):
 		res = res[iter[id]][:]
 	#print "Lo bueno"
-	#print res
+	print res
 	return res, iter[len(iter)-1],iter 
      	
    
@@ -104,7 +114,6 @@ def contar(gen,N):
 
 ###############    PRUEBA    ####################
 
-"""
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
 print pru1.gen 
@@ -118,5 +127,5 @@ P= Punto ([pru1,pru2])
 for i in P:
 	print i.gen
 
-"""
 #################################################
+

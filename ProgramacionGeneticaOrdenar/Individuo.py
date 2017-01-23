@@ -26,6 +26,10 @@ setFun = {
 			#"Asignacion"  : [ ['=' ],[2] ], 
 }
 
+setFunIn=[
+			setFun['Ari'][0]+setFun['Com'][0]+setFun['Log'][0]+setFun['Ite'][0]+setFun['Con'][0]+setFun['MuB'][0]+setFun['Sal'][0]+setFun['Bak'][0],
+			setFun['Ari'][2]+setFun['Com'][2]+setFun['Log'][2]+setFun['Ite'][2]+setFun['Con'][2]+setFun['MuB'][2]+setFun['Sal'][2]+setFun['Bak'][2]
+		]
 
 setFunBlock = ['for','while','if','block2','block3','block4','block5']  
 
@@ -57,10 +61,9 @@ class Individuo:
 
 	def __init__(self, prof):
 		self.gen=self.crearCadena(prof)
-		self.genRES = self.gen[:]
 		self.calificacion=0
 		self.error = 0
-		self.valCon=[random.randint( 0, 800000 ) for i in xrange(0,numVarCon)]
+		self.valCon=[random.randint( 0,20 ) for i in xrange(0,numVarCon)]
 		self.resultado = []
 
 
@@ -225,6 +228,11 @@ class Individuo:
 			print I
 			print J
 			conStopFor = 0 
+			if I>10 or I<10:
+				I = 10
+			if J>10 or J<10:
+				J = 10
+
 			if I<J:
 				for i in xrange(I,J ):
 					self.evaluar(val, X[0])
@@ -314,9 +322,10 @@ class Individuo:
 		self.evaluar(val,self.gen)
 		return self.resultado
 		#print  inst
-
-prueba = Individuo(20)
+"""
+prueba = Individuo(5)
 print prueba.gen
 res = prueba.evaluarGen([5,4,4])
 print "el resultado es "
 print res
+"""
