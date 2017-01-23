@@ -53,20 +53,20 @@ def Punto(Can,PC = 100):
 			IndTipo = i
 	N[1] = IndTipo
 	if not(lenCan2[ N[1] ] in optip):
-		print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
-		print optip
+		#print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
+		#print optip
 		PC = 0
 
 	# print "con pivote " + str(ind)
 	if random.random()*100 < PC:
 		r,m,ite1 = contar(Can1.gen,N[0])
-		print "###############"
-		print r[m]
-		print "###############"
+		#print "###############"
+		#print r[m]
+		#print "###############"
 		p,q,ite2 = contar(Can2.gen,N[1])
-		print "###############"
-		print p[q]
-		print "###############"
+		#print "###############"
+		#print p[q]
+		#print "###############"
 		RCan1 = mezclaPunto(r,p,[m,q])
 		RCan2 = mezclaPunto(p,r,[q,m])
 	#	print RCan1
@@ -85,9 +85,9 @@ def recu (genM,iter,n,RCan):
 			gen[iter[n]]=recu(gen[iter[n]],iter,n+1,RCan)
 		except Exception, e:
 			
-			print e
-			print "iter :" +str(iter[n])
-			print "gen : " + str(gen)
+			#print e
+			#print "iter :" +str(iter[n])
+			#print "gen : " + str(gen)
 			exit()
 		
 		return gen
@@ -96,7 +96,7 @@ def contar(genM,N):
 	#print " 00000 + " + str(N)
 	gen=genM[:]
 	a= str(gen).replace(' ','').replace('\'','').replace('[','[,').replace(']',',]').split(',')
-	print a
+	#print a
 	iter = [-1]
 	i=1
 	j=0
@@ -110,16 +110,16 @@ def contar(genM,N):
 	 		j+=1
 	 		iter[len(iter)-1] += 1
 		i+=1
-	print N
-	print len(iter)
-	print str(iter)
+	#print N
+	#print len(iter)
+	#print str(iter)
 
 	#return  iter
 	res = gen[:]
 	for id in xrange(0,len(iter)-1):
 		res = res[iter[id]][:]
-	#print "Lo bueno"
-	print res
+	##print "Lo bueno"
+	#print res
 	return res, iter[len(iter)-1],iter 
      	
    
@@ -127,7 +127,7 @@ def contar(genM,N):
 	#	pass
 
 ###############    PRUEBA    ####################
-
+"""
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
 print pru1.gen 
@@ -136,10 +136,19 @@ print pru2.gen
 
 #print len(lenCan1)
 #print len(lenCan2)
-
 P= Punto ([pru1,pru2])
+
+res1 = pru1.evaluarGen([5,4,4])
+print "el resultado 1 es "
+print res1
+
+res2 = pru2.evaluarGen([5,4,4])
+print "el resultado 2 es "
+print res2
+
+
 for i in P:
 	print i.gen
-
+"""
 #################################################
 

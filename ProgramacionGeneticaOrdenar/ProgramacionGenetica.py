@@ -3,6 +3,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from operator import xor
+from time import time
 
 import Individuo
 import Calificacion
@@ -17,22 +18,11 @@ def genMuestra(n = 1):
 	muestraA =[]
 	muestraR = []
 	for i in xrange(0,n):
-		#a = [ random.randint(0,1) for x in xrange(0,3)]
-		aux = [ j-j for j in xrange( 0,Individuo.numVar-len(bin(i)[2:]) ) ] + list( bin(i)[2:] ) 
-		a = [ int(j) for j in aux ]
-		#print a
-
-		#print int(''.join(a), 2 )
-		r = a[0]
-		for i in xrange(1,len(a)) :
-			r = xor(r, a[i])
-		if  not(r) :
-			r = 1
-		else:
-			r = 0
-
-		muestraA.append(a)
-		muestraR.append(r)
+		mu = [random.randint(0,80) for i in xrange(0,8)]
+		muestraA.append(mu)
+		muAux = mu[:]
+		muAux.sort()
+		muestraR.append(muAux)
 	return [muestraA,muestraR]
 
 def ordenar (pob):
@@ -56,9 +46,9 @@ def ordenarTam(GenEli):
 	return var
 
 
-
-def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 3 ,indEli =0,PC = 60,PM = 5):
-	
+muestra = []
+def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 60,PM = 2):
+	global muestra
 	"""
 	NIND = 80
 	MAXGE = 200
@@ -68,27 +58,27 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 3 ,indEli =0,PC = 60
 	PC = 60
 	PM = 2
 	"""
-	MaxFun =[]
+	TiempoTotal = 0
+	tiempo_inicial = time()
+
 	MaxGen = []
-	muestra = [[[2,4,8],[10,7,9],[10,2,5]],[[2,4,8],[7,9,10],[2,5,10]]]
-	print muestra
+	muestra = genMuestra(NMUESTRA)
 	Pob = PoblacionInicial.aleatorio(NIND,PROFUNDIDAD)
 	Calificacion.adaptacion(Pob,muestra[0],muestra[1])
 	
 	gen = 0
 
+	f.write("{ \"Generacion\" :[" ) # ------------ JSON
 	while(gen<MAXGE):
-		print gen
-		NuevaPob = []
 
+		NuevaPob = []
+		print gen
 		for i in xrange(0,(NIND-(indEli)/2)/2):
 			sel = seleccion.ruleta(Pob)
 			ResMez = Mezcla.Punto(sel,PC)
 			NuevaPob.append(ResMez[0])
 			NuevaPob.append(ResMez[1])
 
-		for i in xrange(0,NIND):
-			MaxFun.append(Pob[i].error)
 
 			"""
 			print "----------- Seleccion -------------"
@@ -103,16 +93,37 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 3 ,indEli =0,PC = 60
 			"""
 		Mutacion.punto(NuevaPob,PROFUNDIDAD,PM)
 		Pob = ordenar(Pob)
+		#################### crear JSON  Poblacion ################################
+		f.write("{ \"Poblacion\" :[" )
+		for i in Pob[:len(Pob)-1]:
+			f.write("{" )
+		#	f.write("\"Gen\"  : \"" +  str(i.gen)+"\"  ,\n" )
+			f.write("\"Cal\" : \"" + str(i.calificacion)+"\",\n" )
+			f.write("\"Error\" : \"" + str(i.error)+"\",\n" )
+			f.write("\"Len\" : \"" + str(len(i.gen))+"\"\n" )
+			f.write("}," )
+
+		f.write("{" )
+		#f.write("\"Gen\"  : \"" +  str(Pob[len(Pob)-1].gen)+"\"  ,\n" )
+		f.write("\"Cal\" : \"" + str(Pob[len(Pob)-1].calificacion)+"\",\n" )
+		f.write("\"Error\" : \"" + str(Pob[len(Pob)-1].error)+"\",\n" )
+		f.write("\"Len\" : \"" + str(len(Pob[len(Pob)-1].gen))+"\"\n" )
+		f.write("}" )
+		if gen < MAXGE-1: 
+			f.write( "]}," )
+		else:
+			f.write( "]}" )
+		###########################################################################
 
 		MaxGen.append(Pob[0].error)
 		GenEli = []
 
 		for i in xrange(0,indEli):
 			GenEli.append( Pob[i] )
-		GenEli = ordenarTam( GenEli )
+		#GenEli = ordenarTam( GenEli )
 
-		for i in xrange(0,indEli/2):
-			NuevaPob.append(GenEli[i])
+		#for i in xrange(0,indEli/2):
+		NuevaPob.append(GenEli[i])
 
 		Pob = NuevaPob
 
@@ -120,12 +131,19 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 3 ,indEli =0,PC = 60
 		Calificacion.adaptacion(Pob,muestra[0],muestra[1])
 
 		"""
+		f.write( "--------- NUEVA POBLACION ---------\n" )
 		for i in NuevaPob:
+			f.write( str(i.gen)+"\n" )
+			f.write( str(i.error) +"\n")
+		f.write( "--------- END NUEVA POBLACION ---------\n" )
 		"""
 		#print "Terminar generacion"
 
 		gen += 1
+	tiempo_final = time()
+	TiempoTotal +=  tiempo_final - tiempo_inicial
 
+	f.write( "], \"TiempoTotal\":\" "+str(TiempoTotal)+" \" }" ) #------------- JSON
 
 	
 
@@ -154,84 +172,71 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 3 ,indEli =0,PC = 60
 		print Pob[i].error
 	print "----------------------------------------"
 
-
-	"""
-	print Pob[ind].gen
-	print Pob[ind].error
-	print Pob[ind].calificacion
-	print "----------------------------"
-	print Pob[indm].gen
-	print Pob[indm].error
-	print Pob[indm].calificacion
-	"""
-	"""
-	plot = []
-	for i in muestra[0]:
-		plot.append( Pob[ind].evaluar(i) )
-	plotm = []
-	for i in muestra[0]:
-		plotm.append( Pob[indm].evaluar(i) )
-	ejeX = []
-	for i in xrange (0,MAXGE):
-		for j in xrange (0, NIND):
-			ejeX.append(i)	
-	"""		
-	#plt.plot([i for i in xrange (0,NMUESTRA )], muestra[1], 'ro')
-	#plt.plot(ejeX, MaxFun, 'go')
-	#plt.plot([i for i in xrange (0,MAXGE )], MaxGen, 'ro')
-	
-	#plt.margins(0.2)
-	#plt.subplots_adjust(bottom=0.15)
-	#plt.xlabel('Generaciones')
-	#plt.ylabel('Error')
-	#plt.show()
 	#-------------------------------------------------------------------------------
+
 	return Pob[ind]
-i= main(NIND = 60 , MAXGE = 100 , NMUESTRA = 3, PROFUNDIDAD = 10 ,indEli =4,PC = 100,PM = 2)
-print i.gen
-print "Error : "+str(i.error) 
-print i.calificacion
-"""
-poMax = Individuo.Individuo(5)	
-poMax.error = 80
-PMa = 0
-iteracion = 10
-for nArchivo in xrange(1,10):
-	#f_latex=open("salida_latex.txt","w")
-	f=open("Salida.json","w")
-	for x in xrange(2,iteracion):
-		i = main(NIND = 80, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = x  ,indEli=8 ,PC = 60,PM = 2)
-		
-		if x < iteracion-1: 
-		else:
-
-		print i.gen
-		print "Error : "+str(i.error) 
-		print "Pro Mutacion : " + str(PMa)
-
-		############ guardar en archivo la salalida en formato latex ############
-		stringGen = str(i.gen)
-		#f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
-		#f_latex.write( " Error :"+str(i.error)+"  \n" )
-		#f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
-		#######################################################################
-
-		if i.error< poMax.error :
-			poMax = i
-			PMa = x
-		elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
-			poMax = i
-			PMa = x
 
 
+#main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
+
+for inArchivo in xrange(1,2):
+
+	print "Prueba"+str(inArchivo)
+	poMax = Individuo.Individuo(5)	
+	poMax.error = 80 ## El mejor resultado de todos lo resultados
+	PMa = 0 
+	TiempoTotal = 0
+
+	iteracion = 1
+	for nArchivo in xrange(0,1):
+		#f_latex=open("salida_latex.txt","w")
+		f=open("2_10.json","w")
+		f.write("{ \"Salida\" :[" ) # ------------ JSON
+		for x in xrange(0,iteracion):
+			f.write("{ \"Prueba\" :[" ) # ------------ JSON
+
+			
+			i = main(NIND = 100, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = 20  ,indEli=10 ,PC = 60,PM = 2)
+
+			
+			if x < iteracion-1: 
+				f.write( "]}," )
+			else:
+				f.write( "]}" )
+
+			print i.gen
+			print muestra[0][0]
+			print muestra[1][0]
+			print poMax.evaluarGen(muestra[0][0])
+			print "Error : "+str(i.error) 
+			print "Pro Mutacion : " + str(i.calificacion)
+
+			############ guardar en archivo la salalida en formato latex ############
+			stringGen = str(i.gen)
+			#f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
+			#f_latex.write( " Error :"+str(i.error)+"  \n" )
+			#f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
+			#######################################################################
+
+			if i.error< poMax.error :
+				poMax = i
+				PMa = x
+			elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
+				poMax = i
+				PMa = x
+
+		f.write( "]}" )# ------------ JSON
 
 
-	print "----------- EL GANADOR ES -------------"
-	print poMax.gen
-	print "Error : "+str(poMax.error)
-	print "Pro Mutacion : " + str(PMa)
-	print "---------------------------------------"
 
-	#f_latex.close()
-	f.close()
-"""
+		print "----------- EL GANADOR ES -------------"
+		print poMax.gen
+		print muestra[0][0]
+		print muestra[1][0]
+		print poMax.evaluarGen(muestra[0][0])
+		print "Error : "+str(poMax.error)
+		print "Pro Mutacion : " + str(poMax.calificacion)
+		print "---------------------------------------"
+
+		#f_latex.close()
+f.close()

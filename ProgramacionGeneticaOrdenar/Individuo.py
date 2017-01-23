@@ -42,13 +42,15 @@ setFunNom = [
 				]
 
 #setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3], ]
-numVar = 3
+numVar = 8
 numVarCon = 3
 numVarConB = 3
 
 setVar = [chr(i) for i in xrange(97,97+numVar)] 
 setVarCon = ['Cons'+chr(i) for i in xrange(97,97+numVarCon)] 
 setVarConB = ['ConsB'+chr(i) for i in xrange(97,97+numVarCon)] 
+valCon=[random.randint( 0,20 ) for i in xrange(0,numVarCon)]
+valConB = [random.choice([True, False]) for i in xrange(0,numVarCon)]
 
 setFunIn={
 			'Bin'  : setFun['Com'][0]+setFun['Log'][0]+setVarConB,
@@ -69,28 +71,25 @@ class Individuo:
 		self.gen=self.crearCadena(prof)
 		self.calificacion=0
 		self.error = 0
-		self.valCon=[random.randint( 0,20 ) for i in xrange(0,numVarCon)]
-		self.valConB = [random.choice([True, False]) for i in xrange(0,numVarCon)]
 		self.resultado = []
 
 
 	################### funcion de adaptacion ############################
 	def EMC(self,valE,resE):
-		val = 0 
+		val = 0.0 
 		for i in xrange(0,len(valE)): 
+			parVal = 0.0
 			res = self.evaluarGen(valE[i])
-			if res == None:
-				res = []
 			#print res
-			if len(res) < len(resE[i]):
-				for j in xrange(0,len(res)) :
-					if res[j] == resE[i][j]:
-						val += 1.0
-			else :
-				for j in xrange(0,len(resE[i])) :
-					if res[j] == resE[i][j]:
-						val += 1.0
-		val /= float(len(valE)) 
+			for j in xrange(0,len(resE[i])) :
+				if j<len(res):
+					if res[j] != resE[i][j]:
+						parVal += 1.0
+				else:
+					parVal += 3.0  
+			val += float(parVal)/float(len(resE[i]))
+
+		val = (val**2)/float(len(valE)) 
 		#print val
 		self.error = val
 		return val
@@ -232,8 +231,8 @@ class Individuo:
 			#print "Entro al for"
 			I = int(self.evaluar(val, X[2]) )
 			J = int (self.evaluar(val, X[1]) )
-			print I
-			print J
+			#print I
+			#print J
 			conStopFor = 0 
 			if I>10 or I<10:
 				I = 10
@@ -296,7 +295,9 @@ class Individuo:
 
 	def evaluar (self, val,pos):
 		pila = []
-		
+		#print"########################### "
+		#print pos 
+		#print "###########################"
 		for i in xrange(0, len(pos)):
 			#print "fdgfd"
 			#print pos[i]
@@ -307,9 +308,9 @@ class Individuo:
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
 			elif pos[i] in setVarCon:
-				pila.append( self.valCon[setVarCon.index(pos[i])] )
+				pila.append( valCon[setVarCon.index(pos[i])] )
 			elif pos[i] in setVarConB:
-				pila.append( self.valConB[setVarConB.index(pos[i])] )
+				pila.append( valConB[setVarConB.index(pos[i])] )
 			else :
 				indfun = setFunSimple[0].index(pos[i])
 				param = []
@@ -321,7 +322,9 @@ class Individuo:
 		return pila.pop()
 
 	def evaluarGen(self, val):
-		
+		#print "---------------------"
+		#print self.gen
+		#print "---------------------"
 		self.resultado = []
 		self.evaluar(val,self.gen)
 		return self.resultado
