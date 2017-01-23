@@ -42,6 +42,20 @@ def Punto(Can,PC = 100):
 	#print len(lenCan2)
 	N[0] = random.randint(0,len(lenCan1)-1)
 	N[1] = random.randint(0,len(lenCan2)-1)
+	fen = lenCan1[N[0]]
+	optip= []
+	for i in Individuo.setFunIn:
+		if fen in Individuo.setFunIn[i]:
+			optip = Individuo.setFunIn[i][:]
+	IndTipo = 0
+	for i in xrange(0,N[1]):
+		if (lenCan2[i] in optip):
+			IndTipo = i
+	N[1] = IndTipo
+	if not(lenCan2[ N[1] ] in optip):
+		print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
+		print optip
+		PC = 0
 
 	# print "con pivote " + str(ind)
 	if random.random()*100 < PC:

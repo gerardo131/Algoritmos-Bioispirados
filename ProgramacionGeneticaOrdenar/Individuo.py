@@ -26,11 +26,6 @@ setFun = {
 			#"Asignacion"  : [ ['=' ],[2] ], 
 }
 
-setFunIn=[
-			setFun['Ari'][0]+setFun['Com'][0]+setFun['Log'][0]+setFun['Ite'][0]+setFun['Con'][0]+setFun['MuB'][0]+setFun['Sal'][0]+setFun['Bak'][0],
-			setFun['Ari'][2]+setFun['Com'][2]+setFun['Log'][2]+setFun['Ite'][2]+setFun['Con'][2]+setFun['MuB'][2]+setFun['Sal'][2]+setFun['Bak'][2]
-		]
-
 setFunBlock = ['for','while','if','block2','block3','block4','block5']  
 
 setFunNom = [ 
@@ -47,10 +42,21 @@ setFunNom = [
 				]
 
 #setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3], ]
-setVar = [chr(i) for i in xrange(97,97+25)] + [chr(i) for i in xrange(97-32,97-7)]
 numVar = 3
-setVarCon = ['Cons'+chr(i) for i in xrange(97,97+25)] 
 numVarCon = 3
+numVarConB = 3
+
+setVar = [chr(i) for i in xrange(97,97+numVar)] 
+setVarCon = ['Cons'+chr(i) for i in xrange(97,97+numVarCon)] 
+setVarConB = ['ConsB'+chr(i) for i in xrange(97,97+numVarCon)] 
+
+setFunIn={
+			'Bin'  : setFun['Com'][0]+setFun['Log'][0]+setVarConB,
+			'Block': setFun['Ite'][0]+setFun['Con'][0]+setFun['MuB'][0]+setFun['Sal'][0]+setFun['Bak'][0],
+			'Arit' : setFun['Ari'][0]+ setVar+setVarCon
+		}
+
+
 #------- Probabilidades de cada uno de los signos ------------
 PVar = 8
 PConstan = 1
@@ -64,6 +70,7 @@ class Individuo:
 		self.calificacion=0
 		self.error = 0
 		self.valCon=[random.randint( 0,20 ) for i in xrange(0,numVarCon)]
+		self.valConB = [random.choice([True, False]) for i in xrange(0,numVarCon)]
 		self.resultado = []
 
 
@@ -124,7 +131,7 @@ class Individuo:
 					return [ setVarCon[ random.randint( 0, numVarCon-1 ) ] ]
 			##### Binaria ####
 			elif 'Log' in Tipo:
-				return [ 'Bool']
+				return [ setVarConB[ random.randint( 0, numVarConB-1 ) ] ]
 			##### Bloque  ####
 			elif 'MuB' in Tipo:
 				return ['None']
@@ -164,7 +171,7 @@ class Individuo:
 				
 				##### Binaria ####
 				elif 'Log' in Tipo:
-					return [ 'Bool']#Retorna una variable al azar
+					return [ setVarConB[ random.randint( 0, numVarConB-1 ) ] ]#Retorna una variable al azar
 				##### Bloque  ####
 				elif 'MuB' in Tipo:
 					return ['None']
@@ -301,11 +308,8 @@ class Individuo:
 				pila.append(pos[i])
 			elif pos[i] in setVarCon:
 				pila.append( self.valCon[setVarCon.index(pos[i])] )
-			elif pos[i] == 'Bool':
-				if (random.random()<.5):
-					return [ True ]#Retorna una variable al azar
-				else :
-					return [ False ]
+			elif pos[i] in setVarConB:
+				pila.append( self.valConB[setVarConB.index(pos[i])] )
 			else :
 				indfun = setFunSimple[0].index(pos[i])
 				param = []
