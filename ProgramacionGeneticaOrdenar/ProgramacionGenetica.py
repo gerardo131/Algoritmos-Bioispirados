@@ -18,7 +18,7 @@ def genMuestra(n = 1):
 	muestraA =[]
 	muestraR = []
 	for i in xrange(0,n):
-		mu = [random.randint(0,80) for i in xrange(0,8)]
+		mu = [random.randint(0,80) for i in xrange(0,10)]
 		muestraA.append(mu)
 		muAux = mu[:]
 		muAux.sort()
@@ -47,7 +47,7 @@ def ordenarTam(GenEli):
 
 
 muestra = []
-def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =10,PC = 60,PM = 2):
+def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =8,PC = 60,PM = 2):
 	global muestra
 	"""
 	NIND = 80
@@ -196,14 +196,13 @@ for inArchivo in xrange(1,2):
 			f.write("{ \"Prueba\" :[" ) # ------------ JSON
 
 			
-			i = main(NIND = 100, MAXGE = 200 , NMUESTRA=8, PROFUNDIDAD = 20  ,indEli=10 ,PC = 60,PM = 2)
+			i = main(NIND = 100, MAXGE = 500 , NMUESTRA=100, PROFUNDIDAD = 10  ,indEli=10 ,PC = 60,PM = 90)
 
 			
 			if x < iteracion-1: 
 				f.write( "]}," )
 			else:
 				f.write( "]}" )
-
 			print i.gen
 			print muestra[0][0]
 			print muestra[1][0]
