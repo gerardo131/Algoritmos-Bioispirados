@@ -196,7 +196,7 @@ for inArchivo in xrange(1,2):
 			f.write("{ \"Prueba\" :[" ) # ------------ JSON
 
 			
-			i = main(NIND = 100, MAXGE = 500 , NMUESTRA=100, PROFUNDIDAD = 10  ,indEli=10 ,PC = 60,PM = 90)
+			i = main(NIND = 100, MAXGE = 100 , NMUESTRA=50, PROFUNDIDAD = 8  ,indEli=10 ,PC = 60,PM = 90)
 
 			
 			if x < iteracion-1: 
