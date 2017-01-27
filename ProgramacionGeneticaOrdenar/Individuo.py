@@ -1,5 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import random
 from operator import xor
+import reglas 
 
 ##################### inicializacion del modulo ####################
 
@@ -12,31 +16,6 @@ from operator import xor
 # PFun ------- probabilidad de escojer funciones    
 
 metCrear = "GROW"
-setFunSimple = [['+','-','/','*','==','!=','<=','>=','<','>','and','or','not','for','while','if','block2','block3','block4','block5','print','None','=R'],[2,2,2,2,2,2,2,2,2,2,2,2,1,3,2,3,2,3,4,5,1,0,2]]
-
-
-setFunBlock = ['for','while','if','block2','block3','block4','block5','=R']  
-
-#setFun = [ ['and','or','not','+','-','/','*','<','>','==','!=','for'], [2,2,1,2,2,2,2,2,2,2,2,3], ]
-numVar = 10
-numVarCon = 3
-numVarConB = 3
-
-setVar = [chr(i) for i in xrange(97,97+numVar)] 
-setVarLoc = [chr(i)+'Var' for i in xrange(97,97+numVar)] 
-setVarCon = ['Cons'+chr(i) for i in xrange(97,97+numVarCon)] 
-setVarConB = ['ConsB'+chr(i) for i in xrange(97,97+numVarCon)] 
-valCon=[random.randint( 0,20 ) for i in xrange(0,numVarCon)]
-valConB = [random.choice([True, False]) for i in xrange(0,numVarCon)]
-
-setFunIn={
-			'Bin'  : setFun['Com'][0]+setFun['Log'][0]+setVarConB,
-			'Block': setFun['Ite'][0]+setFun['Con'][0]+setFun['MuB'][0]+setFun['Sal'][0]+setFun['Bak'][0]+setFun['Asi'][0],
-			'Arit' : setFun['Ari'][0]+ setVar+setVarCon+['for'+chr(i) for i in xrange(0,100)], 
-			'Var'  : setVarLoc
-		}
-
-
 #------- Probabilidades de cada uno de los signos ------------
 PVar = 8
 PConstan = 1
@@ -52,8 +31,10 @@ class Individuo:
 		self.calificacion = 0
 		self.error = 0
 		self.resultado = []
-		self.valIntPut = []
-		
+		self.valVar = {}
+		self.forVar = []
+		for i in reglas.TerAndTy["MeR"]:
+			self.valVar[i]=0 
 
 
 	################### funcion de adaptacion ############################
@@ -99,72 +80,58 @@ class Individuo:
 				exp =  self.full(prof-1) + exp
 			return exp
 	"""
-	def grow(self,prof,Tipo=['Ite','Con','MuB','Sal']):
-		global setVarCon
+########### REGLAS DE CONSTRUCCION #########
+# El for simpre tendra como primer parametro un arbol que represente la asignacion de una varible propia del for 
+#
+	def grow(self,prof,Tipo=['MB']):
 		if (prof == 0):
-			##### Real ######
-			if 'R' in Tipo:
-				return [ (setVar+setVarCon)[ random.randint( 0, len(setVar)+len(setVarCon)-1 ) ] ]#Retorna una variable al azar
-			##### Binaria ####
-			elif 'Log' in Tipo:
-				return [ setVarConB[ random.randint( 0, len(setVarConB)-1 ) ] ]
-			##### Bloque  ####
-			elif 'MuB' in Tipo:
-				return ['None']
-			elif 'Var' in Tipo:
-				return [ setVarLoc[ random.randint( 0, len(setVarLoc)-1 ) ] ]
+			############## Si ya esmos en las hojas del arbol selecionamos un nodo terminal de forma aleatoria con respecto al tipo de de dato aceptado ####
+			opcionesRe = []
+			for i in Tipo:
+				opcionesRe = reglas.TerAndTy[i]+opcionesRe
+			return [ random.choice(opcionesRe) ]
 		else:
-			if (random.random()<.9 and not('R'in Tipo and len(Tipo)==1) and not('R'in Tipo and len(Tipo)==1) and not('Var'in Tipo and len(Tipo)==1) ):
-				TipoC = Tipo[:]
-				if 'R' in TipoC  :
-					TipoC.remove('R')
-				elif 'B' in TipoC:
-					TipoC.remove('B')
-				elif 'Var' in TipoC:
-					TipoC.remove('Var')
-				funCla = TipoC[ random.randint( 0, len(TipoC)-1 ) ]
-				Nfun = random.randint( 0, len(setFun[funCla][0])-1 )
-				fun = setFun[funCla][0][Nfun]
-				exp = [fun]
-				r = setFun[funCla][0].index(fun)
-				#print fun
-				#print setFun[funCla][2][Nfun][0]
-				if fun in setFunBlock:
+			######## Si queremos poner una funcion en el árbol ############################
+			opcionesRe = []
+			for i in Tipo:
+				opcionesRe = reglas.FunAndTy[i]+opcionesRe
+
+			if (random.random()<.9 and len(opcionesRe)!= 0 or (len(Tipo)==1 and 'MB' in Tipo) ) :
+				funCla = random.choice(Tipo)    # Selecciona aleatoriamente el tipo de dato retornad por la funcion
+				fun = random.choice(reglas.FunAndTy[funCla]) # Selecciona aleatoriamente la funcion con un espesifico tipo de dato de retorno
+				exp = [fun]                     # Contruye el arreglo para contruir la exprecion de la rama actual         
+				regPar = reglas.FunPar[fun]     # Guardamos la regla que se usara para escojer los tipos de parametros aceptados 
+				
+				#### El conjunto de Multi Bloque (MB) los contruimos encapsulando sus parametros en un araglo #############  
+				if fun in reglas.FunAndTy['MB']:
+					# for contiene una restriccion de contrucción debido a su variable local que contiene 
 					if fun == 'for':
-						exp =  [self.grow(prof-1,setFun[funCla][2][Nfun][0])] + exp
-						self.Nfor +=1 
-						setVarCon.append('for'+str(self.Nfor))
-						exp =  [self.grow(prof-1,setFun[funCla][2][Nfun][1])] + exp
-						exp =  [self.grow(prof-1,setFun[funCla][2][Nfun][2])] + exp
-						for i in xrange(0,self.Nfor):
-							setVarCon.pop()
-						self.Nfor =0
+						exp =  [self.grow(prof-1,regPar['TypePar'][0])] + exp 
+						#setVarCon.append('for'+str(self.Nfor))
+						exp =  [self.grow(prof-1,regPar['TypePar'][1])] + exp
+						exp =  [self.grow(prof-1,regPar['TypePar'][2])] + exp
+						#for i in xrange(0,self.Nfor):
+						#	setVarCon.pop()
+						#self.Nfor =0
 						exp = exp
 					else:
-						for i in xrange (0,setFun[funCla][1][r]):
-							exp =  [self.grow(prof-1,setFun[funCla][2][Nfun][i])] + exp
+						for i in xrange (0,regPar['NumPar']):
+							exp =  [self.grow(prof-1,regPar['TypePar'][i])] + exp
 						exp = exp
 				else :
-					for i in xrange (0,setFun[funCla][1][r]):
-						a = self.grow(prof-1,setFun[funCla][2][Nfun][i])
-						#print  a
+				###### El  cunjunto de funciones lo contruimos concatenando cada una de sus expreciones futuras ##########
+					for i in xrange (0,regPar['NumPar']):
+						a = self.grow(prof-1,regPar['TypePar'][i])
 						exp =  a + exp
-				#print exp
+				
 				return exp
 			else :
-				##### Real ######
-				if 'R' in Tipo:
-					return [ (setVar+setVarCon)[ random.randint( 0, len(setVar)+len(setVarCon)-1 ) ] ]#Retorna una variable al azar
-				##### Binaria ####
-				elif 'Log' in Tipo:
-					return [ setVarConB[ random.randint( 0, len(setVarConB)-1 ) ] ]#Retorna una variable al azar
-				##### Bloque  ####
-				elif 'MuB' in Tipo:
-					return ['None']
-				elif 'R' in Tipo:
-					return [ setVar[ random.randint( 0, len(setVar)-1 ) ] ]
-				elif 'Var' in Tipo:
-					return [ setVarLoc[ random.randint( 0, len(setVarLoc)-1 ) ] ]
+				############# Si queremos poner un terminal en lugar de una función y truncar el árbol 
+				opcionesRe = []
+				for i in Tipo:
+					opcionesRe = reglas.TerAndTy[i]+opcionesRe
+				self.Nfor +=1  
+				return [ random.choice(opcionesRe) ]
 					
 	"""			
 	def halfaAndHalf(self, prof):
@@ -182,8 +149,6 @@ class Individuo:
 	###################### operadores #######################################
 
 	def operador (self, op, X):
-		global setFun
-		global setVar
 		########### logicos ############
 		if 'and' == op:
 			return ( X[0]  and  X[1]) 
@@ -220,11 +185,8 @@ class Individuo:
 		########## Iterativo ############
 
 		elif 'for' == op:
-			#print "Entro al for"
 			I = int(self.evaluar( X[2]) )
 			J = int (self.evaluar( X[1]) )
-			#print I
-			#print J
 			conStopFor = 0 
 			if I>10 or I<10:
 				I = 10
@@ -248,12 +210,10 @@ class Individuo:
 
 		elif 'while' == op:
 			conStop = 10
-			#print "Entro al while"
 			while self.evaluar( X[1] ) and conStop:
 				self.evaluar( X[0])
 				conStop-=1
 		elif 'if' == op:
-			#print "Entro al if"
 			if self.evaluar( X[2]):
 				self.evaluar(  X[1])
 			else:
@@ -281,10 +241,7 @@ class Individuo:
 			self.evaluar(X[3])
 			self.evaluar(X[4])
 		elif '=R' == op:
-			#print X[1]
-			#print X[0]
 			self.valIntPut[setVarLoc.index(X[1][0])] = self.evaluar(X[0])
-
 
 	def evaluar (self,pos):
 		pila = []
@@ -292,12 +249,11 @@ class Individuo:
 		#print pos 
 		#print "###########################"
 		for i in xrange(0, len(pos)):
-			#print "fdgfd"
-			#print pos[i]
-
-			if ( pos[i] in setVar   ):
-				pila.append(self.valIntPut[ setVar.index(pos[i]) ])
-
+			print pos[i]
+			if ( pos[i] in reglas.TerAndTy["MeR"]   ):
+				print self.valVar[pos[i]]
+				pila.append(self.valVar[pos[i]])
+			"""
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
 			elif pos[i] in setVarCon:
@@ -318,14 +274,16 @@ class Individuo:
 					pila.append( self.forVal[ind-1] )
 				else:
 					pila.append(0)
+			"""
 		return pila.pop()
 
 	def evaluarGen(self,val):
 		#print "---------------------"
 		#print self.gen
 		#print "---------------------"
+		for i in xrange(0, len(reglas.InputVar)) :
+			self.valVar[reglas.InputVar[i]["Name"]] = val[i] 
 		self.resultado = []
-		self.valIntPut = val[:]
 		self.evaluar(self.gen)
 		return self.resultado
 		#print  inst
@@ -461,9 +419,9 @@ class Individuo:
 					pila.append('0')
 		return pila.pop()
 
-prueba = Individuo(5)
+prueba = Individuo(3)
 print prueba.gen
 #prueba.imprimir(prueba.gen)
 res = prueba.evaluarGen([5,4,4,8,10,9,3,7,7,2])
-#print "el resultado es "
+print "el resultado es "
 print res

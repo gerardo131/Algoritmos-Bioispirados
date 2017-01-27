@@ -11,7 +11,7 @@ import PoblacionInicial
 import seleccion 
 import Mezcla
 import Mutacion
- 
+
 
 
 def genMuestra(n = 1):
