@@ -26,15 +26,14 @@ class Individuo:
 
 	def __init__(self, prof):
 		self.Nfor = 0
-		self.forVal = []
+		self.forVar = []
+		self.regiFor = []
 		self.gen = self.crearCadena(prof)
 		self.calificacion = 0
 		self.error = 0
 		self.resultado = []
-		self.valVar = {}
-		self.forVar = []
-		for i in reglas.TerAndTy["MeR"]:
-			self.valVar[i]=0 
+		self.NumWhile = 0
+
 
 
 	################### funcion de adaptacion ############################
@@ -89,16 +88,15 @@ class Individuo:
 			opcionesRe = []
 			for i in Tipo:
 				opcionesRe = reglas.TerAndTy[i]+opcionesRe
+				
 			return [ random.choice(opcionesRe) ]
 		else:
 			######## Si queremos poner una funcion en el árbol ############################
 			opcionesRe = []
 			for i in Tipo:
 				opcionesRe = reglas.FunAndTy[i]+opcionesRe
-
-			if (random.random()<.9 and len(opcionesRe)!= 0 or (len(Tipo)==1 and 'MB' in Tipo) ) :
-				funCla = random.choice(Tipo)    # Selecciona aleatoriamente el tipo de dato retornad por la funcion
-				fun = random.choice(reglas.FunAndTy[funCla]) # Selecciona aleatoriamente la funcion con un espesifico tipo de dato de retorno
+			if (random.random()<.9 and len(opcionesRe)!= 0 or (len(Tipo)==1 and 'MB' in Tipo) ) :    
+				fun = random.choice(opcionesRe) # Selecciona aleatoriamente la funcion con un espesifico tipo de dato de retorno
 				exp = [fun]                     # Contruye el arreglo para contruir la exprecion de la rama actual         
 				regPar = reglas.FunPar[fun]     # Guardamos la regla que se usara para escojer los tipos de parametros aceptados 
 				
@@ -106,13 +104,14 @@ class Individuo:
 				if fun in reglas.FunAndTy['MB']:
 					# for contiene una restriccion de contrucción debido a su variable local que contiene 
 					if fun == 'for':
+						self.Nfor += 1
+						self.NF =self.Nfor
 						exp =  [self.grow(prof-1,regPar['TypePar'][0])] + exp 
-						#setVarCon.append('for'+str(self.Nfor))
+						self.forVar.append(  )
 						exp =  [self.grow(prof-1,regPar['TypePar'][1])] + exp
 						exp =  [self.grow(prof-1,regPar['TypePar'][2])] + exp
-						#for i in xrange(0,self.Nfor):
-						#	setVarCon.pop()
-						#self.Nfor =0
+						self.forVar.pop()
+						self.Nfor =0
 						exp = exp
 					else:
 						for i in xrange (0,regPar['NumPar']):
@@ -130,7 +129,8 @@ class Individuo:
 				opcionesRe = []
 				for i in Tipo:
 					opcionesRe = reglas.TerAndTy[i]+opcionesRe
-				self.Nfor +=1  
+				print prof 
+				print opcionesRe
 				return [ random.choice(opcionesRe) ]
 					
 	"""			
@@ -222,19 +222,19 @@ class Individuo:
 			self.resultado.append(X[0])
 
 		######### Multiblock ######
-		elif 'block2' == op :
+		elif 'Block2' == op :
 			self.evaluar(X[0])
 			self.evaluar(X[1])
-		elif 'block3' == op :
+		elif 'Block3' == op :
 			self.evaluar(X[0])
 			self.evaluar(X[1])
 			self.evaluar(X[2])
-		elif 'block4' == op :
+		elif 'Block4' == op :
 			self.evaluar(X[0])
 			self.evaluar(X[1])
 			self.evaluar(X[2])
 			self.evaluar(X[3])
-		elif 'block5' == op :
+		elif 'Block5' == op :
 			self.evaluar(X[0])
 			self.evaluar(X[1])
 			self.evaluar(X[2])
@@ -242,6 +242,7 @@ class Individuo:
 			self.evaluar(X[4])
 		elif '=R' == op:
 			self.valIntPut[setVarLoc.index(X[1][0])] = self.evaluar(X[0])
+
 
 	def evaluar (self,pos):
 		pila = []
@@ -253,7 +254,6 @@ class Individuo:
 			if ( pos[i] in reglas.TerAndTy["MeR"]   ):
 				print self.valVar[pos[i]]
 				pila.append(self.valVar[pos[i]])
-			"""
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
 			elif pos[i] in setVarCon:
@@ -274,7 +274,6 @@ class Individuo:
 					pila.append( self.forVal[ind-1] )
 				else:
 					pila.append(0)
-			"""
 		return pila.pop()
 
 	def evaluarGen(self,val):
@@ -290,8 +289,6 @@ class Individuo:
 
 	###################### Evaluacion #######################################
 	def operadorIm (self,op, X):
-		global setFun
-		global setVar
 		########### logicos ############
 		if 'and' == op:
 			return "("+str(X[0])+" and "+str(X[1])+")"
@@ -335,15 +332,21 @@ class Individuo:
 			#if J>10 or J<10:
 			#	J = 10
 			#self.forVal.append(0)
-			print "for ( "+ self.imprimir(X[2]) +" , "+ self.imprimir(X[2]) + ", +1 ){"
+			print "for ( "+ self.imprimir(X[2]) +" ; "+ self.imprimir(X[2]) + "; +1 ){"
 			self.imprimir(X[0])
 			print "}"
 
 		elif 'while' == op:
-			
+			self.NumWhile+=1
+			NumW = self.NumWhile
+			print "int VarWhile"+str(NumW)+" = 0;"
+			print "if (VarWhile"+str(NumW)+" < 20){"
 			print "while ( "+self.imprimir(X[1])+" ){"
 			self.imprimir(X[0])
 			print "}"
+			print "VarWhile"+str(NumW)+"+=1;" 
+			print "}"
+			self.NumWhile = 0
 
 		elif 'if' == op:
 			
@@ -359,25 +362,25 @@ class Individuo:
 			print "print "+ str(X[0])
 
 		######### Multiblock ######
-		elif 'block2' == op :
+		elif 'Block2' == op :
 			print '{'
 			self.imprimir( X[0])
 			self.imprimir( X[1])
 			print '}'
-		elif 'block3' == op :
+		elif 'Block3' == op :
 			print '{'
 			self.imprimir( X[0])
 			self.imprimir( X[1])
 			self.imprimir( X[2])
 			print '}'
-		elif 'block4' == op :
+		elif 'Block4' == op :
 			print '{'
 			self.imprimir( X[0])
 			self.imprimir( X[1])
 			self.imprimir( X[2])
 			self.imprimir( X[3])
 			print '}'
-		elif 'block5' == op :
+		elif 'Block5' == op :
 			print '{'
 			self.imprimir( X[0])
 			self.imprimir( X[1])
@@ -385,6 +388,10 @@ class Individuo:
 			self.imprimir( X[3])
 			self.imprimir( X[4])
 			print '}'
+		elif '=R' == op :
+			print X[1][0]+" = " + self.imprimir(X[0])+";" 
+		elif '$R' == op :
+			return X[0]
 
 	def imprimir (self,pos):
 		pila = []
@@ -392,36 +399,36 @@ class Individuo:
 		#print pos 
 		#print "###########################"
 		for i in xrange(0, len(pos)):
-			#print "fdgfd"
-			#print pos[i]
-
-			if ( pos[i] in setVar   ):
+			if ( pos[i] in reglas.NameVar ):
 				pila.append(pos[i])
+			elif ( pos[i] in reglas.NameCons ):
+				pila.append(str(reglas.ValCons[pos[i]]))
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
-			elif pos[i] in setVarCon:
-				pila.append( str(valCon[setVarCon.index(pos[i])]) )
-			elif pos[i] in setVarConB:
-				pila.append( str(valConB[setVarConB.index(pos[i])]) )
-			elif pos[i] in setFunSimple[0] :
-				indfun = setFunSimple[0].index(pos[i])
+			elif pos[i] in reglas.Funcion :
 				param = []
-				for j in xrange(0,setFunSimple[1][indfun]):
+				for j in xrange(0,reglas.FunPar[pos[i]]['NumPar']):
 					param.insert(0, pila.pop() ) 
 				#print param
 				res = self.operadorIm(pos[i],param)
 				pila.append(res)
-			elif pos[i][0:3] == 'for':
-				ind = int(pos[i][3:][0])
-				if ind <= len(self.forVal):
-					pila.append( pos[i] )
-				else:
-					pila.append('0')
 		return pila.pop()
+	def imprimirGen(self,val):
+		#print "---------------------"
+		#print self.gen
+		#print "---------------------"
+		print "int main(int argc, char const *argv[]){"
+		for i in xrange(0, len(reglas.InputVar)) :
+			print "float "+ reglas.InputVar[i]["Name"] +"="+ str(val[i])+";"
+		for i in xrange(0, len(reglas.FreeVar)) :
+			print "float "+ reglas.FreeVar[i]["Name"] +"="+ "0.0"+";" 
 
-prueba = Individuo(3)
+		self.imprimir(self.gen)
+		print "}"
+
+prueba = Individuo(5)
 print prueba.gen
-#prueba.imprimir(prueba.gen)
-res = prueba.evaluarGen([5,4,4,8,10,9,3,7,7,2])
-print "el resultado es "
-print res
+prueba.imprimirGen([5,4,4,8,10,9,3,7,7,2])
+#res = prueba.evaluarGen()
+#print "el resultado es "
+#print res
