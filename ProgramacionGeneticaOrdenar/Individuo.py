@@ -27,7 +27,6 @@ class Individuo:
 	def __init__(self, prof):
 		self.Nfor = 0
 		self.forVar = []
-		self.regiFor = []
 		self.gen = self.crearCadena(prof)
 		self.calificacion = 0
 		self.error = 0
@@ -88,6 +87,8 @@ class Individuo:
 			opcionesRe = []
 			for i in Tipo:
 				opcionesRe = reglas.TerAndTy[i]+opcionesRe
+			if "R" in Tipo:
+				opcionesRe = self.forVar+opcionesRe
 				
 			return [ random.choice(opcionesRe) ]
 		else:
@@ -106,17 +107,19 @@ class Individuo:
 					if fun == 'for':
 						self.Nfor += 1
 						self.NF =self.Nfor
-						exp =  [self.grow(prof-1,regPar['TypePar'][0])] + exp 
-						self.forVar.append(  )
+						exp =  [self.grow(prof-1,["R"])+["set-"+reglas.DinamicVar[self.Nfor]]] + exp 
 						exp =  [self.grow(prof-1,regPar['TypePar'][1])] + exp
+						self.forVar.append(reglas.DinamicVar[self.Nfor])
 						exp =  [self.grow(prof-1,regPar['TypePar'][2])] + exp
 						self.forVar.pop()
 						self.Nfor =0
 						exp = exp
+
 					else:
 						for i in xrange (0,regPar['NumPar']):
 							exp =  [self.grow(prof-1,regPar['TypePar'][i])] + exp
 						exp = exp
+
 				else :
 				###### El  cunjunto de funciones lo contruimos concatenando cada una de sus expreciones futuras ##########
 					for i in xrange (0,regPar['NumPar']):
@@ -129,6 +132,8 @@ class Individuo:
 				opcionesRe = []
 				for i in Tipo:
 					opcionesRe = reglas.TerAndTy[i]+opcionesRe
+				if "R" in Tipo:
+					opcionesRe = self.forVar+opcionesRe
 				print prof 
 				print opcionesRe
 				return [ random.choice(opcionesRe) ]
@@ -242,6 +247,8 @@ class Individuo:
 			self.evaluar(X[4])
 		elif '=R' == op:
 			self.valIntPut[setVarLoc.index(X[1][0])] = self.evaluar(X[0])
+		elif op.find("set-")>=0:
+			self.valIntPut[setVarLoc.index(X[1][0])] = self.evaluar(X[0])
 
 
 	def evaluar (self,pos):
@@ -251,8 +258,8 @@ class Individuo:
 		#print "###########################"
 		for i in xrange(0, len(pos)):
 			print pos[i]
-			if ( pos[i] in reglas.TerAndTy["MeR"]   ):
-				print self.valVar[pos[i]]
+			if ( pos[i] in reglas.TerAndTy["MeR"]  ):
+				#print self.valVar[pos[i]]
 				pila.append(self.valVar[pos[i]])
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
@@ -332,7 +339,7 @@ class Individuo:
 			#if J>10 or J<10:
 			#	J = 10
 			#self.forVal.append(0)
-			print "for ( "+ self.imprimir(X[2]) +" ; "+ self.imprimir(X[2]) + "; +1 ){"
+			print "for ( "+ self.imprimir(X[2]) +" ; "+ self.imprimir(X[1]) + "; +1 ){"
 			self.imprimir(X[0])
 			print "}"
 
@@ -365,33 +372,57 @@ class Individuo:
 		elif 'Block2' == op :
 			print '{'
 			self.imprimir( X[0])
+			print '}'
+			print '{'
 			self.imprimir( X[1])
 			print '}'
+
 		elif 'Block3' == op :
 			print '{'
 			self.imprimir( X[0])
+			print '}'			
+			print '{'
 			self.imprimir( X[1])
+			print '}'
+			print '{'
 			self.imprimir( X[2])
 			print '}'
+
 		elif 'Block4' == op :
 			print '{'
 			self.imprimir( X[0])
+			print '}'
+			print '{'
 			self.imprimir( X[1])
+			print '}'
+			print '{'			
 			self.imprimir( X[2])
+			print '}'
+			print '{'			
 			self.imprimir( X[3])
 			print '}'
+
 		elif 'Block5' == op :
 			print '{'
 			self.imprimir( X[0])
+			print '}'
+			print '{'
 			self.imprimir( X[1])
+			print '}'
+			print '{'
 			self.imprimir( X[2])
+			print '}'
+			print '{'
 			self.imprimir( X[3])
+			print '}'
+			print '{'
 			self.imprimir( X[4])
 			print '}'
+			
 		elif '=R' == op :
 			print X[1][0]+" = " + self.imprimir(X[0])+";" 
-		elif '$R' == op :
-			return X[0]
+		elif op.find("set-")>-1:
+			return op[4:] +" = " + X[0]
 
 	def imprimir (self,pos):
 		pila = []
@@ -409,21 +440,45 @@ class Individuo:
 				param = []
 				for j in xrange(0,reglas.FunPar[pos[i]]['NumPar']):
 					param.insert(0, pila.pop() ) 
-				#print param
+				
 				res = self.operadorIm(pos[i],param)
 				pila.append(res)
+			elif pos[i].find("set-")>-1:
+				param = []
+				for j in xrange(0,reglas.FunPar[pos[i][0:4]]['NumPar']):
+					param.insert(0, pila.pop() ) 
+				
+				res = self.operadorIm(pos[i],param)
+				pila.append(res)
+
 		return pila.pop()
+
 	def imprimirGen(self,val):
 		#print "---------------------"
 		#print self.gen
 		#print "---------------------"
+		print "#include <iostream>"
+		print "using namespace std;" 
 		print "int main(int argc, char const *argv[]){"
 		for i in xrange(0, len(reglas.InputVar)) :
 			print "float "+ reglas.InputVar[i]["Name"] +"="+ str(val[i])+";"
+		for i in xrange(0, len(reglas.DinVar)) :
+			print "float "+ reglas.DinVar[i]["Name"] +"="+ "1"+";"
 		for i in xrange(0, len(reglas.FreeVar)) :
 			print "float "+ reglas.FreeVar[i]["Name"] +"="+ "0.0"+";" 
 
 		self.imprimir(self.gen)
+		print "cout<<IPVa;"
+		print "cout<<IPVb;"
+		print "cout<<IPVc;"
+		print "cout<<IPVd;"
+		print "cout<<IPVe;"
+		print "cout<<IPVf;"
+		print "cout<<IPVg;"
+		print "cout<<IPVh;"
+		print "cout<<IPVi;"
+		print "cout<<IPVj;"
+		print "return 0;"
 		print "}"
 
 prueba = Individuo(5)
