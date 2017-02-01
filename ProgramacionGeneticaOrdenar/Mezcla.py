@@ -1,4 +1,5 @@
 import Individuo
+import reglas
 import copy
 import PoblacionInicial
 import random
@@ -11,9 +12,8 @@ def mezclaPunto(Can1,Can2,N):
 	
 	while num != 0:
 		num-=1
-		if  Can1[indC] in Individuo.setFunSimple[0] :
-			indNpara = Individuo.setFunSimple[0].index(Can1[indC])
-			num += Individuo.setFunSimple[1][indNpara]
+		if  Can1[indC] in reglas.Funcion :
+			num += reglas.FunPar[ Can1[indC] ]["NumPar"]
 		indC-=1
 	RCan1aux = Can1[0:indC+1]
 
@@ -23,9 +23,8 @@ def mezclaPunto(Can1,Can2,N):
 	while num != 0:
 		num-=1
 		RCan1aux2.insert(0,Can2[indC])
-		if  Can2[indC] in Individuo.setFunSimple[0] :
-			indNpara = Individuo.setFunSimple[0].index(Can2[indC])
-			num += Individuo.setFunSimple[1][indNpara]
+		if  Can2[indC] in reglas.Funcion :
+			num += reglas.FunPar[ Can2[indC] ]["NumPar"]
 		indC-=1
 	res = RCan1aux+RCan1aux2+RCan1
 	return res 
@@ -44,16 +43,31 @@ def Punto(Can,PC = 100):
 	N[1] = random.randint(0,len(lenCan2)-1)
 	fen = lenCan1[N[0]]
 	optip= []
-	for i in Individuo.setFunIn:
-		if fen in Individuo.setFunIn[i]:
-			optip = Individuo.setFunIn[i][:]
+
+	for i in reglas.TerAndTy:
+		if fen in reglas.TerAndTy[i]:
+			optip = reglas.TerAndTy[i][:]
+
+	for i in reglas.FunAndTy:
+		if fen in reglas.FunAndTy[i]:
+			optip = reglas.FunAndTy[i][:]
+
+	for i in reglas.DinVartry:
+		if fen in reglas.DinVartry[i]:
+			optip = reglas.DinVartry[i][:]
+
 	IndTipo = 0
 	for i in xrange(0,N[1]):
 		if (lenCan2[i] in optip):
 			IndTipo = i
+	if not(lenCan2[ IndTipo ] in optip):
+		for i in xrange(0,len(lenCan2)):
+			if (lenCan2[i] in optip):
+				IndTipo = i
+	print optip
 	N[1] = IndTipo
 	if not(lenCan2[ N[1] ] in optip):
-		#print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
+		print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
 		#print optip
 		PC = 0
 
@@ -127,28 +141,29 @@ def contar(genM,N):
 	#	pass
 
 ###############    PRUEBA    ####################
-"""
+
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
 print pru1.gen 
 #contar ( pru1.gen, 5)
+print "         "
 print pru2.gen
 
 #print len(lenCan1)
 #print len(lenCan2)
 P= Punto ([pru1,pru2])
 
-res1 = pru1.evaluarGen([5,4,4])
-print "el resultado 1 es "
-print res1
+#res1 = pru1.evaluarGen([5,4,4])
+#print "el resultado 1 es "
+#print res1
 
-res2 = pru2.evaluarGen([5,4,4])
-print "el resultado 2 es "
-print res2
+#res2 = pru2.evaluarGen([5,4,4])
+#print "el resultado 2 es "
+#print res2
 
 
 for i in P:
 	print i.gen
-"""
+
 #################################################
 

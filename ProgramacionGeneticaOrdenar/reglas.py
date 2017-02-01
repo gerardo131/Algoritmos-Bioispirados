@@ -6,6 +6,7 @@
 #--Block = MB
 #--Bool  =  B
 #--Memosi= Me
+#--SET
 ###############################
 import random
 numInPutVar = 10
@@ -50,10 +51,10 @@ setFun = [
 			{ "Name" : "set-", "NumPar" : 1, "NumSal" : 1, "TypePar":[  ["R"]  ], "Type" : ["SET"]     },
 
 		#	{ "Name" : "$B", "NumPar" : 1, "NumSal" : 1, "TypePar":[ ["MeB"]  ], "Type" : ["B"]      },
-		#	{ "Name" : "$R", "NumPar" : 1, "NumSal" : 1, "TypePar":[ ["MeR"]  ], "Type" : ["R"]  }
+			{ "Name" : "$R", "NumPar" : 1, "NumSal" : 1, "TypePar":[ ["MeR"]  ], "Type" : ["R"]  }
 
 		]
-InputVar = [{ "Name" : "IPV"+chr(i) , "Type" :["MeR"] } for i in xrange(97,97+numInPutVar) ]
+InputVar = [{ "Name" : "IPV_"+str(i) , "Type" :["MeR"] } for i in xrange(0,numInPutVar) ]
 FreeVar = [{ "Name" : "FV"+chr(i) , "Type" :["MeR"] } for i in xrange(97,97+numFreeVar) ]
 DinVar = [{ "Name" : "DinV_"+str(i) , "Type" :["R"] } for i in xrange(0,numDinVar)]
 
@@ -78,25 +79,32 @@ def ConsVal ():
 	for i in Cons:
 		consval[i["Name"]]=i["Val"]
 	return consval	
-
+#Son arreglos que contienen los tipos de datos y el nombre de la funciones 
 TerAndTy = nameTyp(setTer)
 FunAndTy = nameTyp(setFun)
 DinVartry = nameTyp(DinVar)
+
+# Son arreglos que contiene todos los nombres de las funciones
 Funcion  = [i["Name"] for i in setFun]
 Terminal = [i["Name"] for i in setTer]
 DinamicVar = [i["Name"] for i in DinVar] 
-
 NameInputVar = [i["Name"] for i in InputVar]
 NameFreevar  = [i["Name"] for i in FreeVar]
 NameVar      = NameFreevar + NameInputVar + DinamicVar
 NameCons     = [i["Name"] for i in Cons]
+
+#Son arreglos con el nombre de las constantes y el valor 
 ValCons      = ConsVal()
+
+#Contiene  el nombre y el numero de parametros y el tipo de cada parametro
 FunPar = nameFunPar()
+
 #print  FunPar
-print Funcion
+#print Funcion
 #print Terminal
 #print TerAndTy
 #print FunAndTy
 
 
+ 
 

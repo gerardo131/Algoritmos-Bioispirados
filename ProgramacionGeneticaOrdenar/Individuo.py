@@ -32,6 +32,7 @@ class Individuo:
 		self.error = 0
 		self.resultado = []
 		self.NumWhile = 0
+		self.NumFor = 0
 
 
 
@@ -110,7 +111,7 @@ class Individuo:
 						exp =  [self.grow(prof-1,["R"])+["set-"+reglas.DinamicVar[self.Nfor]]] + exp 
 						exp =  [self.grow(prof-1,regPar['TypePar'][1])] + exp
 						self.forVar.append(reglas.DinamicVar[self.Nfor])
-						exp =  [self.grow(prof-1,regPar['TypePar'][2])] + exp
+						exp =  [ self.grow(prof-1,regPar['TypePar'][2]) ] + exp
 						self.forVar.pop()
 						self.Nfor =0
 						exp = exp
@@ -134,8 +135,8 @@ class Individuo:
 					opcionesRe = reglas.TerAndTy[i]+opcionesRe
 				if "R" in Tipo:
 					opcionesRe = self.forVar+opcionesRe
-				print prof 
-				print opcionesRe
+				#print prof 
+				#print opcionesRe
 				return [ random.choice(opcionesRe) ]
 					
 	"""			
@@ -339,19 +340,32 @@ class Individuo:
 			#if J>10 or J<10:
 			#	J = 10
 			#self.forVal.append(0)
+			self.NumFor+=1
+			NumF = self.NumFor
+			print "int VarFor"+str(NumF)+" = 0;"
+			
+			
 			print "for ( "+ self.imprimir(X[2]) +" ; "+ self.imprimir(X[1]) + "; +1 ){"
 			self.imprimir(X[0])
+			print "if (VarFor"+str(NumF)+" > 20){"
+			print "break;" 
 			print "}"
+			print "VarFor"+str(NumF)+"+=1;"
+			print "}"
+			
+			
+			self.NumFor = 0
 
 		elif 'while' == op:
 			self.NumWhile+=1
 			NumW = self.NumWhile
 			print "int VarWhile"+str(NumW)+" = 0;"
-			print "if (VarWhile"+str(NumW)+" < 20){"
 			print "while ( "+self.imprimir(X[1])+" ){"
 			self.imprimir(X[0])
+			print "if (VarWhile"+str(NumW)+" > 20){"
+			print "break;" 
 			print "}"
-			print "VarWhile"+str(NumW)+"+=1;" 
+			print "VarWhile"+str(NumW)+"+=1;"
 			print "}"
 			self.NumWhile = 0
 
@@ -468,22 +482,14 @@ class Individuo:
 			print "float "+ reglas.FreeVar[i]["Name"] +"="+ "0.0"+";" 
 
 		self.imprimir(self.gen)
-		print "cout<<IPVa;"
-		print "cout<<IPVb;"
-		print "cout<<IPVc;"
-		print "cout<<IPVd;"
-		print "cout<<IPVe;"
-		print "cout<<IPVf;"
-		print "cout<<IPVg;"
-		print "cout<<IPVh;"
-		print "cout<<IPVi;"
-		print "cout<<IPVj;"
+		for i in xrange(0, len(reglas.InputVar)) :
+			print "cout<<"+ reglas.InputVar[i]["Name"]+"<<endl;"
 		print "return 0;"
 		print "}"
 
-prueba = Individuo(5)
-print prueba.gen
-prueba.imprimirGen([5,4,4,8,10,9,3,7,7,2])
+#prueba = Individuo(5)
+#print prueba.gen
+#prueba.imprimirGen([5,4,4,8,10,9,3,7,7,2])
 #res = prueba.evaluarGen()
 #print "el resultado es "
 #print res

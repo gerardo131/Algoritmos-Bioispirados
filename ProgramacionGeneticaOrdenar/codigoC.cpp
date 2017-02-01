@@ -1,16 +1,16 @@
 #include <iostream>
 using namespace std;
 int main(int argc, char const *argv[]){
-float IPVa=5;
-float IPVb=4;
-float IPVc=4;
-float IPVd=8;
-float IPVe=10;
-float IPVf=9;
-float IPVg=3;
-float IPVh=7;
-float IPVi=7;
-float IPVj=2;
+float IPV_0=5;
+float IPV_1=4;
+float IPV_2=4;
+float IPV_3=8;
+float IPV_4=10;
+float IPV_5=9;
+float IPV_6=3;
+float IPV_7=7;
+float IPV_8=7;
+float IPV_9=2;
 float DinV_0=1;
 float DinV_1=1;
 float DinV_2=1;
@@ -114,114 +114,229 @@ float DinV_99=1;
 float FVa=0.0;
 float FVb=0.0;
 {
-if ( (((IPVi / IPVi) / (IPVj * IPVc)) >= ((IPVj - IPVf) / (10 / 20))) ) {
+int VarWhile1 = 0;
+while ( (IPV_8 == ((FVb - IPV_3) - (9 / FVb))) ){
 {
+int VarFor1 = 0;
+for ( DinV_1 = (IPV_7 + IPV_5) ; (IPV_1 / IPV_8); +1 ){
 {
-if ( false ) {
 }
-else { 
+{
+}
+{
+}
+{
+}
+{
+}
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+}
+{
+int VarFor1 = 0;
+for ( DinV_1 = (19 / 9) ; (9 * IPV_1); +1 ){
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+}
+{
+{
+int VarFor1 = 0;
+for ( DinV_1 = 9 ; IPV_5; +1 ){
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+}
+{
+IPV_1 = 11;
+}
+{
+IPV_3 = 19;
+}
+{
+{
+}
+{
+}
+{
+}
+}
+}
+if (VarWhile1 > 20){
+break;
+}
+VarWhile1+=1;
+}
+}
+{
+{
+{
+{
+IPV_6 = 11;
+}
+{
+{
+}
+{
+}
+{
+}
+}
+}
+{
+IPV_1 = (IPV_8 - 19);
 }
 }
 {
 int VarWhile1 = 0;
-if (VarWhile1 < 20){
 while ( false ){
+{
+int VarFor1 = 0;
+for ( DinV_1 = 9 ; IPV_2; +1 ){
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+}
+{
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+{
+IPV_0 = 19;
+}
+{
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+{
+if ( true ) {
+}
+else { 
+}
+}
+if (VarWhile1 > 20){
+break;
 }
 VarWhile1+=1;
 }
 }
 {
-{
-}
-{
-}
-{
-}
-{
-}
-{
-}
-}
-{
-{
-}
-{
-}
-}
-}
-{
-{
-for ( DinV_1 = 20 ; IPVa; +1 ){
-}
-}
-{
-if ( false ) {
-}
-else { 
-}
-}
-{
-for ( DinV_1 = 10 ; 10; +1 ){
-}
-}
-{
-for ( DinV_1 = 20 ; IPVi; +1 ){
-}
-}
-}
-{
-IPVb = (IPVf - IPVj);
-}
-{
-{
-{
-}
-{
-}
-}
-{
-for ( DinV_1 = 4 ; IPVg; +1 ){
-}
-}
-{
-if ( false ) {
-}
-else { 
-}
-}
-{
-{
-}
-{
-}
-{
-}
-{
-}
-{
-}
-}
-{
 int VarWhile1 = 0;
-if (VarWhile1 < 20){
+while ( ((IPV_0 - FVb) > (IPV_5 - 11)) ){
+int VarFor1 = 0;
+for ( DinV_1 = 19 ; (19 - 9); +1 ){
+int VarWhile2 = 0;
+while ( true ){
+if (VarWhile2 > 20){
+break;
+}
+VarWhile2+=1;
+}
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+if (VarWhile1 > 20){
+break;
+}
+VarWhile1+=1;
+}
+}
+}
+{
+{
+if ( ((false or false) or (IPV_9 == IPV_4)) ) {
+{
+{
+}
+{
+}
+}
+{
+int VarFor1 = 0;
+for ( DinV_1 = 9 ; 19; +1 ){
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+}
+{
+int VarFor1 = 0;
+for ( DinV_1 = 19 ; IPV_9; +1 ){
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
+}
+{
+if ( false ) {
+}
+else { 
+}
+}
+{
+FVb = 11;
+}
+}
+else { 
+int VarFor1 = 0;
+for ( DinV_1 = (IPV_8 * IPV_3) ; (IPV_1 / 11); +1 ){
+int VarWhile1 = 0;
 while ( false ){
+if (VarWhile1 > 20){
+break;
 }
 VarWhile1+=1;
 }
+if (VarFor1 > 20){
+break;
 }
+VarFor1+=1;
 }
-{
-{
-{
-}
-{
-}
-{
-}
-{
 }
 }
 {
+{
+int VarFor1 = 0;
+for ( DinV_1 = (19 - IPV_1) ; (IPV_5 + 19); +1 ){
 {
 }
 {
@@ -232,34 +347,17 @@ VarWhile1+=1;
 }
 {
 }
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
+}
 }
 {
-if ( false ) {
-}
-else { 
-}
+{
+IPV_2 = 11;
 }
 {
-int VarWhile1 = 0;
-if (VarWhile1 < 20){
-while ( false ){
-}
-VarWhile1+=1;
-}
-}
-}
-}
-else { 
-{
-if ( (IPVg >= 10) ) {
-for ( DinV_1 = 10 ; IPVb; +1 ){
-}
-}
-else { 
-{
-}
-{
-}
 {
 }
 {
@@ -269,80 +367,15 @@ else {
 }
 }
 {
-int VarWhile1 = 0;
-if (VarWhile1 < 20){
-while ( (IPVd < IPVj) ){
-{
-}
-{
-}
-}
-VarWhile1+=1;
-}
-}
+IPV_9 = (IPV_2 - 19);
 }
 }
 {
-{
-{
-{
-{
+IPV_1 = ((IPV_1 - 11) / FVb);
 }
 {
-}
-{
-}
-}
-{
-for ( DinV_1 = 4 ; IPVg; +1 ){
-}
-}
-{
-if ( false ) {
-}
-else { 
-}
-}
-}
-{
-{
-FVb = 10;
-}
-{
-int VarWhile1 = 0;
-if (VarWhile1 < 20){
-while ( false ){
-}
-VarWhile1+=1;
-}
-}
-{
-IPVi = 10;
-}
-}
-}
-{
-{
-{
-int VarWhile1 = 0;
-if (VarWhile1 < 20){
-while ( false ){
-}
-VarWhile1+=1;
-}
-}
-{
-{
-}
-{
-}
-{
-}
-{
-}
-}
-}
-{
+int VarFor1 = 0;
+for ( DinV_1 = ((FVa / 9) + (IPV_4 - IPV_5)) ; ((IPV_0 * IPV_2) * (IPV_1 * IPV_6)); +1 ){
 {
 {
 }
@@ -360,21 +393,33 @@ else {
 }
 }
 {
-for ( DinV_1 = 10 ; IPVd; +1 ){
+if ( true ) {
+}
+else { 
+}
+}
+{
+IPV_4 = 11;
+}
+{
+IPV_2 = 19;
+}
+if (VarFor1 > 20){
+break;
+}
+VarFor1+=1;
 }
 }
 }
-}
-}
-cout<<IPVa;
-cout<<IPVb;
-cout<<IPVc;
-cout<<IPVd;
-cout<<IPVe;
-cout<<IPVf;
-cout<<IPVg;
-cout<<IPVh;
-cout<<IPVi;
-cout<<IPVj;
+cout<<IPV_0<<endl;
+cout<<IPV_1<<endl;
+cout<<IPV_2<<endl;
+cout<<IPV_3<<endl;
+cout<<IPV_4<<endl;
+cout<<IPV_5<<endl;
+cout<<IPV_6<<endl;
+cout<<IPV_7<<endl;
+cout<<IPV_8<<endl;
+cout<<IPV_9<<endl;
 return 0;
 }
