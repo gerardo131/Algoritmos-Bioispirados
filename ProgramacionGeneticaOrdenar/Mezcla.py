@@ -64,10 +64,10 @@ def Punto(Can,PC = 100):
 		for i in xrange(0,len(lenCan2)):
 			if (lenCan2[i] in optip):
 				IndTipo = i
-	print optip
+	#print optip
 	N[1] = IndTipo
 	if not(lenCan2[ N[1] ] in optip):
-		print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
+		#print lenCan1[ N[0]] + " y " + lenCan2[ N[1] ]+ "no son compatibles"
 		#print optip
 		PC = 0
 
@@ -141,7 +141,7 @@ def contar(genM,N):
 	#	pass
 
 ###############    PRUEBA    ####################
-
+"""
 pru1 = Individuo.Individuo(2)
 pru2 = Individuo.Individuo(2)
 print pru1.gen 
@@ -164,6 +164,6 @@ P= Punto ([pru1,pru2])
 
 for i in P:
 	print i.gen
-
+"""
 #################################################
 

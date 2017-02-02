@@ -1,7 +1,5 @@
 import math
 import random
-import numpy as np
-import matplotlib.pyplot as plt
 from operator import xor
 from time import time
 
@@ -47,7 +45,7 @@ def ordenarTam(GenEli):
 
 
 muestra = []
-def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =8,PC = 60,PM = 2):
+def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60,PM = 2):
 	global muestra
 	"""
 	NIND = 80
@@ -176,66 +174,69 @@ def main(NIND = 1, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =8,PC = 60
 
 	return Pob[ind]
 
-
+f=open("2_10.json","w")
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
+def salida (NIND = 50, MAXGE = 500 , NMUESTRA=40, PROFUNDIDAD = 2  ,indEli=10 ,PC = 60,PM = 90) :
+	for inArchivo in xrange(1,2):
 
-for inArchivo in xrange(1,2):
+		print "Prueba"+str(inArchivo)
+		poMax = Individuo.Individuo(5)	
+		poMax.error = 80 ## El mejor resultado de todos lo resultados
+		PMa = 0 
+		TiempoTotal = 0
 
-	print "Prueba"+str(inArchivo)
-	poMax = Individuo.Individuo(5)	
-	poMax.error = 80 ## El mejor resultado de todos lo resultados
-	PMa = 0 
-	TiempoTotal = 0
+		iteracion = 1
+		for nArchivo in xrange(0,1):
+			#f_latex=open("salida_latex.txt","w")
+			f=open("2_10.json","w")
+			f.write("{ \"Salida\" :[" ) # ------------ JSON
+			for x in xrange(0,iteracion):
+				f.write("{ \"Prueba\" :[" ) # ------------ JSON
 
-	iteracion = 1
-	for nArchivo in xrange(0,1):
-		#f_latex=open("salida_latex.txt","w")
-		f=open("2_10.json","w")
-		f.write("{ \"Salida\" :[" ) # ------------ JSON
-		for x in xrange(0,iteracion):
-			f.write("{ \"Prueba\" :[" ) # ------------ JSON
+				
+				i = main(NIND , MAXGE  , NMUESTRA, PROFUNDIDAD   ,indEli  ,PC ,PM )
 
-			
-			i = main(NIND = 100, MAXGE = 100 , NMUESTRA=50, PROFUNDIDAD = 8  ,indEli=10 ,PC = 60,PM = 90)
+				
+				if x < iteracion-1: 
+					f.write( "]}," )
+				else:
+					f.write( "]}" )
+				print i.gen
+				print muestra[0][0]
+				print muestra[1][0]
+				print poMax.evaluarGen(muestra[0][0])
+				print "Error : "+str(i.error) 
+				print "Pro Mutacion : " + str(i.calificacion)
 
-			
-			if x < iteracion-1: 
-				f.write( "]}," )
-			else:
-				f.write( "]}" )
-			print i.gen
+				############ guardar en archivo la salalida en formato latex ############
+				stringGen = str(i.gen)
+				#f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
+				#f_latex.write( " Error :"+str(i.error)+"  \n" )
+				#f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
+				#######################################################################
+
+				if i.error< poMax.error :
+					poMax = i
+					PMa = x
+				elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
+					poMax = i
+					PMa = x
+
+			f.write( "]}" )# ------------ JSON
+
+
+
+			print "----------- EL GANADOR ES -------------"
+			print poMax.gen
 			print muestra[0][0]
 			print muestra[1][0]
 			print poMax.evaluarGen(muestra[0][0])
-			print "Error : "+str(i.error) 
-			print "Pro Mutacion : " + str(i.calificacion)
+			print "Error : "+str(poMax.error)
+			print "Pro Mutacion : " + str(poMax.calificacion)
+			poMax.imprimirGen([5,4,4,8,10,9,3,7,7,2])
+			print "---------------------------------------"
 
-			############ guardar en archivo la salalida en formato latex ############
-			stringGen = str(i.gen)
-			#f_latex.write( " \item["+str(x)+"] "+ stringGen +"\n" )
-			#f_latex.write( " Error :"+str(i.error)+"  \n" )
-			#f_latex.write( " Len :"+ str( len(i.gen) ) +"  \n" )
-			#######################################################################
-
-			if i.error< poMax.error :
-				poMax = i
-				PMa = x
-			elif i.error == poMax.error and len(i.gen) < len(poMax.gen):
-				poMax = i
-				PMa = x
-
-		f.write( "]}" )# ------------ JSON
-
-
-
-		print "----------- EL GANADOR ES -------------"
-		print poMax.gen
-		print muestra[0][0]
-		print muestra[1][0]
-		print poMax.evaluarGen(muestra[0][0])
-		print "Error : "+str(poMax.error)
-		print "Pro Mutacion : " + str(poMax.calificacion)
-		print "---------------------------------------"
-
-		#f_latex.close()
-f.close()
+			#f_latex.close()
+	f.close()
+salida()
+#https://studio.azureml.net/Home/ViewWorkspaceCached/645d2ba16ac34062ad618cc646110650#Workspace/Experiments/ListExperiments

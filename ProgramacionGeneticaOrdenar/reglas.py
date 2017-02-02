@@ -51,14 +51,14 @@ setFun = [
 			{ "Name" : "set-", "NumPar" : 1, "NumSal" : 1, "TypePar":[  ["R"]  ], "Type" : ["SET"]     },
 
 		#	{ "Name" : "$B", "NumPar" : 1, "NumSal" : 1, "TypePar":[ ["MeB"]  ], "Type" : ["B"]      },
-			{ "Name" : "$R", "NumPar" : 1, "NumSal" : 1, "TypePar":[ ["MeR"]  ], "Type" : ["R"]  }
+		#	{ "Name" : "$R", "NumPar" : 1, "NumSal" : 1, "TypePar":[ ["MeR"]  ], "Type" : ["R"]  }
 
 		]
 InputVar = [{ "Name" : "IPV_"+str(i) , "Type" :["MeR"] } for i in xrange(0,numInPutVar) ]
 FreeVar = [{ "Name" : "FV"+chr(i) , "Type" :["MeR"] } for i in xrange(97,97+numFreeVar) ]
 DinVar = [{ "Name" : "DinV_"+str(i) , "Type" :["R"] } for i in xrange(0,numDinVar)]
 
-Cons= [ { "Name" : 'Cons'+chr(i) , "Type" :["R"], "Val":random.randint( 0,20 ) } for i in xrange(97,97+numVarCon) ]+[ { "Name" : 'ConsB'+chr(i) , "Type" :["B"], "Val": random.choice(["true", "false"]) } for i in xrange(97,97+numVarConB) ]+ [{ "Name" : 'None' , "Type" :["MB"],"Val":"pass" }] 
+Cons= [ { "Name" : 'Cons'+chr(i) , "Type" :["R"], "Val":random.randint( 0,20 ) } for i in xrange(97,97+numVarCon) ]+[ { "Name" : 'ConsB'+chr(i) , "Type" :["B"], "Val": random.choice([True, False]) } for i in xrange(97,97+numVarConB) ]+ [{ "Name" : 'None' , "Type" :["MB"],"Val":"pass" }] 
 setTer =  InputVar+ FreeVar+ Cons 
 
 def nameTyp(Set):

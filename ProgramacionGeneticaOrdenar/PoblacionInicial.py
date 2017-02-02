@@ -1,4 +1,3 @@
-import numpy as np
 from Individuo import Individuo  
 
 def aleatorio( n=2, prof=0 ):
