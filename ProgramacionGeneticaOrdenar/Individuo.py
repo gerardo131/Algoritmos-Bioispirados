@@ -40,8 +40,8 @@ class Individuo:
 		self.NameVar      =	reglas.NameVar[:]      
 		self.NameCons     =	reglas.NameCons[:]    
 		self.InputVar = reglas.InputVar[:]  
-		self.FreeVar = reglasFreeVar[:]
-		self.DinVar = DinVar[:]
+		self.FreeVar = reglas.FreeVar[:]
+		self.DinVar = reglas.DinVar[:]
 		#Son arreglos con el nombre de las constantes y el valor 
 		self.ValCons  = reglas.ValCons 
 
@@ -122,7 +122,9 @@ class Individuo:
 			opcionesRe = []
 			for i in Tipo:
 				opcionesRe = self.FunAndTy[i]+opcionesRe
-			if (random.random()<.9 and len(opcionesRe)!= 0 or (len(Tipo)==1 and 'MB' in Tipo) ) :    
+			if (random.random()<.9 and len(opcionesRe)!= 0 or (len(Tipo)==1 and 'MB' in Tipo) ) :  
+				if prof == 1 and "MB" in Tipo:
+					opcionesRe = ["=R"] 
 				fun = random.choice(opcionesRe) # Selecciona aleatoriamente la funcion con un espesifico tipo de dato de retorno
 				exp = [fun]                     # Contruye el arreglo para contruir la exprecion de la rama actual         
 				regPar = self.FunPar[fun]     # Guardamos la regla que se usara para escojer los tipos de parametros aceptados 
@@ -267,11 +269,13 @@ class Individuo:
 		########## Iterativo ############
 
 		elif 'for' == op:
+			#print "entro a for"
 			try:
 				I , forVari = self.evaluar( X[2]) 
 				J = int (self.evaluar( X[1]) )
 				conStopFor = 0 
 				for i in xrange(I,J ):
+					#print conStopFor
 					self.NameVarVal[forVari] =i
 					self.evaluar( X[0])
 					if conStopFor >= 10:
@@ -287,8 +291,10 @@ class Individuo:
 
 
 		elif 'while' == op:
+			#print "entro a while"
 			conStop = 10
 			while self.evaluar( X[1] ) and conStop:
+				#print conStop
 				self.evaluar( X[0])
 				conStop-=1
 		elif 'if' == op:
@@ -569,7 +575,7 @@ class Individuo:
 		print "return 0;"
 		print "}"
 """
-prueba = Individuo(12)
+prueba = Individuo(5)
 print prueba.gen
 #prueba.imprimirGen([5,4,4,8,10,9,3,7,7,2])
 res = prueba.evaluarGen([5,4,4,8,10,9,3,7,7,2])
