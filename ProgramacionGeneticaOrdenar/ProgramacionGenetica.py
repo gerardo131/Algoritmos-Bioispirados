@@ -70,10 +70,10 @@ def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60
 	while(gen<MAXGE):
 
 		NuevaPob = []
-		print "***********************************************"
+		#print "***********************************************"
 		print gen
-		print "***********************************************"
-		for i in xrange(0,(NIND-(indEli)/2)/2):
+		#print "***********************************************"
+		for i in xrange(0,(NIND-indEli)/2):
 			sel = seleccion.ruleta(Pob)
 			ResMez = Mezcla.Punto(sel,PC)
 			NuevaPob.append(ResMez[0])
@@ -92,7 +92,9 @@ def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60
 			print "             "
 			"""
 		Mutacion.punto(NuevaPob,PROFUNDIDAD,PM)
+
 		Pob = ordenar(Pob)
+
 		#################### crear JSON  Poblacion ################################
 		f.write("{ \"Poblacion\" :[" )
 		for i in Pob[:len(Pob)-1]:
@@ -122,9 +124,8 @@ def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60
 			GenEli.append( Pob[i] )
 		#GenEli = ordenarTam( GenEli )
 
-		#for i in xrange(0,indEli/2):
-		NuevaPob.append(GenEli[i])
-
+		for i in xrange(0,indEli):
+			NuevaPob.append(GenEli[i])
 		Pob = NuevaPob
 
 
@@ -178,7 +179,7 @@ def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60
 
 f=open("2_10.json","w")
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
-def salida (NIND = 50, MAXGE = 500 , NMUESTRA=40, PROFUNDIDAD = 4  ,indEli=10 ,PC = 60,PM = 90) :
+def salida (NIND = 50, MAXGE = 500 , NMUESTRA=40, PROFUNDIDAD = 5  ,indEli=10 ,PC = 60,PM = 90) :
 	for inArchivo in xrange(1,2):
 
 		print "Prueba"+str(inArchivo)
@@ -229,6 +230,7 @@ def salida (NIND = 50, MAXGE = 500 , NMUESTRA=40, PROFUNDIDAD = 4  ,indEli=10 ,P
 
 
 			print "----------- EL GANADOR ES -------------"
+			print 
 			print poMax.gen
 			print muestra[0][0]
 			print muestra[1][0]

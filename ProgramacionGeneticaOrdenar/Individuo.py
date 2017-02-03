@@ -69,14 +69,11 @@ class Individuo:
 			res = self.evaluarGen(valE[i])
 			#print res
 			for j in xrange(0,len(resE[i])) :
-				if j<len(res):
-					if res[j] != resE[i][j]:
-						parVal += 1.0
-				else:
-					parVal += 3.0  
+				if res[j] != resE[i][j]:
+					parVal += 1.0
 			val += float(parVal)/float(len(resE[i]))
 
-		val = (val**2)/float(len(valE)) 
+		val = (val)/float(len(valE)) 
 		#print val
 		self.error = val
 		return val
@@ -113,10 +110,25 @@ class Individuo:
 			opcionesRe = []
 			for i in Tipo:
 				opcionesRe = self.TerAndTy[i]+opcionesRe
+			genuinas = opcionesRe[:]
 			if "R" in Tipo:
-				opcionesRe = self.forVar+opcionesRe
+				opcionesRe = self.forVar+opcionesRe+self.NameFreevar+self.NameInputVar
+				terminaSel = random.choice(opcionesRe)
+				if terminaSel in self.NameInputVar:
+					ind = [terminaSel[4:]]
+					return [  random.choice(self.forVar+genuinas) ,"$AR","$R"]
+				if terminaSel in self.NameFreevar:
+					return [  terminaSel  ,"$R"]
+			
+			if "MeR" in Tipo:
+				opcionesRe = opcionesRe+self.NameFreevar+self.NameInputVar
+				terminaSel = random.choice(opcionesRe)
+				if terminaSel in self.NameInputVar:
+					ind = [terminaSel[4:]]
+					return [  random.choice(self.forVar+reglas.ConsAndTy["R"]) ,"$AR"]
 				
-			return [ random.choice(opcionesRe) ]
+			terminaSel = random.choice(genuinas)
+			return [terminaSel  ]
 		else:
 			######## Si queremos poner una funcion en el árbol ############################
 			opcionesRe = []
@@ -148,7 +160,7 @@ class Individuo:
 							exp =  [self.grow(prof-1,regPar['TypePar'][i])] + exp
 						exp = exp
 
-				else :
+				else : 
 				###### El  cunjunto de funciones lo contruimos concatenando cada una de sus expreciones futuras ##########
 					for i in xrange (0,regPar['NumPar']):
 						a = self.grow(prof-1,regPar['TypePar'][i])
@@ -160,11 +172,18 @@ class Individuo:
 				opcionesRe = []
 				for i in Tipo:
 					opcionesRe = self.TerAndTy[i]+opcionesRe
+				genuinas = opcionesRe[:]
 				if "R" in Tipo:
-					opcionesRe = self.forVar+opcionesRe
-				#print prof 
-				#print opcionesRe
-				return [ random.choice(opcionesRe) ]
+					opcionesRe = self.forVar+opcionesRe+self.NameFreevar+self.NameInputVar
+					terminaSel = random.choice(opcionesRe)
+					if terminaSel in self.NameInputVar:
+						ind = [terminaSel[4:]]
+						return [  random.choice(self.forVar+genuinas) ,"$AR","$R"]
+					if terminaSel in self.NameFreevar:
+						return [  terminaSel  ,"$R"]
+					
+				terminaSel = random.choice(genuinas)
+				return [terminaSel  ]
 					
 	"""			
 	def halfaAndHalf(self, prof):
@@ -270,6 +289,7 @@ class Individuo:
 
 		elif 'for' == op:
 			#print "entro a for"
+			I=0
 			try:
 				I , forVari = self.evaluar( X[2]) 
 				J = int (self.evaluar( X[1]) )
@@ -282,9 +302,7 @@ class Individuo:
 						return
 					conStopFor+=1
 			except Exception, e:
-				print I
 				print X[2]
-				print J
 				print X[1]
 				print e
 				raise
@@ -325,12 +343,16 @@ class Individuo:
 			self.evaluar(X[3])
 			self.evaluar(X[4])
 		elif '=R' == op:
-			self.NameVarVal[X[1][0]] = int(self.evaluar(X[0]) )
+			self.NameVarVal[self.evaluar(X[1])] = self.evaluar(X[0]) 
 		elif op.find("set-")>=0:
 			#self.NameVarVal[op[4:]] = X[0]
 			return int(X[0]),op[4:]
-
-
+		elif '$AR' == op :
+			print X[0]
+			ind = int(X[0])%reglas.numInPutVar
+			return "IPV_"+str(int(ind))
+		elif '$R' == op :
+			return self.NameVarVal[X[0]]
 	def evaluar (self,pos):
 		pila = []
 		#print"########################### "
@@ -338,7 +360,9 @@ class Individuo:
 		#print "###########################"
 		for i in xrange(0, len(pos)):
 			
-			if ( pos[i] in self.NameVar ):
+			if ( pos[i] in self.NameInputVar+self.NameFreevar ):
+				pila.append(pos[i])
+			if ( pos[i] in self.DinamicVar ):
 				pila.append(self.NameVarVal[pos[i]])
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
@@ -521,9 +545,14 @@ class Individuo:
 			print '}'
 			
 		elif '=R' == op :
-			print X[1][0]+" = " + self.imprimir(X[0])+";" 
+			print self.imprimir(X[1])+" = " + self.imprimir(X[0])+";" 
 		elif op.find("set-")>-1:
 			return op[4:] +" = " + X[0]
+		elif '$AR' == op :
+			#ind = int(X[0])%reglas.numInPutVar
+			return "IPV[int("+X[0]+" % "+str(reglas.numInPutVar)+")]"
+		elif '$R' == op :
+			return X[0]
 
 	def imprimir (self,pos):
 		pila = []
@@ -561,9 +590,11 @@ class Individuo:
 		print "#include \"DefOp.h\" "
 		print "#include <iostream>"
 		print "using namespace std;" 
+		for i in self.ValCons :
+			print "//"+ i +"="+ str(self.ValCons[i])+";"
 		print "int main(int argc, char const *argv[]){"
 		for i in xrange(0, len(self.InputVar)) :
-			print "float "+ self.InputVar[i]["Name"] +"="+ str(val[i])+";"
+			print "float IPV[] ="+ str(val).replace('[','{').replace(']','}')+";"
 		for i in xrange(0, len(self.DinVar)) :
 			print "float "+ self.DinVar[i]["Name"] +"="+ "1"+";"
 		for i in xrange(0, len(self.FreeVar)) :
@@ -574,11 +605,10 @@ class Individuo:
 			print "cout<<"+ self.InputVar[i]["Name"]+"<<endl;"
 		print "return 0;"
 		print "}"
-"""
-prueba = Individuo(5)
+
+prueba = Individuo(3)
 print prueba.gen
 #prueba.imprimirGen([5,4,4,8,10,9,3,7,7,2])
 res = prueba.evaluarGen([5,4,4,8,10,9,3,7,7,2])
 print "el resultado es "
 print res
-"""
