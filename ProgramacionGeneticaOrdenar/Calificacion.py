@@ -19,8 +19,8 @@ def adaptacion(pob,valE,resE):
 	for i in pob:
 	#	print i.gen
 	#	print "hola"
-		getError (i,valE,resE)
-		#thread.start_new_thread(getError,(i,valE,resE))
+		#getError (i,valE,resE)
+		thread.start_new_thread(getError,(i,valE,resE))
 		N+=1
 		#print "###################-- "+str(N)
 		#print i.gen

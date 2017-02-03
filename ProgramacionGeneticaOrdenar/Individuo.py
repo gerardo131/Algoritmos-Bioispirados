@@ -4,6 +4,7 @@
 import random
 from operator import xor
 import reglas
+import copy
 
 ##################### inicializacion del modulo ####################
 
@@ -23,32 +24,34 @@ PConstan = 1
 
 class Individuo:
 	
-
+	
 	def __init__(self, prof):
 		self.NameVarVal = {}
 		#Son arreglos que contienen los tipos de datos y el nombre de la funciones 
-		self.TerAndTy = reglas.TerAndTy
-		self.FunAndTy = reglas.FunAndTy 
-		self.DinVartry = reglas.DinVartry 
+		"""
+		reglas.numInPutVar = reglas.numInPutVar
+		reglas.TerAndTy = copy.copy(reglas.TerAndTy)
+		reglas.FunAndTy = copy.copy(reglas.FunAndTy )
+		reglas.DinVartry = copy.copy(reglas.DinVartry ) 
 
 		# Son arreglos que contiene todos los nombres de las funciones
-		self.Funcion  =	reglas.Funcion[:]    
-		self.Terminal =	reglas.Terminal[:]   
-		self.DinamicVar =	reglas.DinamicVar[:]   
-		self.NameInputVar =	reglas.NameInputVar[:]   
-		self.NameFreevar  =	reglas.NameFreevar[:]    
+		reglas.Funcion  =	reglas.Funcion[:]    
+		#self.Terminal =	reglas.Terminal[:]   
+		reglas.DinamicVar =	reglas.DinamicVar[:]   
+		reglas.NameInputVar =	reglas.NameInputVar[:]   
+		reglas.NameFreevar  =	reglas.NameFreevar[:]    
 		self.NameVar      =	reglas.NameVar[:]      
-		self.NameCons     =	reglas.NameCons[:]    
-		self.InputVar = reglas.InputVar[:]  
-		self.FreeVar = reglas.FreeVar[:]
-		self.DinVar = reglas.DinVar[:]
+		reglas.NameCons     =	reglas.NameCons[:]    
+		reglas.InputVar = reglas.InputVar[:]  
+		reglas.FreeVar = reglas.FreeVar[:]
+		reglas.DinVar = reglas.DinVar[:]
 		#Son arreglos con el nombre de las constantes y el valor 
-		self.ValCons  = reglas.ValCons 
-
+		reglas.ValCons  = copy.copy(reglas.ValCons)
+		reglas.ConsAndTy = copy.copy(reglas.ConsAndTy)
 
 		#Contiene  el nombre y el numero de parametros y el tipo de cada parametro
-		self.FunPar =  reglas.FunPar
-
+		reglas.FunPar =  copy.copy(reglas.FunPar)
+		"""
 
 		self.Nfor = 0
 		self.forVar = []
@@ -109,21 +112,21 @@ class Individuo:
 			############## Si ya esmos en las hojas del arbol selecionamos un nodo terminal de forma aleatoria con respecto al tipo de de dato aceptado ####
 			opcionesRe = []
 			for i in Tipo:
-				opcionesRe = self.TerAndTy[i]+opcionesRe
+				opcionesRe = reglas.TerAndTy[i]+opcionesRe
 			genuinas = opcionesRe[:]
 			if "R" in Tipo:
-				opcionesRe = self.forVar+opcionesRe+self.NameFreevar+self.NameInputVar
+				opcionesRe = self.forVar+opcionesRe+reglas.NameFreevar+reglas.NameInputVar
 				terminaSel = random.choice(opcionesRe)
-				if terminaSel in self.NameInputVar:
+				if terminaSel in reglas.NameInputVar:
 					ind = [terminaSel[4:]]
 					return [  random.choice(self.forVar+genuinas) ,"$AR","$R"]
-				if terminaSel in self.NameFreevar:
+				if terminaSel in reglas.NameFreevar:
 					return [  terminaSel  ,"$R"]
 			
 			if "MeR" in Tipo:
-				opcionesRe = opcionesRe+self.NameFreevar+self.NameInputVar
+				opcionesRe = opcionesRe+reglas.NameFreevar+reglas.NameInputVar
 				terminaSel = random.choice(opcionesRe)
-				if terminaSel in self.NameInputVar:
+				if terminaSel in reglas.NameInputVar:
 					ind = [terminaSel[4:]]
 					return [  random.choice(self.forVar+reglas.ConsAndTy["R"]) ,"$AR"]
 				
@@ -133,23 +136,23 @@ class Individuo:
 			######## Si queremos poner una funcion en el árbol ############################
 			opcionesRe = []
 			for i in Tipo:
-				opcionesRe = self.FunAndTy[i]+opcionesRe
+				opcionesRe = reglas.FunAndTy[i]+opcionesRe
 			if (random.random()<.9 and len(opcionesRe)!= 0 or (len(Tipo)==1 and 'MB' in Tipo) ) :  
 				if prof == 1 and "MB" in Tipo:
 					opcionesRe = ["=R"] 
 				fun = random.choice(opcionesRe) # Selecciona aleatoriamente la funcion con un espesifico tipo de dato de retorno
 				exp = [fun]                     # Contruye el arreglo para contruir la exprecion de la rama actual         
-				regPar = self.FunPar[fun]     # Guardamos la regla que se usara para escojer los tipos de parametros aceptados 
+				regPar = reglas.FunPar[fun]     # Guardamos la regla que se usara para escojer los tipos de parametros aceptados 
 				
 				#### El conjunto de Multi Bloque (MB) los contruimos encapsulando sus parametros en un araglo #############  
-				if fun in self.FunAndTy['MB']:
+				if fun in reglas.FunAndTy['MB']:
 					# for contiene una restriccion de contrucción debido a su variable local que contiene 
 					if fun == 'for':
 						self.Nfor += 1
 						self.NF =self.Nfor
-						exp =  [self.grow(prof-1,["R"])+["set-"+self.DinamicVar[self.Nfor]]] + exp 
+						exp =  [self.grow(prof-1,["R"])+["set-"+reglas.DinamicVar[self.Nfor]]] + exp 
 						exp =  [self.grow(prof-1,regPar['TypePar'][1])] + exp
-						self.forVar.append(self.DinamicVar[self.Nfor])
+						self.forVar.append(reglas.DinamicVar[self.Nfor])
 						exp =  [ self.grow(prof-1,regPar['TypePar'][2]) ] + exp
 						self.forVar.pop()
 						self.Nfor =0
@@ -171,15 +174,15 @@ class Individuo:
 				############# Si queremos poner un terminal en lugar de una función y truncar el árbol 
 				opcionesRe = []
 				for i in Tipo:
-					opcionesRe = self.TerAndTy[i]+opcionesRe
+					opcionesRe = reglas.TerAndTy[i]+opcionesRe
 				genuinas = opcionesRe[:]
 				if "R" in Tipo:
-					opcionesRe = self.forVar+opcionesRe+self.NameFreevar+self.NameInputVar
+					opcionesRe = self.forVar+opcionesRe+reglas.NameFreevar+reglas.NameInputVar
 					terminaSel = random.choice(opcionesRe)
-					if terminaSel in self.NameInputVar:
+					if terminaSel in reglas.NameInputVar:
 						ind = [terminaSel[4:]]
 						return [  random.choice(self.forVar+genuinas) ,"$AR","$R"]
-					if terminaSel in self.NameFreevar:
+					if terminaSel in reglas.NameFreevar:
 						return [  terminaSel  ,"$R"]
 					
 				terminaSel = random.choice(genuinas)
@@ -348,7 +351,7 @@ class Individuo:
 			#self.NameVarVal[op[4:]] = X[0]
 			return int(X[0]),op[4:]
 		elif '$AR' == op :
-			print X[0]
+			#print X[0]
 			ind = int(X[0])%reglas.numInPutVar
 			return "IPV_"+str(int(ind))
 		elif '$R' == op :
@@ -360,26 +363,26 @@ class Individuo:
 		#print "###########################"
 		for i in xrange(0, len(pos)):
 			
-			if ( pos[i] in self.NameInputVar+self.NameFreevar ):
+			if ( pos[i] in reglas.NameInputVar+reglas.NameFreevar ):
 				pila.append(pos[i])
-			if ( pos[i] in self.DinamicVar ):
+			if ( pos[i] in reglas.DinamicVar ):
 				pila.append(self.NameVarVal[pos[i]])
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
-			elif pos[i] in self.NameCons:
-				pila.append( self.ValCons[pos[i]] )
+			elif pos[i] in reglas.NameCons:
+				pila.append( reglas.ValCons[pos[i]] )
 			#elif pos[i] in setVarConB:
 			#	pila.append( valConB[setVarConB.index(pos[i])] )
-			elif pos[i] in self.Funcion :
+			elif pos[i] in reglas.Funcion :
 				param = []
-				for j in xrange(0,self.FunPar[pos[i]]['NumPar']):
+				for j in xrange(0,reglas.FunPar[pos[i]]['NumPar']):
 					param.insert(0, pila.pop() ) 
 				
 				res = self.operador(pos[i],param)
 				pila.append(res)
 			elif pos[i].find("set-")>-1:
 				param = []
-				for j in xrange(0,self.FunPar[pos[i][0:4]]['NumPar']):
+				for j in xrange(0,reglas.FunPar[pos[i][0:4]]['NumPar']):
 					param.insert(0, pila.pop() ) 
 				
 				res = self.operador(pos[i],param)
@@ -391,19 +394,19 @@ class Individuo:
 		#print self.gen
 		#print "---------------------"
 
-		for i in self.NameVar:
+		for i in reglas.NameVar:
 			self.NameVarVal[i]= 0.0
-		for i in xrange(0, len(self.InputVar)) :
-			self.NameVarVal[self.InputVar[i]["Name"]] = val[i] 
+		for i in xrange(0, len(reglas.InputVar)) :
+			self.NameVarVal[reglas.InputVar[i]["Name"]] = val[i] 
 		self.resultado = []
 		self.evaluar(self.gen)
-		for i in xrange(0, len(self.InputVar)) :
-			self.resultado.append( self.NameVarVal[self.InputVar[i]["Name"]] ) 
+		for i in xrange(0, len(reglas.InputVar)) :
+			self.resultado.append( self.NameVarVal[reglas.InputVar[i]["Name"]] ) 
 		return self.resultado
 		#print  inst
 	"""def evaluarGen(self,val):
-		for i in xrange(0, len(self.InputVar)) :
-			self.valVar[self.InputVar[i]["Name"]] = val[i] 	
+		for i in xrange(0, len(reglas.InputVar)) :
+			self.valVar[reglas.InputVar[i]["Name"]] = val[i] 	
 	"""		
 	###################### Evaluacion #######################################
 	def operadorIm (self,op, X):
@@ -560,22 +563,22 @@ class Individuo:
 		#print pos 
 		#print "###########################"
 		for i in xrange(0, len(pos)):
-			if ( pos[i] in self.NameVar ):
+			if ( pos[i] in reglas.NameVar ):
 				pila.append(pos[i])
-			elif ( pos[i] in self.NameCons ):
-				pila.append(str(self.ValCons[pos[i]]))
+			elif ( pos[i] in reglas.NameCons ):
+				pila.append(str(reglas.ValCons[pos[i]]))
 			elif str(type(pos[i])) == "<type 'list'>": 
 				pila.append(pos[i])
-			elif pos[i] in self.Funcion :
+			elif pos[i] in reglas.Funcion :
 				param = []
-				for j in xrange(0,self.FunPar[pos[i]]['NumPar']):
+				for j in xrange(0,reglas.FunPar[pos[i]]['NumPar']):
 					param.insert(0, pila.pop() ) 
 				
 				res = self.operadorIm(pos[i],param)
 				pila.append(res)
 			elif pos[i].find("set-")>-1:
 				param = []
-				for j in xrange(0,self.FunPar[pos[i][0:4]]['NumPar']):
+				for j in xrange(0,reglas.FunPar[pos[i][0:4]]['NumPar']):
 					param.insert(0, pila.pop() ) 
 				
 				res = self.operadorIm(pos[i],param)
@@ -590,19 +593,19 @@ class Individuo:
 		print "#include \"DefOp.h\" "
 		print "#include <iostream>"
 		print "using namespace std;" 
-		for i in self.ValCons :
-			print "//"+ i +"="+ str(self.ValCons[i])+";"
+		for i in reglas.ValCons :
+			print "//"+ i +"="+ str(reglas.ValCons[i])+";"
 		print "int main(int argc, char const *argv[]){"
-		for i in xrange(0, len(self.InputVar)) :
+		for i in xrange(0, len(reglas.InputVar)) :
 			print "float IPV[] ="+ str(val).replace('[','{').replace(']','}')+";"
-		for i in xrange(0, len(self.DinVar)) :
-			print "float "+ self.DinVar[i]["Name"] +"="+ "1"+";"
-		for i in xrange(0, len(self.FreeVar)) :
-			print "float "+ self.FreeVar[i]["Name"] +"="+ "0.0"+";" 
+		for i in xrange(0, len(reglas.DinVar)) :
+			print "float "+ reglas.DinVar[i]["Name"] +"="+ "1"+";"
+		for i in xrange(0, len(reglas.FreeVar)) :
+			print "float "+ reglas.FreeVar[i]["Name"] +"="+ "0.0"+";" 
 
 		self.imprimir(self.gen)
-		for i in xrange(0, len(self.InputVar)) :
-			print "cout<<"+ self.InputVar[i]["Name"]+"<<endl;"
+		for i in xrange(0, len(reglas.InputVar)) :
+			print "cout<<"+ reglas.InputVar[i]["Name"]+"<<endl;"
 		print "return 0;"
 		print "}"
 

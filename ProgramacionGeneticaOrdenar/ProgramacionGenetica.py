@@ -70,9 +70,9 @@ def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60
 	while(gen<MAXGE):
 
 		NuevaPob = []
-		#print "***********************************************"
+		print "***********************************************"
 		print gen
-		#print "***********************************************"
+		print "***********************************************"
 		for i in xrange(0,(NIND-indEli)/2):
 			sel = seleccion.ruleta(Pob)
 			ResMez = Mezcla.Punto(sel,PC)
@@ -179,7 +179,7 @@ def main(NIND = 0, MAXGE = 2 , NMUESTRA = 80, PROFUNDIDAD = 2 ,indEli =8,PC = 60
 
 f=open("2_10.json","w")
 #main(NIND = 100 , MAXGE = 100 , NMUESTRA = 80, PROFUNDIDAD = 4 ,indEli =4,PC = 60,PM = 2)
-def salida (NIND = 50, MAXGE = 500 , NMUESTRA=40, PROFUNDIDAD = 5  ,indEli=10 ,PC = 60,PM = 90) :
+def salida (NIND = 50, MAXGE = 200 , NMUESTRA=40, PROFUNDIDAD = 5  ,indEli=10 ,PC = 60,PM = 90) :
 	for inArchivo in xrange(1,2):
 
 		print "Prueba"+str(inArchivo)
